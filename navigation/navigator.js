@@ -3,11 +3,10 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { MaterialCommunityIcons, Foundation } from "@expo/vector-icons";
 import { Entypo, Ionicons, Octicons } from "@expo/vector-icons";
 import Colors from "../constants/color";
 
-//หน้าที่เกี่ยวข้อง
+//import screen
 import HomeScreen from "../screens/HomeScreen";
 import FollowScreen from "../screens/FollowScreen";
 import CreatePostScreen from "../screens/CreatePostScreen";
@@ -167,6 +166,7 @@ export default function Navigator() {
 
 const styles = StyleSheet.create({
   shadow: {
+    overflow: 'visible',
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -175,5 +175,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3.5,
     elevation: 5,
+    borderRadius: 35
   },
 });
