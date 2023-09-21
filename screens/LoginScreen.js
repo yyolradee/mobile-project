@@ -25,7 +25,12 @@ const LoginScreen = () => {
         <Text style={{ color: Colors.gray2, marginVertical: 9 }}>
           โดยใช้ email account ของสถาบัน
         </Text>
-        <Button title="LOGIN" onPress={() => {navigation.navigate("App")}}></Button>
+        <Button
+          title="LOGIN"
+          onPress={() => {
+            navigation.replace("App");
+          }}
+        ></Button>
       </View>
     </View>
   );
@@ -39,7 +44,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   activeArea: {
-    overflow: "visible",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
@@ -54,7 +58,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 6,
-    elevation: 10,
+    elevation: 2,
   },
 });
 
