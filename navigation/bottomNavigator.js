@@ -4,14 +4,15 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Entypo, Ionicons, Octicons } from "@expo/vector-icons";
-import Colors from "../constants/color";
+import Colors from "../constants/Colors";
 
 //import screen
 import HomeScreen from "../screens/HomeScreen";
 import FollowScreen from "../screens/FollowScreen";
-import CreatePostScreen from "../screens/CreatePostScreen";
+// import CreatePostScreen from "../screens/CreatePostScreen";
 import NotificationScreen from "../screens/NotificationScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import CreatePostNavigator from "./createPostStackNavigator";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -96,12 +97,14 @@ export default function BottomNavigator() {
       />
       <BottomTab.Screen
         name="CreatePostScreen"
-        component={CreatePostScreen}
+        component={CreatePostNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <Entypo name="plus" size={35} color="white" />
           ),
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          tabBarStyle: {display: "none"},
+          headerShown: false,
         }}
       />
       <BottomTab.Screen
@@ -154,6 +157,7 @@ export default function BottomNavigator() {
 
 const styles = StyleSheet.create({
   shadow: {
+    backgroundColor: "#fff",
     overflow: "visible",
     shadowColor: "#000",
     shadowOffset: {

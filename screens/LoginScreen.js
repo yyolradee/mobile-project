@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 // import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
-import Colors from "../constants/color";
+import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 
 const LoginScreen = () => {
@@ -9,10 +9,10 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.container}>
-        <Text style={{ color: "#fff", fontSize: 60, fontWeight: "bold" }}>
+        <Text style={{ color: "#fff", fontSize: 60, fontWeight: "bold", marginBottom: -10 }}>
           KMITL
         </Text>
-        <Text style={{ fontSize: 40, fontWeight: "bold" }}>Trouble</Text>
+        <Text style={{ fontSize: 40, fontWeight: "bold"}}>Trouble</Text>
         <Text style={{ color: "#fff", marginTop: 10 }}>
           แจ้งปัญหาที่คุณประสบในพื้นที่
         </Text>
