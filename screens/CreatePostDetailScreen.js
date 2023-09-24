@@ -42,7 +42,6 @@ const CreatePostDetailScreen = () => {
     } else {
       setValidate(true);
     }
-    console.log(selectedCategory.length, selectedPlace);
   });
 
   return (

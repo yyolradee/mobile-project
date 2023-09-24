@@ -1,14 +1,26 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import CreatePostHeader from "../components/CreatePostHeader";
 import { useNavigation } from "@react-navigation/native";
+import Colors from "../constants/Colors";
 
 const CreatePostScreen = () => {
   const navigation = useNavigation();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [isImagePickerActive, setIsImagePickerActive] = useState(true);
 
   const clearState = () => {
     setTitle("");
@@ -58,7 +70,7 @@ const CreatePostScreen = () => {
           navigation.navigate("detail");
         }}
       />
-      <View style={{ paddingHorizontal: 30 }}>
+      <View style={{ paddingHorizontal: 30, flex: 1 }}>
         <TextInput
           style={{ fontSize: 30 }}
           placeholder="หัวข้อ..."
@@ -79,6 +91,39 @@ const CreatePostScreen = () => {
           }}
         />
       </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{
+          borderColor: "#000",
+          borderTopWidth: 1,
+          borderLeftWidth: 1,
+          borderRightWidth: 1,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          paddingTop: 15,
+          paddingHorizontal: 30,
+        }}
+      >
+        <TouchableOpacity
+          style={{ flexDirection: "row", alignItems: "center", marginBottom: Platform.OS === "ios" ? 25 : 15 }}
+          disabled={!isImagePickerActive}
+        >
+          <MaterialIcons
+            name="image"
+            size={30}
+            color={isImagePickerActive ? Colors.primary : Colors.gray2}
+          />
+          <Text
+            style={{
+              marginLeft: 10,
+              fontSize: 15,
+              color: isImagePickerActive ? Colors.black : Colors.gray2,
+            }}
+          >
+            เพิ่มรูปภาพ หรือวิดีโอ (สูงสุด 1 รูป)
+          </Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
     </View>
   );
 };

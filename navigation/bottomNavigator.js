@@ -9,10 +9,9 @@ import Colors from "../constants/Colors";
 //import screen
 import HomeScreen from "../screens/HomeScreen";
 import FollowScreen from "../screens/FollowScreen";
-// import CreatePostScreen from "../screens/CreatePostScreen";
-import NotificationScreen from "../screens/NotificationScreen";
-import ProfileScreen from "../screens/ProfileScreen";
 import CreatePostNavigator from "./createPostStackNavigator";
+import NotificationScreen from "../screens/NotificationScreen";
+import ProfileNavigator from "./profileStackNavigator";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -131,7 +130,7 @@ export default function BottomNavigator() {
       />
       <BottomTab.Screen
         name="ProfileScreen"
-        component={ProfileScreen}
+        component={ProfileNavigator}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
@@ -149,6 +148,7 @@ export default function BottomNavigator() {
               </View>
             );
           },
+          headerShown: false
         }}
       />
     </BottomTab.Navigator>
