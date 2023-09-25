@@ -11,6 +11,7 @@ import Colors from "../constants/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Post from "../components/Post";
 import { useNavigation } from "@react-navigation/native";
+import DATA from "../data/postDetail.json"
 
 const ProfileScreen = () => {
   const navigation = useNavigation()
@@ -41,10 +42,7 @@ const ProfileScreen = () => {
         </View>
       </View>
       <ScrollView>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
-        <Post></Post>
+        <Post postData={DATA[0]}></Post>
       </ScrollView>
     </View>
   );
