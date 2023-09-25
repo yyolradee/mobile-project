@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { View, Text, FlatList, Image, StyleSheet } from "react-native";
+import { View, Text, FlatList, Image, StyleSheet, Dimensions } from "react-native";
 import Colors from "../constants/Colors";
 import { Button, Flex, WingBlank } from '@ant-design/react-native';
 
@@ -30,6 +30,11 @@ const Post = (props) => {
   const [trending, setTrending] = useState(false)
   const [comments, setComments] = useState([])
 
+  const screenWidth = Dimensions.get('window').width;
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+  const [statusColor, setStatusColor] = useState("red")
+
+
   useEffect(() => {
     setData(postData)
     setComments(postData.comments)
@@ -39,7 +44,33 @@ const Post = (props) => {
     else {
       setTrending("")
     }
-  })
+
+    if (data.status == "กำลังดำเนินการ") {
+      setStatusColor(Colors.success)
+    }
+    else if (data.status == "รอรับเรื่อง") {
+      setStatusColor(Colors.warning)
+    }
+    else if (data.status == "แก้ไขเสร็จสิ้น") {
+      setStatusColor(Colors.gray2)
+    }
+    else {
+      setStatusColor("red")
+    }
+
+    // console.log(`screen width: ${screenWidth}`);
+    let contentWidth = 0;
+    postData.categories.forEach(item => {
+      contentWidth += item.value.length * 8;
+    });
+
+    if (contentWidth <= screenWidth) {
+      setScrollEnabled(false);
+    } else {
+      setScrollEnabled(true);
+    }
+  });
+
   return (
     <View style={styles.container}>
       <WingBlank style={styles.sub_container1}>
@@ -71,30 +102,29 @@ const Post = (props) => {
             data={data.categories}
             renderItem={renderItem}
             keyExtractor={item => item.key}
+            scrollEnabled={scrollEnabled}
           />
         <View style={{marginTop: 10}}>
           <Flex align="center">
-            <Text style={{fontWeight: "bold", fontSize: 18}}>{data.title}</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20}}>{data.title}</Text>
             {renderTrending(trending)}
           </Flex>
-          
           <Text style={{marginTop: 5}}>{data.des}</Text>
         </View>
       </WingBlank>
-        <Image style={{ height: 250, width: "100%" }} source={require("../assets/tonmai.jpg")} />
-          {/* <Image source={data.img ? require(localImagePath) : require('../assets/tonmai.jpg')}></Image> */}
+        <Image style={{ height: 250, width: "100%" }} source={data.img ? {uri: data.img} : require('../assets/no-image.png')}></Image>
 
         <Flex direction="row" justify="between" style={styles.sub_container2}>
             <Flex style={{gap: 5}}>
-              <Feather name="chevrons-up" size={24} color={Colors.gray} />
+              <Feather name="chevrons-up" size={24} color={Colors.gray}/>
               <Text>{data.vote}</Text>
               <Feather name="chevrons-down" size={24} color={Colors.gray} />
               <FontAwesome name="commenting-o" size={24} color={Colors.gray} style={{marginLeft: 7, marginRight: 2, top: -1}}/>
-              {/* <Text style={{color: Colors.gray}}>{comments.length} ความคิดเห็น</Text> */}  
+              {/* <Text style={{color: Colors.gray}}>{comments.length} ความคิดเห็น</Text> */}
             </Flex>
             <Flex style={{gap: 5}}>
               <AntDesign name="infocirlceo" size={20} color={Colors.gray} />
-              <Text> {data.status}</Text>
+              <Text style={{color: statusColor}}> {data.status}</Text>
             </Flex>
         
       </Flex>

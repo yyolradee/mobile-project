@@ -6,4 +6,6 @@ export default {
     gray3: "#F5F5F5",
     black: "#000",
     pink: "#FC7D7D",
+    success: "#4BB543",
+    warning: "#FFB818"
 }

@@ -9,14 +9,10 @@ const renderItem = ({item}) => (
 
 const HomeScreen = () => {
   return (
-    // <View>
-    //   <Post postData={DATA[0]}/>
-    // </View>
-
       <FlatList
         data={DATA}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._id}
       />
   );
 };
