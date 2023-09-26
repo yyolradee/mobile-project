@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import CreatePostHeader from "../components/CreatePostHeader";
 import { useNavigation } from "@react-navigation/native";
-import { xorBy } from "lodash";
+import { round, xorBy } from "lodash";
 import { FontAwesome5, Entypo } from "@expo/vector-icons";
 import RNPickerSelect from "react-native-picker-select";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
@@ -43,6 +43,20 @@ const CreatePostDetailScreen = () => {
       setValidate(true);
     }
   });
+
+  const checkMaxSelected = (val) => {
+    if (selectedCategory.length >= 4) {
+      Alert.alert("", "หมวดหมู่สามารถเลือกได้ไม่เกิน 4 หมวดหมู่", [
+        {
+          text: "ตกลง",
+          onPress: () => {},
+        },
+      ]);
+    } 
+    else {
+      setSelectedCategory(val);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -85,15 +99,15 @@ const CreatePostDetailScreen = () => {
             fixAndroidTouchableBug={true}
           />
         </View>
-        <View style={styles.form}>
-          <FontAwesome5 name="tag" size={18} color={Colors.primary} />
-          <Text style={{ marginLeft: 10 }}>หมวดหมู่</Text>
-          <Text style={{ color: "red", marginRight: 7 }}>*</Text>
+        <View style={{ ...styles.form, alignItems: "flex-start" }}>
+          <View style={{ flexDirection: "row", marginTop: 25 }}>
+            <FontAwesome5 name="tag" size={18} color={Colors.primary} />
+            <Text style={{ marginLeft: 10 }}>หมวดหมู่</Text>
+            <Text style={{ color: "red", marginRight: 7 }}>*</Text>
+          </View>
           <MultipleSelectList
             data={categories}
-            setSelected={(val) => {
-              setSelectedCategory(val);
-            }}
+            setSelected={checkMaxSelected}
             save="value"
             placeholder="เลือกประเภท"
             arrowicon={<Entypo name="chevron-down" size={24} color="black" />}
