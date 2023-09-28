@@ -129,6 +129,7 @@ const Post = (props) => {
             renderItem={renderItem}
             keyExtractor={item => item.key}
             scrollEnabled={scrollEnabled}
+            showsHorizontalScrollIndicator={false}
           />
         {/* Content */}
         <View style={{marginTop: 10}}>
