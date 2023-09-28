@@ -8,62 +8,64 @@ import {
   TouchableOpacity,
   Platform,
   Animated,
-  KeyboardAvoidingView
 } from "react-native";
 import { Modal, Flex } from "@ant-design/react-native";
 import actualDimensions from "../constants/actualDimensions";
 import Colors from "../constants/Colors";
+import useKeyboardHeight from "../constants/useKeyboardHeight";
 
 const CommentModal = ({ isVisible, onClose, commentsItem }) => {
   const [text, setText] = useState("");
   const textInputRef = useRef(null);
   const [getHeight, setGetHeight] = useState("");
-  const [noCommentMargin, setNoCommentMargin] = useState(getHeight - (getHeight * 80) / 100);
+  const [nowKeyboardHeight, setNowKeyboardHeight] = useState(0);
+  const keyboardHeight = useKeyboardHeight();
   const translateY = useRef(new Animated.Value(0)).current;
-
 
   useEffect(() => {
     setGetHeight(actualDimensions.height);
     if (!isVisible) {
       translateY.setValue(0);
-      setNoCommentMargin(getHeight - (getHeight * 80) / 100)
     }
   });
 
-  const slideUpAnimation = (value, param) => {
-    Animated.spring(param, {
+  useEffect(() => {
+    if (keyboardHeight !== 0 && nowKeyboardHeight === 0) {
+      setNowKeyboardHeight(keyboardHeight);
+      console.log(`then: ${keyboardHeight}\nnow: ${nowKeyboardHeight}`);
+    }
+  }, [keyboardHeight]);
+
+  const slideUpAnimation = (value) => {
+    Animated.spring(translateY, {
       toValue: -value,
+      duration: 225,
       friction: 9,
       useNativeDriver: false,
     }).start();
   };
 
-  const slideDownAnimation = (value, param) => {
-    Animated.spring(param, {
-      toValue: value,
+  const slideDownAnimation = () => {
+    Animated.spring(translateY, {
+      toValue: 0,
+      duration: 225,
       friction: 9,
       useNativeDriver: false,
     }).start();
   };
-
-
 
   const handleTextChange = (newText) => {
     setText(newText);
   };
 
   const handleKeyboardShow = () => {
-    slideUpAnimation(getHeight - (getHeight * 80) / 100, translateY)
-    if (!commentsItem.length && Platform.OS === "ios") {
-      setNoCommentMargin(getHeight - (getHeight * 90) / 100)
+    if (nowKeyboardHeight > 0) {
+      slideUpAnimation(nowKeyboardHeight);
     }
   };
 
   const handleKeyboardHide = () => {
-    slideDownAnimation(0, translateY);
-    if (!commentsItem.length && Platform.OS === "ios") {
-      setNoCommentMargin(getHeight - (getHeight * 80) / 100)
-    }
+    slideDownAnimation();
   };
 
   const responsiveHeight = () => {
@@ -118,10 +120,10 @@ const CommentModal = ({ isVisible, onClose, commentsItem }) => {
   return (
     <Modal popup visible={isVisible} animationType="slide-up" onClose={onClose} maskClosable>
       <View style={styles.subContainer}>{renderContent()}</View>
-      <KeyboardAvoidingView
+      {/* <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "position" : null}
           style={{ flex: 1}}
-        >
+        > */}
       <Animated.View
         style={{ display: "flex", justifyContent: "center", flexDirection: "column", transform: [{ translateY }] }}
       >
@@ -134,10 +136,9 @@ const CommentModal = ({ isVisible, onClose, commentsItem }) => {
           onFocus={Platform.OS === "ios" ? handleKeyboardShow : null}
           onEndEditing={Platform.OS === "ios" ? handleKeyboardHide : null}
         />
-        <View style={styles.frame}></View>
         <View style={styles.postButton}>{renderPostButton()}</View>
       </Animated.View>
-      </KeyboardAvoidingView>
+      {/* </KeyboardAvoidingView> */}
     </Modal>
   );
 };
@@ -180,18 +181,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
   },
 
-  frame: {
-    position: "absolute",
-    top: 0,
-    borderColor: Colors.gray,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    height: 200,
-    width: "100%",
-    backgroundColor: "white"
-  },
   postButton: {
     position: "absolute",
     zIndex: 2,
