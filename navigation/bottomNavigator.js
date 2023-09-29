@@ -8,7 +8,7 @@ import Colors from "../constants/Colors";
 
 //import screen
 import HomeScreen from "../screens/HomeScreen";
-import FollowScreen from "../screens/FollowScreen";
+import FollowNavigator from "./followStackNavigator";
 import CreatePostNavigator from "./createPostStackNavigator";
 import NotificationNavigator from "./notificationNavigator";
 import ProfileNavigator from "./profileStackNavigator";
@@ -74,7 +74,7 @@ export default function BottomNavigator() {
       />
       <BottomTab.Screen
         name="FollowScreen"
-        component={FollowScreen}
+        component={FollowNavigator}
         options={{
           tabBarIcon: ({ focused, color }) => {
             var name = "";
@@ -92,6 +92,7 @@ export default function BottomNavigator() {
               </View>
             );
           },
+          headerShown: false,
         }}
       />
       <BottomTab.Screen
