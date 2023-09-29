@@ -1,16 +1,18 @@
 import React, {useState, useEffect} from "react";
-import { View, Text, FlatList, Image, StyleSheet, Dimensions } from "react-native";
+import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity} from "react-native";
 import Colors from "../constants/Colors";
 import { Button, Flex, WingBlank } from '@ant-design/react-native';
-
 import { Ionicons, Entypo, Feather, FontAwesome, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import BottomDrawer from './ManagePostModal';
 
+// Render Category
 const renderItem = ({ item }) => (
   <View style={styles.Cat} disabled>
     <Text style={{color: "white", fontSize: 12}}>{item.value}</Text>
   </View>
 );
 
+// Show Trending or not
 const renderTrending = (trending) => {
   if (trending) {
     return (
@@ -24,7 +26,10 @@ const renderTrending = (trending) => {
   }
 }
 
+
+
 const Post = (props) => {
+  // Check if post category is can move or not
   const postData = props.postData
   const [data, setData] = useState([])
   const [trending, setTrending] = useState(false)
@@ -34,7 +39,10 @@ const Post = (props) => {
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [statusColor, setStatusColor] = useState("red")
 
+  const [isDrawerVisible, setDrawerVisible] = useState(false);
+  const [isEditable, setIsEditable] = useState(false)
 
+  // Set When Open this page
   useEffect(() => {
     setData(postData)
     setComments(postData.comments)
@@ -57,8 +65,6 @@ const Post = (props) => {
     else {
       setStatusColor("red")
     }
-
-    // console.log(`screen width: ${screenWidth}`);
     let contentWidth = 0;
     postData.categories.forEach(item => {
       contentWidth += item.value.length * 8;
@@ -71,11 +77,20 @@ const Post = (props) => {
     }
   });
 
+
+  // Bottom Drawer Visible
+  const toggleDrawer = () => {
+    setDrawerVisible(!isDrawerVisible);
+  };
+
+
+
   return (
     <View style={styles.container}>
+      <BottomDrawer isVisible={isDrawerVisible} onClose={toggleDrawer} isEditable={isEditable}/>
       <WingBlank style={styles.sub_container1}>
+        {/* Header */}
         <Flex direction="row" justify="between" style={{marginBottom: 5}}>
-          {/* Header */}
           <Flex>
             <Ionicons name="location-sharp" size={32} color={Colors.primary} />
             <WingBlank size="sm">
@@ -93,10 +108,13 @@ const Post = (props) => {
             </WingBlank>
           </Flex>
           <Flex direction="column">
-            <Entypo name="dots-three-horizontal" size={14} color="black" />
+            <TouchableOpacity onPress={toggleDrawer}>
+              <Entypo name="dots-three-horizontal" size={14} color="black" />
+            </TouchableOpacity>
             <Text></Text>
           </Flex>
         </Flex>
+        {/* Category */}
         <FlatList
             horizontal
             data={data.categories}
@@ -105,6 +123,7 @@ const Post = (props) => {
             scrollEnabled={scrollEnabled}
             showsHorizontalScrollIndicator={false}
           />
+        {/* Content */}
         <View style={{marginTop: 10}}>
           <Flex align="center">
             <Text style={{fontWeight: "bold", fontSize: 20}}>{data.title}</Text>
