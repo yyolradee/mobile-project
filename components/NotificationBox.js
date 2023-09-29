@@ -2,11 +2,13 @@ import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import Colors from "../constants/Colors";
 import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import moment from "moment";
 
 const NotificationBox = (props) => {
   const notiItem = props.notiItem;
   let colorBadge;
   let iconBadge;
+  const time_passed = moment(notiItem.date_time).fromNow()
 
   if (notiItem.type == "hot") {
     colorBadge = Colors.pink;
@@ -45,7 +47,7 @@ const NotificationBox = (props) => {
           {" " + notiItem.description}
         </Text>
         <Text style={{ fontSize: 12, color: Colors.gray, marginTop: 3 }}>
-          2w ag
+          {time_passed}
         </Text>
       </View>
     </View>
