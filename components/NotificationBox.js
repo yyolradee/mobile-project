@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
-import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import moment from "moment";
 
 const NotificationBox = (props) => {
@@ -12,7 +12,7 @@ const NotificationBox = (props) => {
 
   if (notiItem.type == "hot") {
     colorBadge = Colors.pink;
-    iconBadge = <FontAwesome5 name="fire" size={16} color="white" />;
+    iconBadge = <MaterialIcons name="local-fire-department" size={16} color="white" />;
   } else {
     if (notiItem.status == "wating") {
       colorBadge = Colors.warning;
@@ -31,7 +31,7 @@ const NotificationBox = (props) => {
       <View style={styles.container}>
         <View>
           <Image
-            style={{ height: 80, width: 80, borderRadius: 50 }}
+            style={{ height: 65, width: 65, borderRadius: 50 }}
             source={
               notiItem.img_path
                 ? { uri: notiItem.img_path }
@@ -42,13 +42,13 @@ const NotificationBox = (props) => {
             {iconBadge}
           </View>
         </View>
-        <View style={{ marginTop: 8, marginLeft: 20, width: "65%" }}>
-          <Text style={{ fontSize: 18 }} numberOfLines={2} flexWrap="wrap">
+        <View style={{ marginTop: 4, marginLeft: 25, width: "65%" }}>
+          <Text style={{ fontSize: 15 }} numberOfLines={2} flexWrap="wrap">
             ปัญหา{" "}
             <Text style={{ fontWeight: "bold" }}>{notiItem.post_name}</Text>
             {" " + notiItem.description}
           </Text>
-          <Text style={{ fontSize: 12, color: Colors.gray, marginTop: 3 }}>
+          <Text style={{ fontSize: 10, color: Colors.gray, marginTop: 3 }}>
             {time_passed}
           </Text>
         </View>
@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     // backgroundColor: Colors.primary,
-    paddingVertical: 20,
-    paddingLeft: 20,
+    paddingVertical: 15,
+    paddingLeft: 25,
     borderColor: Colors.gray2,
     borderBottomWidth: 1,
   },
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 15,
-    top: 55,
-    left: 55,
+    top: 40,
+    left: 40,
     alignItems: "center",
     justifyContent: "center",
   },
