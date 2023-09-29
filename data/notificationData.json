@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "post_name": "ต้นไม้ล้มหน้าไอที",
+        "post_id": 1,
+        "description": "กำลังเป็นที่สนใจในคณะเทคโนโลยีสารสนเทศ",
+        "type": "hot",
+        "status": "wating",
+        "img_path": "https://picsum.photos/1200/800",
+        "date_time": "2023-09-29 14:36:04"
+    },
+    {
+        "id": 2,
+        "post_name": "อกหักเพราะเธอไม่รัก",
+        "post_id": 2,
+        "description": "ของคุณ ได้รับการแก้ไขเรียบร้อยแล้ว",
+        "type": "change status",
+        "status": "done",
+        "img_path": null,
+        "date_time": "2023-09-28 15:12:04"
+    },
+    {
+        "id": 3,
+        "post_name": "อกหักเพราะเธอไม่รัก",
+        "post_id": 2,
+        "description": "ของคุณ กำลังดำเนินการแก้ไข",
+        "type": "change status",
+        "status": "inprocess",
+        "img_path": null,
+        "date_time": "2023-09-14 20:10:14"
+    }
+]

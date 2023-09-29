@@ -1,10 +1,22 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import NotificationBox from "../components/NotificationBox";
+import NotiData from "../data/notificationData.json";
+import { useNavigation } from "@react-navigation/native";
 
 const NotificationScreen = () => {
+  const navigation = useNavigation();
+  const pressHandler = (id) => {
+    navigation.navigate("postInNoti", {post_id: id})
+  }
   return (
-    <View>
-      <Text>NotificationScreen</Text>
+    <View style={styles.container}>
+      <FlatList
+        data={NotiData}
+        renderItem={({ item }) => <NotificationBox notiItem={item} onPress={pressHandler} />}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
@@ -12,8 +24,6 @@ const NotificationScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "white",
   },
 });

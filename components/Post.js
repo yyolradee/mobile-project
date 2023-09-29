@@ -121,6 +121,7 @@ const Post = (props) => {
             renderItem={renderItem}
             keyExtractor={item => item.key}
             scrollEnabled={scrollEnabled}
+            showsHorizontalScrollIndicator={false}
           />
         {/* Content */}
         <View style={{marginTop: 10}}>
@@ -128,11 +129,10 @@ const Post = (props) => {
             <Text style={{fontWeight: "bold", fontSize: 20}}>{data.title}</Text>
             {renderTrending(trending)}
           </Flex>
-          <Text style={{marginTop: 5}}>{data.des}</Text>
+          <Text style={{marginTop: 5}} numberOfLines={5} flexWrap="wrap">{data.des}</Text>
         </View>
       </WingBlank>
-        {/* Lower Part */}
-        <Image style={{ height: 250, width: "100%" }} source={data.img ? {uri: data.img} : require('../assets/no-image.png')}></Image>
+        <Image style={{ height: 250, width: "100%", display:data.img ? "flex": "none" }} source={data.img ? {uri: data.img} : require('../assets/no-image.png')}></Image>
 
         <Flex direction="row" justify="between" style={styles.sub_container2}>
             <Flex style={{gap: 5}}>
