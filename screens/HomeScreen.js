@@ -13,6 +13,7 @@ const HomeScreen = () => {
         data={DATA}
         renderItem={renderItem}
         keyExtractor={item => item._id}
+        showsVerticalScrollIndicator={false}
       />
   );
 };

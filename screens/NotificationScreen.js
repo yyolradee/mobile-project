@@ -1,10 +1,17 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import NotificationBox from "../components/NotificationBox";
+import NotiData from "../data/notificationData.json";
 
 const NotificationScreen = () => {
   return (
-    <View>
-      <Text>NotificationScreen</Text>
+    <View style={styles.container}>
+      <FlatList
+        data={NotiData}
+        renderItem={({ item }) => <NotificationBox notiItem={item} />}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
@@ -12,8 +19,6 @@ const NotificationScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "white",
   },
 });

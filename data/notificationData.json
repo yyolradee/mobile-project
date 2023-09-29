@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "post_name": "ต้นไม้ล้มหน้าไอที",
+        "description": "กำลังเป็นที่สนใจในคณะเทคโนโลยีสารสนเทศ",
+        "type": "hot",
+        "status": "wating",
+        "img_path": "https://picsum.photos/1200/800",
+        "date_time": "2023-09-14 20:10:14"
+    },
+    {
+        "id": 2,
+        "post_name": "อกหักเพราะเธอไม่รัก",
+        "description": "ของคุณ กำลังดำเนินการแก้ไข",
+        "type": "change status",
+        "status": "inprocess",
+        "img_path": null,
+        "date_time": "2023-09-28 15:12:04"
+    }
+]
