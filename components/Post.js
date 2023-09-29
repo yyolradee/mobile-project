@@ -3,7 +3,9 @@ import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity} 
 import Colors from "../constants/Colors";
 import { Button, Flex, WingBlank } from '@ant-design/react-native';
 import { Ionicons, Entypo, Feather, FontAwesome, AntDesign, MaterialIcons } from '@expo/vector-icons';
-import BottomDrawer from './ManagePostModal';
+import ManagePostModal from './ManagePostModal';
+import CommentModal from "./CommentModal";
+import actualDimensions from "../constants/actualDimensions";
 
 // Render Category
 const renderItem = ({ item }) => (
@@ -35,11 +37,11 @@ const Post = (props) => {
   const [trending, setTrending] = useState(false)
   const [comments, setComments] = useState([])
 
-  const screenWidth = Dimensions.get('window').width;
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [statusColor, setStatusColor] = useState("red")
 
-  const [isDrawerVisible, setDrawerVisible] = useState(false);
+  const [isPostModalVisible, setIsPostModalVisible] = useState(false);
+  const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
   const [isEditable, setIsEditable] = useState(false)
 
   // Set When Open this page
@@ -70,7 +72,7 @@ const Post = (props) => {
       contentWidth += item.value.length * 8;
     });
 
-    if (contentWidth <= screenWidth) {
+    if (contentWidth <= actualDimensions.width) {
       setScrollEnabled(false);
     } else {
       setScrollEnabled(true);
@@ -78,16 +80,22 @@ const Post = (props) => {
   });
 
 
-  // Bottom Drawer Visible
-  const toggleDrawer = () => {
-    setDrawerVisible(!isDrawerVisible);
+  // Manage Post Modal Visible
+  const togglePostModal = () => {
+    setIsPostModalVisible(!isPostModalVisible);
+  };
+
+  // Comment Modal Visible
+  const toggleCommentModal = () => {
+    setIsCommentModalVisible(!isCommentModalVisible);
   };
 
 
 
   return (
     <View style={styles.container}>
-      <BottomDrawer isVisible={isDrawerVisible} onClose={toggleDrawer} isEditable={isEditable}/>
+      <CommentModal isVisible={isCommentModalVisible} onClose={toggleCommentModal} commentsItem={comments}></CommentModal>
+      <ManagePostModal isVisible={isPostModalVisible} onClose={togglePostModal} isEditable={isEditable}/>
       <WingBlank style={styles.sub_container1}>
         {/* Header */}
         <Flex direction="row" justify="between" style={{marginBottom: 5}}>
@@ -108,7 +116,7 @@ const Post = (props) => {
             </WingBlank>
           </Flex>
           <Flex direction="column">
-            <TouchableOpacity onPress={toggleDrawer}>
+            <TouchableOpacity onPress={togglePostModal}>
               <Entypo name="dots-three-horizontal" size={14} color="black" />
             </TouchableOpacity>
             <Text></Text>
@@ -139,14 +147,15 @@ const Post = (props) => {
               <Feather name="chevrons-up" size={24} color={Colors.gray}/>
               <Text>{data.vote}</Text>
               <Feather name="chevrons-down" size={24} color={Colors.gray} />
-              <FontAwesome name="commenting-o" size={24} color={Colors.gray} style={{marginLeft: 7, marginRight: 2, top: -1}}/>
-              {/* <Text style={{color: Colors.gray}}>{comments.length} ความคิดเห็น</Text> */}
+              <TouchableOpacity onPress={toggleCommentModal}>
+                <FontAwesome name="commenting-o" size={24} color={Colors.gray} style={{marginLeft: 7, marginRight: 2, top: -1}}/>
+                {/* <Text style={{color: Colors.gray}}>{comments.length} ความคิดเห็น</Text> */}
+              </TouchableOpacity>
             </Flex>
             <Flex style={{gap: 5}}>
               <AntDesign name="infocirlceo" size={20} color={Colors.gray} />
               <Text style={{color: statusColor}}> {data.status}</Text>
             </Flex>
-        
       </Flex>
     </View>
   );

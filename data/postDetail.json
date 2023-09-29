@@ -29,7 +29,36 @@
         "des": "เกิดเหตุต้นไม้ล้มอยู่หน้าคณะไอที เนื่องจากมีคู่รักทะเลาะกันรุนแรง ทำให้ก่อให้เกิดความไม่สะดวก จัดการด่วน!!!",
         "img": "https://picsum.photos/1200/800",
         "vote": 200,
-        "comments": ["haha", "wtf"],
+        "comments": [
+            {
+                "name": "Phumfahaha PhumfaKongkangjindadenoknig",
+                "content": "เยี่ยมๆ",
+                "date": 5,
+                "img": "https://picsum.photos/200/100",
+                "role": "admin"
+            },
+            {
+                "name": "New User",
+                "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+                "date": 15,
+                "img": "https://picsum.photos/200/200",
+                "role": "user"
+            },
+            {
+                "name": "non",
+                "content": "ว้าวๆๆๆ",
+                "date": 20,
+                "img": "https://picsum.photos/200/300",
+                "role": "admin"
+            },
+            {
+                "name": "fresh",
+                "content": "ไม่น้าาาาาาาา",
+                "date": 20,
+                "img": "https://picsum.photos/200/400",
+                "role": "user"
+            }
+        ],
         "status": "รอรับเรื่อง",
         "isTrending": true
     },
@@ -55,7 +84,15 @@
         "des": "ก็คนมันไม่มีใจทำอะไรก็คงต้องผิดอยู่ดี ผิดที่เธอไม่รัก ผิดที่ไปรักเธอ จะทำยังไงใจที่แตกสลายจะกลับมาเป็นเหมือนเคย แต่มันคงไม่มีวันนั้น",
         "img": null,
         "vote": 50,
-        "comments": ["eiei"],
+        "comments": [
+            {
+                "name": "Yolradee",
+                "content": "แงๆ",
+                "date": 30,
+                "img": "https://picsum.photos/200/100",
+                "role": "user"
+            }
+        ],
         "status": "กำลังดำเนินการ",
         "isTrending": false
     },
