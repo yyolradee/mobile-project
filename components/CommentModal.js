@@ -8,11 +8,13 @@ import {
   TouchableOpacity,
   Platform,
   Animated,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Image
 } from "react-native";
 import { Modal, Flex } from "@ant-design/react-native";
 import actualDimensions from "../constants/actualDimensions";
 import Colors from "../constants/Colors";
+
 
 const CommentModal = ({ isVisible, onClose, commentsItem }) => {
   const [text, setText] = useState("");
@@ -70,8 +72,39 @@ const CommentModal = ({ isVisible, onClose, commentsItem }) => {
     return getHeight - (getHeight * 25) / 100;
   };
 
+  const renderRole = (role) => {
+    if (role === "admin") {
+      return (
+        // !!!! admin design 1
+        //  <Text style={{color: Colors.primary, fontSize: 10, textAlign: "center", fontWeight: "bold"}}>Admin</Text>
+
+        // !!!! admin design 2
+        <View style={{position: "absolute", bottom: -5, backgroundColor: Colors.primary, paddingVertical: 3, paddingHorizontal: 5, borderRadius: 10}}>
+          <Text style={{color: "white", fontSize: 10, textAlign: "center", fontWeight: "bold"}}>Admin</Text>
+        </View>
+      )
+    }
+  }
+
   const renderComment = ({ item }) => {
-    return <Text>{item}</Text>;
+    return (
+        <Flex direction="row" align="start" style={{flex: 1, marginBottom: 20, gap: 10}} >
+          <Flex direction="column">
+            <Image style={{ height: 50, width: 50, borderRadius: 100 }} source={item.img ? {uri: item.img} : require('../assets/no-image.png')}></Image>
+            {/* !!!! admin design 2 */}
+            {renderRole(item.role)}
+          </Flex>
+          <Flex direction="column" align="start" style={{flex: 1}}>
+            {/* !!!! admin design 1 */}
+            {/* {renderRole(item.role)} */}
+            <Flex align="center" wrap="wrap-reverse" style={{marginBottom: 2}}>
+              <Text style={{color: Colors.gray2, fontWeight: "600", fontSize: 16, marginRight: 7}}>{item.name}</Text>
+              <Text style={{color: Colors.gray2, fontSize: 11}}>{item.date}m ago</Text>
+            </Flex>
+            <Text>{item.content}</Text>
+          </Flex>
+        </Flex>
+      );
   };
 
   const renderPostButton = () => {
@@ -91,7 +124,7 @@ const CommentModal = ({ isVisible, onClose, commentsItem }) => {
         <View style={[styles.container, { height: responsiveHeight() }]}>
           <Text style={styles.header}>ความคิดเห็น</Text>
           <View style={styles.line} />
-          <FlatList data={commentsItem} renderItem={renderComment} />
+          <FlatList style={{marginHorizontal: 10}} data={commentsItem} renderItem={renderComment} />
         </View>
       );
     } else {
