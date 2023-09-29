@@ -10,7 +10,7 @@ import Colors from "../constants/Colors";
 import HomeScreen from "../screens/HomeScreen";
 import FollowScreen from "../screens/FollowScreen";
 import CreatePostNavigator from "./createPostStackNavigator";
-import NotificationScreen from "../screens/NotificationScreen";
+import NotificationNavigator from "./notificationNavigator";
 import ProfileNavigator from "./profileStackNavigator";
 
 const BottomTab = createBottomTabNavigator();
@@ -108,7 +108,7 @@ export default function BottomNavigator() {
       />
       <BottomTab.Screen
         name="NotificationScreen"
-        component={NotificationScreen}
+        component={NotificationNavigator}
         options={{
           tabBarIcon: ({ focused, color }) => {
             var name = "";
@@ -126,6 +126,7 @@ export default function BottomNavigator() {
               </View>
             );
           },
+          headerShown: false,
         }}
       />
       <BottomTab.Screen

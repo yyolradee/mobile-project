@@ -15,7 +15,7 @@ const headerCustomTitle = () => {
       <Text style={{ fontSize: 18, fontWeight: 600 }}>Yolradee's</Text>
       <Text style={{ color: Colors.primary, fontSize: 18, fontWeight: 600 }}>
         {" "}
-        Profile
+        โปรไฟล์
       </Text>
     </View>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
 import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import moment from "moment";
@@ -8,7 +8,7 @@ const NotificationBox = (props) => {
   const notiItem = props.notiItem;
   let colorBadge;
   let iconBadge;
-  const time_passed = moment(notiItem.date_time).fromNow()
+  const time_passed = moment(notiItem.date_time).fromNow();
 
   if (notiItem.type == "hot") {
     colorBadge = Colors.pink;
@@ -27,30 +27,33 @@ const NotificationBox = (props) => {
   }
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Image
-          style={{ height: 80, width: 80, borderRadius: 50 }}
-          source={
-            notiItem.img_path
-              ? { uri: notiItem.img_path }
-              : require("../assets/no-image.png")
-          }
-        />
-        <View style={{ ...styles.iconBadge, backgroundColor: colorBadge }}>
-          {iconBadge}
+    <TouchableOpacity onPress={() => {props.onPress(notiItem.post_id)}}>
+      <View style={styles.container}>
+        <View>
+          <Image
+            style={{ height: 80, width: 80, borderRadius: 50 }}
+            source={
+              notiItem.img_path
+                ? { uri: notiItem.img_path }
+                : require("../assets/no-image.png")
+            }
+          />
+          <View style={{ ...styles.iconBadge, backgroundColor: colorBadge }}>
+            {iconBadge}
+          </View>
+        </View>
+        <View style={{ marginTop: 8, marginLeft: 20, width: "65%" }}>
+          <Text style={{ fontSize: 18 }} numberOfLines={2} flexWrap="wrap">
+            ปัญหา{" "}
+            <Text style={{ fontWeight: "bold" }}>{notiItem.post_name}</Text>
+            {" " + notiItem.description}
+          </Text>
+          <Text style={{ fontSize: 12, color: Colors.gray, marginTop: 3 }}>
+            {time_passed}
+          </Text>
         </View>
       </View>
-      <View style={{ marginTop: 8, marginLeft: 20, width: "65%" }}>
-        <Text style={{ fontSize: 18 }} numberOfLines={2} flexWrap="wrap">
-          ปัญหา <Text style={{ fontWeight: "bold" }}>{notiItem.post_name}</Text>
-          {" " + notiItem.description}
-        </Text>
-        <Text style={{ fontSize: 12, color: Colors.gray, marginTop: 3 }}>
-          {time_passed}
-        </Text>
-      </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

@@ -2,6 +2,7 @@
     {
         "id": 1,
         "post_name": "ต้นไม้ล้มหน้าไอที",
+        "post_id": 1,
         "description": "กำลังเป็นที่สนใจในคณะเทคโนโลยีสารสนเทศ",
         "type": "hot",
         "status": "wating",
@@ -11,6 +12,7 @@
     {
         "id": 2,
         "post_name": "อกหักเพราะเธอไม่รัก",
+        "post_id": 2,
         "description": "ของคุณ ได้รับการแก้ไขเรียบร้อยแล้ว",
         "type": "change status",
         "status": "done",
@@ -20,6 +22,7 @@
     {
         "id": 3,
         "post_name": "อกหักเพราะเธอไม่รัก",
+        "post_id": 2,
         "description": "ของคุณ กำลังดำเนินการแก้ไข",
         "type": "change status",
         "status": "inprocess",
