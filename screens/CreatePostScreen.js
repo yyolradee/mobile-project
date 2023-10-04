@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,8 +8,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 
 import CreatePostHeader from "../components/CreatePostHeader";
 import { useNavigation } from "@react-navigation/native";
@@ -20,15 +22,17 @@ const CreatePostScreen = () => {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [isImagePickerActive, setIsImagePickerActive] = useState(true);
+  const [image, setImage] = useState(null);
+  const [isImagePickerActive, setIsImagePickerActive] = useState("เพิ่มรูปภาพ หรือวิดีโอ (สูงสุด 1 รูป)");
 
   const clearState = () => {
     setTitle("");
     setDescription("");
+    setImage(null);
   };
 
   const leftButtonHandler = () => {
-    if (title == "" && description == "") {
+    if (title == "" && (description == "") & (image == null)) {
       navigation.navigate("HomeScreen");
     } else {
       Alert.alert(
@@ -59,6 +63,30 @@ const CreatePostScreen = () => {
     }
   };
 
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  useEffect(() => {
+    if (image == null) {
+      setIsImagePickerActive("เพิ่มรูปภาพ หรือวิดีโอ (สูงสุด 1 รูป)");
+    } else {
+      setIsImagePickerActive("เลือกรูปภาพ หรือวิดีโอใหม่");
+    }
+  }, [image]);
+
   return (
     <View style={styles.container}>
       <CreatePostHeader
@@ -70,9 +98,9 @@ const CreatePostScreen = () => {
           navigation.navigate("detail");
         }}
       />
-      <View style={{ paddingHorizontal: 30, flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <TextInput
-          style={{ fontSize: 30 }}
+          style={{ fontSize: 30, paddingHorizontal: 30 }}
           placeholder="หัวข้อ..."
           autoCorrect={false}
           maxLength={100}
@@ -82,14 +110,16 @@ const CreatePostScreen = () => {
           }}
         />
         <TextInput
-          style={{ fontSize: 15, paddingVertical: 4 }}
+          style={{ fontSize: 15, paddingVertical: 4, paddingHorizontal: 30 }}
           placeholder="อธิบายเนื้อหาของปัญหา..."
+          multiline={true}
           autoCorrect={false}
           value={description}
           onChangeText={(text) => {
             setDescription(text);
           }}
         />
+        <Image style={{ width: "100%", height: 300 }} source={{ uri: image }} />
       </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -105,22 +135,28 @@ const CreatePostScreen = () => {
         }}
       >
         <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center", marginBottom: Platform.OS === "ios" ? 25 : 15 }}
-          disabled={!isImagePickerActive}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: Platform.OS === "ios" ? 25 : 15,
+          }}
+          // disabled={!isImagePickerActive}
+          onPress={pickImage}
         >
           <MaterialIcons
             name="image"
             size={30}
-            color={isImagePickerActive ? Colors.primary : Colors.gray2}
+            // color={isImagePickerActive ? Colors.primary : Colors.gray2}
+            color={Colors.primary}
           />
           <Text
             style={{
               marginLeft: 10,
               fontSize: 15,
-              color: isImagePickerActive ? Colors.black : Colors.gray2,
+              // color: isImagePickerActive ? Colors.black : Colors.gray2,
             }}
           >
-            เพิ่มรูปภาพ หรือวิดีโอ (สูงสุด 1 รูป)
+            {isImagePickerActive}
           </Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
