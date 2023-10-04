@@ -9,16 +9,18 @@ import {
 } from "react-native";
 import Post from "../components/Post";
 import postDATA from "../data/postDetail.json";
-import placeData from "../data/place.json";
+import placeData from "../data/location.json";
 import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 
 const postItem = ({ item }) => <Post postData={item} />;
 
-const placeBadgeItem = ({ item }) => {
+const PlaceBadgeItem = (props) => {
+  const item = props.item;
   return (
     <TouchableOpacity
       style={{ alignItems: "center", width: 65, justifyContent: "center" }}
+      onPress={() => {props.onPressHandler(item)}}
     >
       <Image
         style={{
@@ -45,6 +47,10 @@ const placeBadgeItem = ({ item }) => {
 const FollowScreen = () => {
   const navigation = useNavigation();
 
+  const locationInfoHandler = (item) => {
+    navigation.navigate("Location", {location: item})
+  }
+
   return (
     <View style={styles.container}>
       <View
@@ -57,7 +63,7 @@ const FollowScreen = () => {
         <FlatList
           horizontal
           data={placeData}
-          renderItem={placeBadgeItem}
+          renderItem={({ item }) => <PlaceBadgeItem item={item} onPressHandler={locationInfoHandler} />}
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
           style={{ padding: 10 }}
@@ -68,7 +74,9 @@ const FollowScreen = () => {
             backgroundColor: "#fff",
             paddingHorizontal: 20,
           }}
-          onPress={() => {navigation.navigate("FollowingAll")}}
+          onPress={() => {
+            navigation.navigate("FollowingAll");
+          }}
         >
           <Text style={{ color: Colors.primary }}>ทั้งหมด</Text>
         </TouchableOpacity>
