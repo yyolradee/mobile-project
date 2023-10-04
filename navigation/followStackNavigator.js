@@ -6,6 +6,7 @@ import { View, Text } from "react-native";
 import Colors from "../constants/Colors";
 import FollowScreen from "../screens/FollowScreen";
 import FollowingAllScreen from "../screens/FollowingAllScreen";
+import LocationScreen from "../screens/LocationScreen";
 
 const FollowStack = createNativeStackNavigator();
 
@@ -40,6 +41,7 @@ export default function FollowNavigator() {
           headerTintColor: "#000",
         }}
       />
+      <FollowStack.Screen name="Location" component={LocationScreen} />
     </FollowStack.Navigator>
   );
 }
