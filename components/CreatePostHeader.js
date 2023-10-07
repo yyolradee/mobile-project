@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Colors from "../constants/Colors";
+import headerCustomTitle from "../constants/headerCustomtitle";
 
 const CreatePostHeader = (props) => {
   return (
@@ -9,7 +10,7 @@ const CreatePostHeader = (props) => {
         <Text style={{ color: Colors.gray2 }}>{props.leftButton}</Text>
       </TouchableOpacity>
       <View style={{ flexDirection: "row" }}>
-        <Text style={{ ...styles.headerText, color: Colors.primary }}>
+        <Text style={{ ...styles.headerText, color: Colors.primary, fontWeight: 600}}>
           KMITL{" "}
         </Text>
         <Text style={styles.headerText}>Trouble</Text>
