@@ -1,13 +1,17 @@
 import React from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import Post from "../components/Post"
-import DATA from "../data/postDetail.json";
+import { useSelector } from "react-redux";
 
 const renderItem = ({item}) => (
   <Post postData={item}/>
 )
 
 const HomeScreen = () => {
+  const DATA = useSelector((state) => {
+    const filterData = state.post.filterData
+    return filterData.length > 0 ? state.post.filterData : state.post.postDetailData}
+    )
   return (
       <FlatList
         data={DATA}

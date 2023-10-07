@@ -8,10 +8,9 @@ import {
   Image,
 } from "react-native";
 import Post from "../components/Post";
-import postDATA from "../data/postDetail.json";
-import placeData from "../data/location.json";
 import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 const postItem = ({ item }) => <Post postData={item} />;
 
@@ -50,6 +49,14 @@ const FollowScreen = () => {
   const locationInfoHandler = (item) => {
     navigation.navigate("Location", {location: item})
   }
+
+  const postDATA = useSelector((state) => {
+    const filterData = state.post.filterData
+    return filterData.length > 0 ? state.post.filterData : state.post.postDetailData}
+    )
+    const placeData = useSelector((state) => {
+      return state.post.locationData
+    })
 
   return (
     <View style={styles.container}>

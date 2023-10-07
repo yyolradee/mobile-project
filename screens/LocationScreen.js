@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import Post from "../components/Post";
 import postDATA from "../data/postDetail.json";
-import placeData from "../data/location.json";
 import Colors from "../constants/Colors";
 import { useNavigation, useRoute } from "@react-navigation/native";
 

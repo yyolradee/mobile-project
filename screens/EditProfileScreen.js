@@ -5,14 +5,13 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  TextInput,
 } from "react-native";
 import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
-import { FontAwesome5, Entypo } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
-import facultys from "../data/facultys.json";
+import faculties from "../data/faculties.json";
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
@@ -72,7 +71,7 @@ const EditProfileScreen = () => {
         <Text style={styles.label}>คณะ</Text>
         <RNPickerSelect
           style={pickerSelectStyles}
-          items={facultys}
+          items={faculties}
           onValueChange={(value) => {
             setFaculty(value);
           }}

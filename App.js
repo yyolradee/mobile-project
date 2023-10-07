@@ -1,14 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { Provider } from 'react-redux';
+import store from './store';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-// import Navigator from './navigation/bottomNavigator';
-// import LoginScreen from './screens/LoginScreen';
+
 import MainNavigator from './navigation/mainNavigator';
-import LocationScreen from './screens/LocationScreen';
 
 export default function App() {
+
   return (
-    <MainNavigator />
-    // <LocationScreen />
+    <Provider store={store}>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <MainNavigator />
+      </GestureHandlerRootView>
+    </Provider>
   );
 }
