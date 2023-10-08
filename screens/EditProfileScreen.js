@@ -1,22 +1,18 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
 import { Entypo } from "@expo/vector-icons";
 
 import faculties from "../data/faculties.json";
+import { useSelector } from "react-redux";
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
 
   const [faculty, setFaculty] = useState("it");
+  const userInfo = useSelector((state) => state.user.userInfo);
 
   return (
     <View style={styles.container}>
@@ -33,9 +29,7 @@ const EditProfileScreen = () => {
       >
         <Image
           style={{ height: 120, width: 120, borderRadius: 100 }}
-          source={{
-            uri: "https://cdn.discordapp.com/attachments/962280584418304030/1154024339591663646/profile.PNG",
-          }}
+          source={userInfo ? { uri: userInfo.photoURL } : require("../assets/no-image.png")}
         />
         <View
           style={{
@@ -61,11 +55,11 @@ const EditProfileScreen = () => {
       </View>
       <View style={styles.form}>
         <Text style={styles.label}>ชื่อ นามสกุล</Text>
-        <Text style={styles.value}>Yolradee Prayoonpunratn</Text>
+        <Text style={styles.value}>{userInfo.displayName}</Text>
       </View>
       <View style={styles.form}>
         <Text style={styles.label}>E-mail</Text>
-        <Text style={styles.value}>64070089@kmitl.ac.th</Text>
+        <Text style={styles.value}>{userInfo.email}</Text>
       </View>
       <View style={styles.form}>
         <Text style={styles.label}>คณะ</Text>
@@ -113,7 +107,7 @@ const styles = StyleSheet.create({
   label: {
     color: Colors.primary,
     fontSize: 18,
-    width: 110
+    width: 110,
   },
   value: {
     color: Colors.gray2,
@@ -135,7 +129,6 @@ const pickerSelectStyles = StyleSheet.create({
     fontSize: 18,
   },
   inputAndroid: {
-
     width: 240,
     fontSize: 18,
   },

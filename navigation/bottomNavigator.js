@@ -47,6 +47,7 @@ export default function BottomNavigator() {
   const statusData = useSelector((state) => state.post.statusData);
   const locationData = useSelector((state) => state.post.locationData);
   const facultiesData = useSelector((state) => state.post.facultiesData);
+  const userInfo = useSelector((state) => state.user.userInfo);
 
   // Filter Open Status
   const initialOpenStatus = [false, false, false];
@@ -264,9 +265,7 @@ export default function BottomNavigator() {
                       width: 35,
                       borderRadius: 35,
                     }}
-                    source={{
-                      uri: "https://cdn.discordapp.com/attachments/962280584418304030/1154024339591663646/profile.PNG",
-                    }}
+                    source={userInfo ? { uri: userInfo.photoURL } : require("../assets/no-image.png")}
                   />
                 </View>
               );
