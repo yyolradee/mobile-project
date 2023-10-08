@@ -7,5 +7,6 @@
     android: npx expo run:android
     run appication: npx expo start
 ## others for run application in clouds:
-    npm install -g eas-cli
-    eas build - p (android, ios)
+    npm install -g eas-cli //install eas for testing
+    eas login // use expo account for login
+    eas build - p (android, ios) //building appication
