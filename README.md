@@ -1,6 +1,7 @@
 # KMITL TROUBLE
 
-## build project: npx expo prebuild
+## build project:
+    npx expo prebuild
 ## run:
     ios: npx expo run:ios
     android: npx expo run:android
