@@ -22,7 +22,16 @@ export default function NotificationNavigator() {
   return (
     <NotiStackNavigator.Navigator
       initialRouteName="noti"
-      screenOptions={{ headerTitle: headerCustomTitle, headerBackTitleVisible: false, headerTintColor: "#000" }}
+      screenOptions={{
+        headerTitle: "",
+        headerBackTitleVisible: false,
+        headerTintColor: "#000",
+        headerLeft: () => {
+          return (
+            headerCustomTitle()
+          )
+        },
+      }}
     >
       <NotiStackNavigator.Screen name="noti" component={NotificationScreen} />
       <NotiStackNavigator.Screen name="postInNoti" component={PostScreen} />

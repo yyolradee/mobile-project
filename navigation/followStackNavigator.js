@@ -8,6 +8,7 @@ import Colors from "../constants/Colors";
 import FollowScreen from "../screens/FollowScreen";
 import FollowingAllScreen from "../screens/FollowingAllScreen";
 import LocationScreen from "../screens/LocationScreen";
+import { Flex } from "@ant-design/react-native";
 
 const FollowStack = createNativeStackNavigator();
 
@@ -28,18 +29,21 @@ export default function FollowNavigator() {
         name="FollowMain"
         component={FollowScreen}
         options={{
-          headerTitle: headerCustomTitle,
+          headerTitle: "",
           headerLeft: ({ color, size, focused }) => {
             color = "black";
             size = 24;
             return (
-              <TouchableOpacity
-                onPress={() => {
-                  return this.drawer && this.drawer.openDrawer();
-                }}
-              >
-                <Feather name="menu" size={size} color={color} />
-              </TouchableOpacity>
+              <Flex align="center" style={{ gap: 16 }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    return this.drawer && this.drawer.openDrawer();
+                  }}
+                >
+                  <Feather name="menu" size={size} color={color} />
+                </TouchableOpacity>
+                {headerCustomTitle()}
+              </Flex>
             );
           },
         }}
@@ -57,8 +61,7 @@ export default function FollowNavigator() {
         name="Location"
         component={LocationScreen}
         options={{
-          headerTitle: headerCustomTitle,
-          headerBackTitleVisible: false,
+          headerTitle: "",
           headerTintColor: "#000",
           headerRight: ({ color, size, focused }) => {
             color = "black";
