@@ -13,10 +13,7 @@ const headerCustomTitle = () => {
   return (
     <View style={{ flexDirection: "row" }}>
       <Text style={{ fontSize: 18, fontWeight: 600 }}>Yolradee's</Text>
-      <Text style={{ color: Colors.primary, fontSize: 18, fontWeight: 600 }}>
-        {" "}
-        โปรไฟล์
-      </Text>
+      <Text style={{ color: Colors.primary, fontSize: 18, fontWeight: 600 }}> โปรไฟล์</Text>
     </View>
   );
 };
@@ -25,13 +22,14 @@ export default function ProfileNavigator() {
   return (
     <ProfileStack.Navigator
       initialRouteName="Profile"
-      screenOptions={{ headerTitle: headerCustomTitle }}
+      screenOptions={{
+        headerTitle: "",
+        headerLeft: () => {
+          return headerCustomTitle();
+        },
+      }}
     >
-      <ProfileStack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ headerTitleAlign: "left" }}
-      />
+      <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{ headerTitleAlign: "left" }} />
       <ProfileStack.Screen
         name="EditProfile"
         component={EditProfileScreen}
