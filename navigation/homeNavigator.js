@@ -5,6 +5,8 @@ import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { Drawer, Flex } from "@ant-design/react-native";
 import headerCustomTitle from "../constants/headerCustomtitle";
+import { Ionicons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -16,7 +18,6 @@ const HomeNavigator = () => {
         component={HomeScreen}
         options={{
           headerTitle: "",
-          headerTitleAlign: "left",
           headerLeft: ({ color, size, focused }) => {
             color = "black";
             size = 24;
@@ -31,6 +32,15 @@ const HomeNavigator = () => {
                 </TouchableOpacity>
                 {headerCustomTitle()}
               </Flex>
+            );
+          },
+          headerRight: ({ color, size, focused }) => {
+            color = Colors.gray2;
+            size = 24;
+            return (
+              <TouchableOpacity>
+                <Ionicons name="search" size={size} color={color} />
+              </TouchableOpacity>
             );
           },
         }}

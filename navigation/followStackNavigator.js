@@ -2,7 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import headerCustomTitle from "../constants/headerCustomtitle";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 //import screen
 import Colors from "../constants/Colors";
 import FollowScreen from "../screens/FollowScreen";
@@ -20,7 +20,6 @@ const headerCustomTitle2 = () => {
     </View>
   );
 };
-
 
 export default function FollowNavigator() {
   return (
@@ -46,6 +45,15 @@ export default function FollowNavigator() {
               </Flex>
             );
           },
+          headerRight: ({ color, size, focused }) => {
+            color = Colors.gray2;
+            size = 24;
+            return (
+              <TouchableOpacity>
+                <Ionicons name="search" size={size} color={color} />
+              </TouchableOpacity>
+            );
+          },
         }}
       />
       <FollowStack.Screen
@@ -55,6 +63,15 @@ export default function FollowNavigator() {
           headerTitle: headerCustomTitle2,
           headerBackTitleVisible: false,
           headerTintColor: "#000",
+          headerRight: ({ color, size, focused }) => {
+            color = Colors.gray2;
+            size = 24;
+            return (
+              <TouchableOpacity>
+                <Ionicons name="search" size={size} color={color} />
+              </TouchableOpacity>
+            );
+          },
         }}
       />
       <FollowStack.Screen
@@ -67,13 +84,18 @@ export default function FollowNavigator() {
             color = "black";
             size = 24;
             return (
-              <TouchableOpacity
-                onPress={() => {
-                  return this.drawer && this.drawer.openDrawer();
-                }}
-              >
-                <Feather name="menu" size={size} color={color} />
-              </TouchableOpacity>
+              <Flex style={{ gap: 10 }}>
+                <TouchableOpacity>
+                  <Ionicons name="search" size={size} color={Colors.gray2} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    return this.drawer && this.drawer.openDrawer();
+                  }}
+                >
+                  <Feather name="menu" size={size} color={color} />
+                </TouchableOpacity>
+              </Flex>
             );
           },
         }}
