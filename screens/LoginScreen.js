@@ -1,11 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
-// import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import Colors from "../constants/Colors";
-import { useNavigation } from "@react-navigation/native";
 
-const LoginScreen = () => {
-  const navigation = useNavigation();
+const LoginScreen = (props) => {
+  const {promptAsync} = props
   return (
     <View style={styles.container}>
       <View style={styles.container}>
@@ -28,7 +26,7 @@ const LoginScreen = () => {
         <Button
           title="LOGIN"
           onPress={() => {
-            navigation.replace("App");
+            promptAsync()
           }}
         ></Button>
       </View>

@@ -1,21 +1,21 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, FlatList } from "react-native";
 import Colors from "../constants/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Post from "../components/Post";
 import { useNavigation } from "@react-navigation/native";
 import postDATA from "../data/postDetail.json";
+import { Button, Flex } from "@ant-design/react-native";
+import { auth } from "../firebaseConfig";
+import { signOut } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  const userInfo = useSelector((state) => {
+    return state.user.userInfo;
+  });
   return (
     <View style={styles.container}>
       <View
@@ -36,9 +36,7 @@ const ProfileScreen = () => {
         >
           <Image
             style={{ height: 120, width: 120, borderRadius: 100 }}
-            source={{
-              uri: "https://cdn.discordapp.com/attachments/962280584418304030/1154024339591663646/profile.PNG",
-            }}
+            source={userInfo ? { uri: userInfo.photoURL } : require("../assets/no-image.png")}
           />
           <TouchableOpacity
             style={styles.borderButton}
@@ -49,12 +47,24 @@ const ProfileScreen = () => {
             <Text>แก้ไขโปรไฟล์</Text>
           </TouchableOpacity>
         </View>
-        <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 5 }}>
-          Yolradee Prayoonpunratn
-        </Text>
-        <Text style={{ color: Colors.gray, fontSize: 13, marginBottom: 5 }}>
-          64070089@kmitl.ac.th
-        </Text>
+        <Flex justify="between">
+          <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 5 }}>{userInfo.displayName}</Text>
+          {/* ขก design อ้ะ อยากแก้ แก้ได้เลย */}
+          <Button
+            size="small"
+            style={{
+              borderColor: "red",
+            }}
+            onPress={async () => {
+              console.log("sign out");
+              await AsyncStorage.removeItem("@user");
+              await signOut(auth);
+            }}
+          >
+            <Text style={{ fontSize: 12, color: "red", fontWeight: 600 }}>ออกจากระบบ</Text>
+          </Button>
+        </Flex>
+        <Text style={{ color: Colors.gray, fontSize: 13, marginBottom: 5 }}>{userInfo.email}</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <FontAwesome5 name="map-marker-alt" size={15} color={Colors.gray} />
           <Text style={{ fontSize: 15, marginLeft: 5 }}>คณะ</Text>
@@ -64,7 +74,7 @@ const ProfileScreen = () => {
       <FlatList
         data={postDATA}
         renderItem={({ item }) => <Post postData={item} />}
-        keyExtractor={item => item._id}
+        keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
       />
     </View>
