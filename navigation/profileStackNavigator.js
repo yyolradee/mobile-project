@@ -26,10 +26,10 @@ export default function ProfileNavigator() {
     <ProfileStack.Navigator
       initialRouteName="Profile"
       screenOptions={{
-        headerTitle: "",
-        headerLeft: () => {
-          return headerCustomTitle();
-        },
+        headerTitle: headerCustomTitle,
+        // headerLeft: () => {
+        //   return headerCustomTitle();
+        // },
       }}
     >
       <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{ headerTitleAlign: "left" }} />
