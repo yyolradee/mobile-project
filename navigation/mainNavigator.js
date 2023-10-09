@@ -1,25 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { setUserInfo } from "../store/actions/userAction";
 
 //import screen
-import LoginScreen from "../screens/LoginScreen";
 import BottomNavigator from "./bottomNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import { Provider } from "@ant-design/react-native";
-import SearchModal from "../components/SearchModal";
+import { useDispatch, useSelector } from "react-redux";
+import SearchModal from "../components/SearchModal"
 
 const MainStackNavigator = createNativeStackNavigator();
 
-export default function MainNavigator() {
-    return (
-        <Provider>
-            <SearchModal/>
-            <NavigationContainer>
-                <MainStackNavigator.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
-                    <MainStackNavigator.Screen name="Login" component={LoginScreen}/>
-                    <MainStackNavigator.Screen name="App" component={BottomNavigator} />
-                </MainStackNavigator.Navigator>
-            </NavigationContainer>
-        </Provider>
-    )
+export default function MainNavigator(props) {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setUserInfo(props.userLocalInfo));
+  }, []);
+
+  useSelector((state) => {
+    console.log(JSON.stringify(state.user.userInfo, null, 2));
+  });
+  return (
+    <Provider>
+      <SearchModal/>
+      <NavigationContainer>
+        <MainStackNavigator.Navigator initialRouteName="App" screenOptions={{ headerShown: false }}>
+          <MainStackNavigator.Screen name="App" component={BottomNavigator} />
+        </MainStackNavigator.Navigator>
+      </NavigationContainer>
+    </Provider>
+  );
 }
