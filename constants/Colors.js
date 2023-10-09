@@ -3,7 +3,7 @@ export default {
     primary_sub: "#FFA883",
     gray: "#666666",
     gray2: "#AEAEAE",
-    gray3: "#F5F5F5",
+    gray3: "#F2F2F2",
     gray4: "#ECECEC",
     black: "#000",
     pink: "#FC7D7D",

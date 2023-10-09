@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, TextInput } from "react-native";
+import { Text, StyleSheet, TextInput, View } from "react-native";
 import { Flex, Modal } from "@ant-design/react-native";
 import Colors from "../constants/Colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSearch } from "../store/actions/searchAction";
+import SmallPost from "./SmallPost";
 
 const SearchModal = () => {
   const dispatch = useDispatch();
@@ -35,7 +36,21 @@ const SearchModal = () => {
           <Text style={{ color: Colors.gray2, fontWeight: 600 }}>ยกเลิก</Text>
         </TouchableOpacity>
       </Flex>
+      <Flex justify="between" style={{ width: "100%" }}>
+        <View style={{width: "50%", borderColor: Colors.primary, borderBottomWidth: 3}}>
+          <TouchableOpacity>
+            <Text style={{textAlign: "center", paddingVertical: 10, fontWeight: 600}}>โพสต์</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{width: "50%", backgroundColor: Colors.gray3, borderColor: Colors.gray3, borderBottomWidth: 3}}>
+          <TouchableOpacity>
+            <Text style={{textAlign: "center", paddingVertical: 10, fontWeight: 600, color: Colors.gray2}}>สถานที่</Text>
+          </TouchableOpacity>
+        </View>
+      </Flex>
       <Text>dwdwdlwdlwldwpldpwd</Text>
+
+      <SmallPost/>
     </Modal>
   );
 };
