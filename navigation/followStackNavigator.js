@@ -9,6 +9,8 @@ import FollowScreen from "../screens/FollowScreen";
 import FollowingAllScreen from "../screens/FollowingAllScreen";
 import LocationScreen from "../screens/LocationScreen";
 import { Flex } from "@ant-design/react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleSearch } from "../store/actions/searchAction";
 
 const FollowStack = createNativeStackNavigator();
 
@@ -22,8 +24,15 @@ const headerCustomTitle2 = () => {
 };
 
 export default function FollowNavigator() {
+  const dispatch = useDispatch();
+  const searchIsVisible = useSelector((state) => state.search.searchIsVisible);
+
+  const toggleSearchModal = () => {
+    return dispatch(toggleSearch(!searchIsVisible));
+  };
+
   return (
-    <FollowStack.Navigator initialRouteName="Profile" screenOptions={{ headerTitleAlign: "left" }}>
+    <FollowStack.Navigator initialRouteName="FollowMain" screenOptions={{ headerTitleAlign: "left" }}>
       <FollowStack.Screen
         name="FollowMain"
         component={FollowScreen}
@@ -49,7 +58,7 @@ export default function FollowNavigator() {
             color = Colors.gray2;
             size = 24;
             return (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={toggleSearchModal}>
                 <Ionicons name="search" size={size} color={color} />
               </TouchableOpacity>
             );
@@ -67,7 +76,7 @@ export default function FollowNavigator() {
             color = Colors.gray2;
             size = 24;
             return (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={toggleSearchModal}>
                 <Ionicons name="search" size={size} color={color} />
               </TouchableOpacity>
             );
@@ -85,7 +94,7 @@ export default function FollowNavigator() {
             size = 24;
             return (
               <Flex style={{ gap: 10 }}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={toggleSearchModal}>
                   <Ionicons name="search" size={size} color={Colors.gray2} />
                 </TouchableOpacity>
                 <TouchableOpacity
