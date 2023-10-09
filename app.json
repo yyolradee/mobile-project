@@ -41,9 +41,10 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "e8bd816c-5196-4770-84e5-73c83886182c"
+        "projectId": "a6bdd919-4fd1-4a26-90af-717772602a33"
       }
     },
-    "scheme": "mobile-project"
+    "scheme": "mobile-project",
+    "owner": "kmitl-troubles"
   }
 }
