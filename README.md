@@ -17,7 +17,10 @@
         MAC: export ANDROID_HOME=/Users/{UserName}/Library/Android/sdk
         WINDOWS: export ANDROID_HOME=C:\\Users\\{UserName}\\AppData\\Local\\Android\\sdk
     5. Try to build again.
+
+    if still not working:
+        eas build --profile development --platform android
 ## others method for run application use eas clouds:
-    npm install -g eas-cli //install eas for testing
+    npm install -g eas-cli //install eas to your device
     eas login // use expo account for login
-    eas build - p (android, ios) //building appication
+    eas build --profile development --platform (android, ios) //building appication
