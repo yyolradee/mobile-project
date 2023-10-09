@@ -81,9 +81,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace 'com.kmitltroubles.mobileproject'
+    namespace 'com.kelkuzah.mobileproject'
     defaultConfig {
-        applicationId 'com.kmitltroubles.mobileproject'
+        applicationId 'com.kelkuzah.mobileproject'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

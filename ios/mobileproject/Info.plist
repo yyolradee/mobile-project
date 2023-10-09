@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>mobile-project</string>
-          <string>com.kmitltroubles.mobileproject</string>
+          <string>com.kelkuzah.mobileproject</string>
         </array>
       </dict>
       <dict>
