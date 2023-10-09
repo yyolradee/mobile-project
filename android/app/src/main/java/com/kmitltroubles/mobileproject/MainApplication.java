@@ -1,4 +1,4 @@
-package com.kelkuzah.mobileproject;
+package com.kmitltroubles.mobileproject;
 
 import android.app.Application;
 import android.content.res.Configuration;

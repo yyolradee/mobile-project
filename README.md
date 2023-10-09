@@ -22,5 +22,7 @@
         eas build --profile development --platform android
 ## others method for run application use eas clouds:
     npm install -g eas-cli //install eas to your device
+    eas build:configure // for configuration
     eas login // use expo account for login
-    eas build --profile development --platform (android, ios) //building appication
+    eas build --profile development --platform (android or ios) //building appication
+    eas credentials -p (android or ios) // for generate credentials
