@@ -5,7 +5,7 @@ import { Button, Flex, WingBlank } from '@ant-design/react-native';
 import { Ionicons, Entypo, Feather, FontAwesome, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import ManagePostModal from './ManagePostModal';
 import CommentModal from "./CommentModal";
-import actualDimensions from "../constants/actualDimensions";
+import {actualDimensions} from "../constants/responsiveHeight";
 
 // Render Category
 const renderItem = ({ item }) => (
