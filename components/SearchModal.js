@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Text, StyleSheet, TextInput, View, FlatList } from "react-native";
 import { Flex, Modal } from "@ant-design/react-native";
 import Colors from "../constants/Colors";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSearch } from "../store/actions/searchAction";
 import SmallPost from "./SmallPost";
@@ -69,6 +69,12 @@ const SearchModal = () => {
     );
   };
 
+  const renderAmount = (
+    <Text style={{ color: Colors.gray2, paddingHorizontal: 17, paddingVertical: 10, fontWeight: "100" }}>
+      ผลลัพท์การค้นหา {searchData.length} รายการ
+    </Text>
+  );
+
   const locationInfoHandler = (item) => {
     navigation.navigate("Location", { location: item });
     toggleSearchModal();
@@ -91,7 +97,7 @@ const SearchModal = () => {
       </Flex>
 
       {!text ? (
-        <View style={{height: "100%"}}>
+        <View style={{ height: "100%" }}>
           <View style={{ paddingVertical: 8, paddingLeft: 17, borderBottomWidth: 1, borderColor: Colors.gray2 }}>
             <Flex align="end" style={{ gap: 6 }}>
               <Text style={{ fontWeight: "bold" }}>โพสต์ที่กำลังยอดนิยม</Text>
@@ -101,7 +107,7 @@ const SearchModal = () => {
           <FlatList data={sortData} renderItem={renderPostItem} keyExtractor={(item) => item._id} />
         </View>
       ) : (
-        <View style={{height: "100%"}}>
+        <View style={{ height: "100%" }}>
           <Flex justify="between" style={{ width: "100%" }}>
             <View
               style={
@@ -152,11 +158,18 @@ const SearchModal = () => {
               </TouchableOpacity>
             </View>
           </Flex>
+
           {!switchState ? (
-            <FlatList data={searchData} renderItem={renderPostItem} keyExtractor={(item) => item._id} />
+            <FlatList
+              ListHeaderComponent={renderAmount}
+              data={searchData}
+              renderItem={renderPostItem}
+              keyExtractor={(item) => item._id}
+            />
           ) : (
             <FlatList
               data={searchData}
+              ListHeaderComponent={renderAmount}
               renderItem={({ item }) => <FacultyBox item={item} onPressHandler={locationInfoHandler} />}
               keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
