@@ -23,9 +23,9 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [req, res, promptAsync] = Google.useAuthRequest({
     // credentials for google cloud services
-    iosClientId: "159187597555-1r0pco54a6g3kk3c3so15d7ojq5pv3nv.apps.googleusercontent.com",
-    androidClientId: "159187597555-jta8s5e5mhlh4et2st5lq45eu2bvhs3q.apps.googleusercontent.com",
-    webClientId: "159187597555-sr6jlaqlbujdg871iomntefv89kg7e5h.apps.googleusercontent.com"
+    iosClientId: "864621180068-kerk6g67bchrib8i8clobcrdhbv523n4.apps.googleusercontent.com",
+    androidClientId: "864621180068-a2u6qjn4he81a942gpdsg3hf0g8nkfvv.apps.googleusercontent.com",
+    webClientId: "864621180068-a8bfs5gdda7c2767srk05oc821a8b94u.apps.googleusercontent.com"
   });
 
   const checkLocalUser = async () => {

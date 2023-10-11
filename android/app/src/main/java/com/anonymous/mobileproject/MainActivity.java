@@ -1,4 +1,4 @@
-package com.kelkuzah.mobileproject;
+package com.anonymous.mobileproject;
 
 import android.os.Build;
 import android.os.Bundle;
