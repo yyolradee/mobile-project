@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kelkuzah.mobileproject"
+      "bundleIdentifier": "com.anonymous.mobileproject"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +26,7 @@
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.kelkuzah.mobileproject"
+      "package": "com.anonymous.mobileproject"
     },
     "web": {
       "favicon": "./assets/favicon.png"

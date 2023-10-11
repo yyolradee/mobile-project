@@ -71,7 +71,7 @@ const SearchModal = () => {
 
   const renderAmount = (
     <Text style={{ color: Colors.gray2, paddingHorizontal: 17, paddingVertical: 10, fontWeight: "100" }}>
-      ผลลัพท์การค้นหา {searchData.length} รายการ
+      ผลลัพท์การค้นหา {searchData ? searchData.length : 0} รายการ
     </Text>
   );
 
