@@ -12,6 +12,7 @@ import FollowNavigator from "./followStackNavigator";
 import CreatePostNavigator from "./createPostStackNavigator";
 import NotificationNavigator from "./notificationNavigator";
 import ProfileNavigator from "./profileStackNavigator";
+import SearchModal from "../components/SearchModal";
 
 const BottomTab = createBottomTabNavigator();
 

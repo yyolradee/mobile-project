@@ -1,117 +1,117 @@
 [
-    {
-        "_id": 1,
-        "location": "คณะเทคโนโลยีสารสนเทศ",
+  {
+    "_id": 1,
+    "location": "คณะเทคโนโลยีสารสนเทศ",
+    "date": 5,
+    "categories": [
+      {
+        "value": "สิ่งแวดล้อม",
+        "key": "env"
+      },
+      {
+        "value": "อุบัติเหตุ",
+        "key": "acd"
+      },
+      {
+        "value": "อาคาร และสถานที่",
+        "key": "bud"
+      },
+      {
+        "value": "ทะเลาะวิวาท",
+        "key": "bwl"
+      },
+      {
+        "value": "ปัญหาเกี่ยวกับการศึกษา",
+        "key": "std"
+      }
+    ],
+    "title": "ต้นไม้ล้มหน้าไอที",
+    "des": "เกิดเหตุต้นไม้ล้มอยู่หน้าคณะไอที เนื่องจากมีคู่รักทะเลาะกันรุนแรง ทำให้ก่อให้เกิดความไม่สะดวก จัดการด่วน!!!",
+    "img": "https://picsum.photos/1200/800",
+    "vote": 200,
+    "comments": [
+      {
+        "name": "Phumfahaha PhumfaKongkangjindadenoknig",
+        "content": "เยี่ยมๆ",
         "date": 5,
-        "categories": [
-            {
-                "value": "สิ่งแวดล้อม",
-                "key": "env"
-            },
-            {
-                "value": "อุบัติเหตุ",
-                "key": "acd"
-            },
-            {
-                "value": "อาคาร และสถานที่",
-                "key": "bud"
-            },
-            {
-                "value": "ทะเลาะวิวาท",
-                "key": "bwl"
-            },
-            {
-                "value": "ปัญหาเกี่ยวกับการศึกษา",
-                "key": "std"
-            }
-        ],
-        "title": "ต้นไม้ล้มหน้าไอที",
-        "des": "เกิดเหตุต้นไม้ล้มอยู่หน้าคณะไอที เนื่องจากมีคู่รักทะเลาะกันรุนแรง ทำให้ก่อให้เกิดความไม่สะดวก จัดการด่วน!!!",
-        "img": "https://picsum.photos/1200/800",
-        "vote": 200,
-        "comments": [
-            {
-                "name": "Phumfahaha PhumfaKongkangjindadenoknig",
-                "content": "เยี่ยมๆ",
-                "date": 5,
-                "img": "https://picsum.photos/200/100",
-                "role": "admin"
-            },
-            {
-                "name": "New User",
-                "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-                "date": 15,
-                "img": "https://picsum.photos/200/200",
-                "role": "user"
-            },
-            {
-                "name": "non",
-                "content": "ว้าวๆๆๆ",
-                "date": 20,
-                "img": "https://picsum.photos/200/300",
-                "role": "admin"
-            },
-            {
-                "name": "fresh",
-                "content": "ไม่น้าาาาาาาา",
-                "date": 20,
-                "img": "https://picsum.photos/200/400",
-                "role": "user"
-            }
-        ],
-        "status": "รอรับเรื่อง",
-        "isTrending": true
-    },
-    {
-        "_id": 2,
-        "location": "คณะวิทยาศาสตร์",
+        "img": "https://picsum.photos/200/100",
+        "role": "admin"
+      },
+      {
+        "name": "New User",
+        "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
         "date": 15,
-        "categories": [
-            {
-                "value": "สิ่งแวดล้อม",
-                "key": "env"
-            },
-            {
-                "value": "อุบัติเหตุ",
-                "key": "acd"
-            },
-            {
-                "value": "ปัญหาสังคม",
-                "key": "scl"
-            }
-        ],
-        "title": "อกหักเพราะเธอไม่รัก",
-        "des": "ก็คนมันไม่มีใจทำอะไรก็คงต้องผิดอยู่ดี ผิดที่เธอไม่รัก ผิดที่ไปรักเธอ จะทำยังไงใจที่แตกสลายจะกลับมาเป็นเหมือนเคย แต่มันคงไม่มีวันนั้น",
-        "img": null,
-        "vote": 50,
-        "comments": [
-            {
-                "name": "Yolradee",
-                "content": "แงๆ",
-                "date": 30,
-                "img": "https://picsum.photos/200/100",
-                "role": "user"
-            }
-        ],
-        "status": "กำลังดำเนินการ",
-        "isTrending": false
-    },
-    {
-        "_id": 3,
-        "location": "คณะวิศวะกรรมศาสตร์",
+        "img": "https://picsum.photos/200/200",
+        "role": "user"
+      },
+      {
+        "name": "non",
+        "content": "ว้าวๆๆๆ",
         "date": 20,
-        "categories": [
-            {
-                "value": "ทะเลาะวิวาท",
-                "key": "a"
-            }
-        ],
-        "title": "คนต่อยกัน",
-        "des": "มีคนต่อยกันหน้าวิศวะหลาย 10 คน รุนแรงมากๆ ตอนนี้มีสลบไปแล้ว 1 คน",
-        "img": "https://picsum.photos/600/600",
-        "vote": 100,
-        "comments": [],
-        "status": "แก้ไขเสร็จสิ้น",
-        "isTrending": false
-    }
+        "img": "https://picsum.photos/200/300",
+        "role": "admin"
+      },
+      {
+        "name": "fresh",
+        "content": "ไม่น้าาาาาาาา",
+        "date": 20,
+        "img": "https://picsum.photos/200/400",
+        "role": "user"
+      }
+    ],
+    "status": "รอรับเรื่อง",
+    "isTrending": true
+  },
+  {
+    "_id": 2,
+    "location": "คณะวิทยาศาสตร์",
+    "date": 15,
+    "categories": [
+      {
+        "value": "สิ่งแวดล้อม",
+        "key": "env"
+      },
+      {
+        "value": "อุบัติเหตุ",
+        "key": "acd"
+      },
+      {
+        "value": "ปัญหาสังคม",
+        "key": "scl"
+      }
+    ],
+    "title": "อกหักเพราะเธอไม่รัก",
+    "des": "ก็คนมันไม่มีใจทำอะไรก็คงต้องผิดอยู่ดี ผิดที่เธอไม่รัก ผิดที่ไปรักเธอ จะทำยังไงใจที่แตกสลายจะกลับมาเป็นเหมือนเคย แต่มันคงไม่มีวันนั้น",
+    "img": null,
+    "vote": 50,
+    "comments": [
+      {
+        "name": "Yolradee",
+        "content": "แงๆ",
+        "date": 30,
+        "img": "https://picsum.photos/200/100",
+        "role": "user"
+      }
+    ],
+    "status": "กำลังดำเนินการ",
+    "isTrending": false
+  },
+  {
+    "_id": 3,
+    "location": "คณะวิศวะกรรมศาสตร์",
+    "date": 20,
+    "categories": [
+      {
+        "value": "ทะเลาะวิวาท",
+        "key": "a"
+      }
+    ],
+    "title": "คนต่อยกัน",
+    "des": "มีคนต่อยกันหน้าวิศวะหลาย 10 คน รุนแรงมากๆ ตอนนี้มีสลบไปแล้ว 1 คน Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    "img": "https://picsum.photos/600/600",
+    "vote": 100,
+    "comments": [],
+    "status": "แก้ไขเสร็จสิ้น",
+    "isTrending": true
+  }
 ]

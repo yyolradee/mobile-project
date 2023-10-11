@@ -24,10 +24,10 @@ export default function MainNavigator(props) {
   // });
   return (
     <Provider>
-      <SearchModal />
       <DrawerModal
         contents={
           <NavigationContainer>
+            <SearchModal />
             <MainStackNavigator.Navigator initialRouteName="App" screenOptions={{ headerShown: false }}>
               <MainStackNavigator.Screen name="App" component={BottomNavigator} />
             </MainStackNavigator.Navigator>
