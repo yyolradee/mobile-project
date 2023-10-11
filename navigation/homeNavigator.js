@@ -1,14 +1,24 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
-import { View, Text, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useState } from "react";
-import { Drawer, Flex } from "@ant-design/react-native";
+import { Flex } from "@ant-design/react-native";
 import headerCustomTitle from "../constants/headerCustomtitle";
+import { Ionicons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleSearch } from "../store/actions/searchAction";
 
 const HomeStack = createNativeStackNavigator();
 
 const HomeNavigator = () => {
+  const dispatch = useDispatch();
+  const searchIsVisible = useSelector((state) => state.search.searchIsVisible);
+
+  const toggleSearchModal = () => {
+    return dispatch(toggleSearch(!searchIsVisible));
+  };
+
   return (
     <HomeStack.Navigator initialRouteName="Home">
       <HomeStack.Screen
@@ -16,7 +26,6 @@ const HomeNavigator = () => {
         component={HomeScreen}
         options={{
           headerTitle: "",
-          headerTitleAlign: "left",
           headerLeft: ({ color, size, focused }) => {
             color = "black";
             size = 24;
@@ -31,6 +40,15 @@ const HomeNavigator = () => {
                 </TouchableOpacity>
                 {headerCustomTitle()}
               </Flex>
+            );
+          },
+          headerRight: ({ color, size, focused }) => {
+            color = Colors.gray2;
+            size = 24;
+            return (
+              <TouchableOpacity onPress={toggleSearchModal}>
+                <Ionicons name="search" size={size} color={color} />
+              </TouchableOpacity>
             );
           },
         }}

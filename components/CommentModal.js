@@ -12,7 +12,7 @@ import {
   Image
 } from "react-native";
 import { Modal, Flex } from "@ant-design/react-native";
-import actualDimensions from "../constants/actualDimensions";
+import {actualDimensions} from "../constants/responsiveHeight";
 import Colors from "../constants/Colors";
 
 

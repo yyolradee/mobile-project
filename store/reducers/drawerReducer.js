@@ -1,4 +1,4 @@
-import { TOGGLE_DRAWER } from "../actions/drawerAction";
+import { TOGGLE_DRAWER, SET_DRAWER } from "../actions/drawerAction";
 
 const initialState = {
   drawerState: false,
@@ -11,6 +11,12 @@ const drawerReducer = (state = initialState, action) => {
       return {
         ...state,
         drawerState: !state.drawerState,
+      };
+    case SET_DRAWER:
+      console.log("set_drawer: " + action.payload);
+      return {
+        ...state,
+        drawerState: action.payload,
       };
     default:
       return state;

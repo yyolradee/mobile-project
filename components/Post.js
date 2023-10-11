@@ -5,7 +5,9 @@ import { Button, Flex, WingBlank } from '@ant-design/react-native';
 import { Ionicons, Entypo, Feather, FontAwesome, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import ManagePostModal from './ManagePostModal';
 import CommentModal from "./CommentModal";
-import actualDimensions from "../constants/actualDimensions";
+import {actualDimensions} from "../constants/responsiveHeight";
+import {ReadMoreText} from "../constants/ReadMoreText"
+
 
 // Render Category
 const renderItem = ({ item }) => (
@@ -137,7 +139,8 @@ const Post = (props) => {
             <Text style={{fontWeight: "bold", fontSize: 20}}>{data.title}</Text>
             {renderTrending(trending)}
           </Flex>
-          <Text style={{marginTop: 5}} numberOfLines={5} flexWrap="wrap">{data.des}</Text>
+        <ReadMoreText contents={data.des} MAX_LINES={3} style={{marginTop: 5}}/>
+          {/* <Text style={{marginTop: 5}} numberOfLines={5} flexWrap="wrap">{data.des}</Text> */}
         </View>
       </WingBlank>
         <Image style={{ height: 250, width: "100%", display:data.img ? "flex": "none" }} source={data.img ? {uri: data.img} : require('../assets/no-image.png')}></Image>

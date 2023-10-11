@@ -2,13 +2,15 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import headerCustomTitle from "../constants/headerCustomtitle";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 //import screen
 import Colors from "../constants/Colors";
 import FollowScreen from "../screens/FollowScreen";
 import FollowingAllScreen from "../screens/FollowingAllScreen";
 import LocationScreen from "../screens/LocationScreen";
 import { Flex } from "@ant-design/react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleSearch } from "../store/actions/searchAction";
 
 const FollowStack = createNativeStackNavigator();
 
@@ -21,10 +23,16 @@ const headerCustomTitle2 = () => {
   );
 };
 
-
 export default function FollowNavigator() {
+  const dispatch = useDispatch();
+  const searchIsVisible = useSelector((state) => state.search.searchIsVisible);
+
+  const toggleSearchModal = () => {
+    return dispatch(toggleSearch(!searchIsVisible));
+  };
+
   return (
-    <FollowStack.Navigator initialRouteName="Profile" screenOptions={{ headerTitleAlign: "left" }}>
+    <FollowStack.Navigator initialRouteName="FollowMain" screenOptions={{ headerTitleAlign: "left" }}>
       <FollowStack.Screen
         name="FollowMain"
         component={FollowScreen}
@@ -46,6 +54,15 @@ export default function FollowNavigator() {
               </Flex>
             );
           },
+          headerRight: ({ color, size, focused }) => {
+            color = Colors.gray2;
+            size = 24;
+            return (
+              <TouchableOpacity onPress={toggleSearchModal}>
+                <Ionicons name="search" size={size} color={color} />
+              </TouchableOpacity>
+            );
+          },
         }}
       />
       <FollowStack.Screen
@@ -55,6 +72,15 @@ export default function FollowNavigator() {
           headerTitle: headerCustomTitle2,
           headerBackTitleVisible: false,
           headerTintColor: "#000",
+          headerRight: ({ color, size, focused }) => {
+            color = Colors.gray2;
+            size = 24;
+            return (
+              <TouchableOpacity onPress={toggleSearchModal}>
+                <Ionicons name="search" size={size} color={color} />
+              </TouchableOpacity>
+            );
+          },
         }}
       />
       <FollowStack.Screen
@@ -67,13 +93,18 @@ export default function FollowNavigator() {
             color = "black";
             size = 24;
             return (
-              <TouchableOpacity
-                onPress={() => {
-                  return this.drawer && this.drawer.openDrawer();
-                }}
-              >
-                <Feather name="menu" size={size} color={color} />
-              </TouchableOpacity>
+              <Flex style={{ gap: 10 }}>
+                <TouchableOpacity onPress={toggleSearchModal}>
+                  <Ionicons name="search" size={size} color={Colors.gray2} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    return this.drawer && this.drawer.openDrawer();
+                  }}
+                >
+                  <Feather name="menu" size={size} color={color} />
+                </TouchableOpacity>
+              </Flex>
             );
           },
         }}
