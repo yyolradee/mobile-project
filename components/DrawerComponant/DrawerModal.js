@@ -11,7 +11,7 @@ import { statusBarHeight } from "../../constants/responsiveHeight";
 const DrawerModal = ({ contents }) => {
   const statusData = useSelector((state) => state.post.statusData);
   const locationData = useSelector((state) => state.post.locationData);
-  const facultiesData = useSelector((state) => state.post.facultiesData);
+  const categoriesData = useSelector((state) => state.post.categoriesData);
   const isDrawerOpen = useSelector((state) => state.drawer.drawerState);
   const getStatusBarHeight = statusBarHeight();
 
@@ -44,7 +44,7 @@ const DrawerModal = ({ contents }) => {
     {
       index: 2,
       name: "หมวดหมู่",
-      contents: facultiesData.map((item) => item.label),
+      contents: categoriesData.map((item) => item.value),
       openStatus: openStatus[2],
     },
   ]);
