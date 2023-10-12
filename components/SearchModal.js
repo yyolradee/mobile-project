@@ -16,6 +16,7 @@ const SearchModal = () => {
   const dispatch = useDispatch();
   const getStatusBarHeight = statusBarHeight();
   const DATA = useSelector((state) => state.post.postDetailData);
+  const [sortData, setSortData] = useState([])
   const LOCATION_DATA = useSelector((state) => state.post.locationData);
   const searchIsVisible = useSelector((state) => state.search.searchIsVisible);
   const [switchState, setSwitchState] = useState(false);
@@ -26,21 +27,28 @@ const SearchModal = () => {
     !switchState ? searchItem(DATA, text, switchState) : searchItem(LOCATION_DATA, text, switchState);
   }, [text]);
 
+  useEffect(()=>{
+    setSortData(DATA)
+  }, [])
+
+  useEffect(()=> {
+    sortData.sort((a, b) => {
+      if (a.isTrending === b.isTrending) {
+        return 0; // Keep the order of equal elements unchanged
+      } else if (a.isTrending) {
+        return -1; // `true` comes before `false`
+      } else {
+        return 1; // `false` comes after `true`
+      }
+    });
+  }, [sortData])
+
   const toggleSearchModal = () => {
     setText("");
     setSwitchState(false);
     return dispatch(toggleSearch(!searchIsVisible));
   };
 
-  const sortData = DATA.sort((a, b) => {
-    if (a.isTrending === b.isTrending) {
-      return 0; // Keep the order of equal elements unchanged
-    } else if (a.isTrending) {
-      return -1; // `true` comes before `false`
-    } else {
-      return 1; // `false` comes after `true`
-    }
-  });
 
   const handleTextChange = (input) => {
     setText(input);
