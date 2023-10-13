@@ -56,7 +56,6 @@ export default function App() {
     follow_posts: [],
     notifications: [],
     role: "",
-    create_at: item.createdAt,
     update_date: "",
     // Add other custom data here
   };
