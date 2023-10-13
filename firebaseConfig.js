@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {getAuth, initializeAuth, getReactNativePersistence} from "firebase/auth"
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import * as firebase from "firebase/compat";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB38QN1F43ZKfdyG1HFmIqtWrtlgkil2R4",
@@ -12,12 +13,13 @@ const firebaseConfig = {
   measurementId: "G-LQ1PRTNJ36"
 };
 
-const app = initializeApp(firebaseConfig);
+app = initializeApp(firebaseConfig);
 // export const auth = getAuth(app);
 export const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
 
+export default firebase.initializeApp(firebaseConfig)
 // credentials for google cloud services
 // Android: 159187597555-jta8s5e5mhlh4et2st5lq45eu2bvhs3q.apps.googleusercontent.com
 // IOS: 159187597555-1r0pco54a6g3kk3c3so15d7ojq5pv3nv.apps.googleusercontent.com
