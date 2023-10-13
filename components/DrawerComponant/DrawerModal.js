@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { chevronRender, renderFilterDataContent } from "./DrawerData";
+import { renderFilterData } from "./DrawerUtils";
 import React, { useEffect, useState } from "react";
-import { TouchableOpacity, Text, FlatList, View } from "react-native";
+import { Text, FlatList } from "react-native";
 import Colors from "../../constants/Colors";
 import { Flex, Drawer } from "@ant-design/react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,72 +21,35 @@ const DrawerModal = ({ contents }) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-
     dispatch(setDrawer(this.drawer.drawerShown));
-
-    // console.log("1: " + this.drawer.drawerShown);
-    // console.log("2: " + isDrawerOpen);
   });
 
-  const [listData, setListData] = useState([
+  const listData = [
     {
-      index: 0,
       name: "สถานะ",
       contents: statusData,
-      openStatus: openStatus[0],
     },
     {
-      index: 1,
       name: "สถานที่",
       contents: locationData.map((item) => item.name),
-      openStatus: openStatus[1],
     },
     {
-      index: 2,
       name: "หมวดหมู่",
       contents: categoriesData.map((item) => item.value),
-      openStatus: openStatus[2],
     },
-  ]);
+  ];
+
+  const refactoredListData = listData.map((item, index) => ({
+    index,
+    openStatus: openStatus[index],
+    ...item,
+  }));
 
   const filterHander = (index) => {
-    const newStatus = [...openStatus];
-    newStatus[index] = !newStatus[index];
-    setOpenStatus(newStatus);
+    const newOpenStatus = [...openStatus];
+    newOpenStatus[index] = !newOpenStatus[index];
+    setOpenStatus(newOpenStatus);
   };
-
-  renderFilterData = ({ item }) => (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignContent: "center",
-        paddingHorizontal: 12,
-        paddingVertical: 14,
-        borderBottomWidth: 1,
-        borderColor: "#C8C8C8",
-      }}
-    >
-      <Flex direction="column" align="start">
-        <TouchableOpacity
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignContent: "center",
-            width: "100%",
-          }}
-          onPress={() => {
-            filterHander(item.index);
-          }}
-        >
-          <Text style={{ fontSize: 16 }}>{item.name}</Text>
-          {chevronRender(openStatus[item.index])}
-        </TouchableOpacity>
-      </Flex>
-      {renderFilterDataContent(item, openStatus[item.index])}
-    </View>
-  );
 
   const FilterScreen = (
     <Flex direction="column" align="start" style={{ backgroundColor: "white", flex: 1 }}>
@@ -98,13 +61,14 @@ const DrawerModal = ({ contents }) => {
         <Ionicons name="filter" size={24} color="white" />
       </Flex>
       <FlatList
-        data={listData}
-        renderItem={renderFilterData}
-        keyExtractor={(item) => item.index}
+        data={refactoredListData}
+        renderItem={({ item }) => renderFilterData({ item, openStatus, filterHandler: filterHander })}
+        keyExtractor={(item) => item.index.toString()} // Use toString() to ensure key is a string
         style={{ width: "100%" }}
       />
     </Flex>
   );
+
   return (
     <Drawer
       position="left"
