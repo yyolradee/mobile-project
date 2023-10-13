@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {View, Text} from "react-native"
+import { View, Text } from "react-native";
 import { Provider } from "react-redux";
 import store from "./store";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -11,65 +11,33 @@ import LoginScreen from "./screens/LoginScreen";
 // Auth
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential } from "firebase/auth";
-import { auth } from "./firebaseConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { auth } from "./data/firebaseConfig";
+import { checkLocalUser, handleGoogleSignIn, subscribeToAuthStateChanges } from "./data/auth/authUtils";
+import { LoadingScreen } from "./screens/LoadingScreen";
 
 WebBrowser.maybeCompleteAuthSession();
-
 
 export default function App() {
   const [userLocalInfo, setUserLocalInfo] = useState();
   const [loading, setLoading] = useState(false);
   const [req, res, promptAsync] = Google.useAuthRequest({
-    // credentials for google cloud services
     iosClientId: "864621180068-kerk6g67bchrib8i8clobcrdhbv523n4.apps.googleusercontent.com",
     androidClientId: "864621180068-a2u6qjn4he81a942gpdsg3hf0g8nkfvv.apps.googleusercontent.com",
-    webClientId: "864621180068-a8bfs5gdda7c2767srk05oc821a8b94u.apps.googleusercontent.com"
+    webClientId: "864621180068-a8bfs5gdda7c2767srk05oc821a8b94u.apps.googleusercontent.com",
   });
 
-  const checkLocalUser = async () => {
-    try {
-      setLoading(true)
-      const userJSON = await AsyncStorage.getItem("@user")
-      const userDATA = userJSON ? JSON.parse(userJSON) : null;
-      setUserLocalInfo(userDATA)
-    } catch (error) {
-      alert(error.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
-    if (res?.type == "success") {
-      const { id_token } = res.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential);
-    }
+    handleGoogleSignIn(res, auth);
   }, [res]);
 
   useEffect(() => {
-    checkLocalUser();
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUserLocalInfo(user);
-        await AsyncStorage.setItem("@user", JSON.stringify(user))
-      } else {
-        setUserLocalInfo(null)
-        console.log("Not Login");
-      }
-    });
+    checkLocalUser(setUserLocalInfo, setLoading);
+    const unsub = subscribeToAuthStateChanges(setUserLocalInfo);
     return () => unsub();
   }, []);
 
-
   if (loading) {
-    return (
-      <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
-        <Text style={{fontSize: 20}}>Please wait...</Text>
-      </View>
-    )
+    return <LoadingScreen />;
   }
   if (!userLocalInfo) {
     return <LoginScreen promptAsync={promptAsync} />;
@@ -77,7 +45,7 @@ export default function App() {
     return (
       <Provider store={store}>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <MainNavigator userLocalInfo={userLocalInfo}/>
+          <MainNavigator userLocalInfo={userLocalInfo} />
         </GestureHandlerRootView>
       </Provider>
     );
