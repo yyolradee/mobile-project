@@ -6,7 +6,7 @@ import Post from "../components/Post";
 import { useNavigation } from "@react-navigation/native";
 import postDATA from "../data/postDetail.json";
 import { Button, Flex } from "@ant-design/react-native";
-import { auth } from "../firebaseConfig";
+import { auth } from "../data/firebaseConfig";
 import { signOut } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";

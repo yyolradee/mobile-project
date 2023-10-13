@@ -7,13 +7,13 @@ const initialState = {
 const drawerReducer = (state = initialState, action) => {
   switch (action.type) {
     case TOGGLE_DRAWER:
-      console.log("toggle_drawer: " + !state.drawerState);
+      // console.log("toggle_drawer: " + !state.drawerState);
       return {
         ...state,
         drawerState: !state.drawerState,
       };
     case SET_DRAWER:
-      console.log("set_drawer: " + action.payload);
+      // console.log("set_drawer: " + action.payload);
       return {
         ...state,
         drawerState: action.payload,
