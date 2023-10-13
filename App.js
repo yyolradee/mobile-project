@@ -50,17 +50,15 @@ export default function App() {
     }
   }, [res]);
 
-  const customUserData = (item) => {
-    return {
-      faculty: "",
-      follow_locations: [],
-      follow_posts: [],
-      notifications: [],
-      role: "",
-      create_at: item.createdAt,
-      update_date: "",
-      // Add other custom data here
-    };
+  const customUserData = {
+    faculty: "",
+    follow_locations: [],
+    follow_posts: [],
+    notifications: [],
+    role: "",
+    create_at: item.createdAt,
+    update_date: "",
+    // Add other custom data here
   };
   useEffect(() => {
     checkLocalUser();
@@ -70,7 +68,7 @@ export default function App() {
           .firestore()
           .collection("Users")
           .doc(user.uid)
-          .set(customUserData(user))
+          .set(customUserData)
           .then(() => {
             console.log("Custom data attached to the user profile");
           })
