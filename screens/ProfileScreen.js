@@ -44,7 +44,7 @@ const ProfileScreen = () => {
               navigation.navigate("EditProfile");
             }}
           >
-            <Text>แก้ไขโปรไฟล์</Text>
+            <Text>จัดการโปรไฟล์</Text>
           </TouchableOpacity>
         </View>
         <Flex justify="between">
