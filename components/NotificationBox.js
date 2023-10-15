@@ -1,39 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
-import { FontAwesome, FontAwesome5, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  FontAwesome5,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import moment from "moment";
+import { getPostsById } from "../data/posts/postsController";
 
 const NotificationBox = (props) => {
   const notiItem = props.notiItem;
   let colorBadge;
   let iconBadge;
-  const time_passed = moment(notiItem.date_time).fromNow();
+  const time_passed = moment(notiItem.date_time.toDate()).fromNow();
+  const [postData, setPostData] = useState({});
 
-  if (notiItem.type == "hot") {
+  useEffect(() => {
+    getPostsById(notiItem.post_id, setPostData)
+  }, []);
+
+  if (notiItem.type == "trending") {
     colorBadge = Colors.pink;
-    iconBadge = <MaterialIcons name="local-fire-department" size={16} color="white" />;
+    iconBadge = (
+      <MaterialIcons name="local-fire-department" size={16} color="white" />
+    );
   } else {
-    if (notiItem.status == "wating") {
+    if (postData.status == "รอรับเรื่อง") {
       colorBadge = Colors.warning;
       iconBadge = <Ionicons name="ios-timer-outline" size={16} color="white" />;
-    } else if (notiItem.status == "inprocess") {
+    } else if (postData.status == "กำลังดำเนินการ") {
       colorBadge = Colors.success;
       iconBadge = <FontAwesome name="gear" size={16} color="white" />;
-    } else if (notiItem.status == "done") {
+    } else if (postData.status == "แก้ไขเสร็จสิ้น") {
       colorBadge = Colors.gray2;
       iconBadge = <FontAwesome5 name="check" size={14} color="white" />;
     }
   }
 
   return (
-    <TouchableOpacity onPress={() => {props.onPress(notiItem.post_id)}}>
+    <TouchableOpacity
+      onPress={() => {
+        props.onPress(notiItem.post_id);
+      }}
+    >
       <View style={styles.container}>
         <View>
           <Image
             style={{ height: 65, width: 65, borderRadius: 50 }}
             source={
-              notiItem.img_path
+              postData.img_path
                 ? { uri: notiItem.img_path }
                 : require("../assets/no-image.png")
             }
@@ -45,7 +62,7 @@ const NotificationBox = (props) => {
         <View style={{ marginTop: 4, marginLeft: 25, width: "65%" }}>
           <Text style={{ fontSize: 15 }} numberOfLines={2} flexWrap="wrap">
             ปัญหา{" "}
-            <Text style={{ fontWeight: "bold" }}>{notiItem.post_name}</Text>
+            <Text style={{ fontWeight: "bold" }}>{postData.title}</Text>
             {" " + notiItem.description}
           </Text>
           <Text style={{ fontSize: 10, color: Colors.gray, marginTop: 3 }}>

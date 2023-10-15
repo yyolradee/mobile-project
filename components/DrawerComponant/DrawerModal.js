@@ -9,9 +9,9 @@ import { setDrawer } from "../../store/actions/drawerAction";
 import { statusBarHeight } from "../../constants/responsiveHeight";
 
 const DrawerModal = ({ contents }) => {
-  const statusData = useSelector((state) => state.post.statusData);
-  const locationData = useSelector((state) => state.post.locationData);
-  const categoriesData = useSelector((state) => state.post.categoriesData);
+  const statusData = useSelector((state) => state.data.statusData);
+  const locationData = useSelector((state) => state.data.locationData);
+  const categoriesData = useSelector((state) => state.data.categoriesData);
   const isDrawerOpen = useSelector((state) => state.drawer.drawerState);
   const getStatusBarHeight = statusBarHeight();
 
@@ -35,7 +35,7 @@ const DrawerModal = ({ contents }) => {
     },
     {
       name: "หมวดหมู่",
-      contents: categoriesData.map((item) => item.value),
+      contents: categoriesData.map((item) => item.name),
     },
   ];
 

@@ -11,6 +11,9 @@ import { MultipleSelectList } from "react-native-dropdown-select-list";
 import categories from "../data/categories.json";
 import Colors from "../constants/Colors";
 
+// -----------API---------------
+import { getSelectorCategories } from "../data/notifications/notificationsController";
+
 const placeData = [
   {
     label: "คณะเทคโนโลยีสารสนเทศ",
@@ -35,6 +38,12 @@ const CreatePostDetailScreen = () => {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [validate, setValidate] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [ locations, setLocations] = useState([]);
+
+  useEffect(() => {
+    getSelectorCategories(setCategories);
+  }, []);
 
   useEffect(() => {
     if (selectedPlace == null || selectedCategory.length == 0) {
@@ -52,8 +61,7 @@ const CreatePostDetailScreen = () => {
           onPress: () => {},
         },
       ]);
-    } 
-    else {
+    } else {
       setSelectedCategory(val);
     }
   };

@@ -9,6 +9,7 @@ import { Provider } from "@ant-design/react-native";
 import { useDispatch, useSelector } from "react-redux";
 import SearchModal from "../components/SearchModal";
 import DrawerModal from "../components/DrawerComponant/DrawerModal";
+import { fetchCategories, fetchPosts } from "../store/actions/dataAction";
 
 const MainStackNavigator = createNativeStackNavigator();
 
@@ -16,6 +17,8 @@ export default function MainNavigator(props) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setUserInfo(props.userLocalInfo));
+    dispatch(fetchCategories())
+    dispatch(fetchPosts())
     console.log("login");
   }, []);
 

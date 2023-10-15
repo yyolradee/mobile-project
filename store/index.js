@@ -1,16 +1,17 @@
-import { createStore, combineReducers } from "redux"
+import { createStore, combineReducers, applyMiddleware } from "redux"
 import drawerReducer from "./reducers/drawerReducer"
-import postReducer from "./reducers/postReducer"
+import dataReducer from "./reducers/dataReducer"
 import searchReducer from "./reducers/searchReducer";
+import thunk from 'redux-thunk';
 import userReducer from "./reducers/userReducer";
 
 const rootReducer = combineReducers({
   drawer: drawerReducer,
-  post: postReducer,
+  data: dataReducer,
   search: searchReducer,
   user: userReducer
 })
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 export default store

@@ -15,9 +15,9 @@ const SearchModal = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const getStatusBarHeight = statusBarHeight();
-  const DATA = useSelector((state) => state.post.postDetailData);
+  const DATA = useSelector((state) => state.data.postDetailData);
   const [sortData, setSortData] = useState([])
-  const LOCATION_DATA = useSelector((state) => state.post.locationData);
+  const LOCATION_DATA = useSelector((state) => state.data.locationData);
   const searchIsVisible = useSelector((state) => state.search.searchIsVisible);
   const [switchState, setSwitchState] = useState(false);
   const [text, setText] = useState("");
