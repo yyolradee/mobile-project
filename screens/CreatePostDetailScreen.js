@@ -12,7 +12,7 @@ import categories from "../data/categories.json";
 import Colors from "../constants/Colors";
 
 // -----------API---------------
-import { getSelectorCategories } from "../data/firebaseControllor";
+import { getSelectorCategories } from "../data/notifications/notificationsController";
 
 const placeData = [
   {

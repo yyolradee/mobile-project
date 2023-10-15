@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import {
   getMyNotifications,
   createNotification,
-} from "../data/firebaseControllor";
+} from "../data/notifications/notificationsController";
 import { useSelector } from "react-redux";
 
 const NotificationScreen = () => {

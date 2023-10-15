@@ -8,7 +8,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import moment from "moment";
-import { getPostsById } from "../data/firebaseControllor";
+import { getPostsById } from "../data/posts/postsController";
 
 const NotificationBox = (props) => {
   const notiItem = props.notiItem;

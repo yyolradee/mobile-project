@@ -35,7 +35,7 @@ const DrawerModal = ({ contents }) => {
     },
     {
       name: "หมวดหมู่",
-      contents: categoriesData.map((item) => item.value),
+      contents: categoriesData.map((item) => item.name),
     },
   ];
 
