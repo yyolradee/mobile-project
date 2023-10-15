@@ -53,7 +53,7 @@ const Post = (props) => {
     setData(postData)
     setComments(postData.comments)
     setTimePassed(moment(postData.create_date.toDate()).fromNow())
-    if (postData.isTrending) {
+    if (postData.is_trending) {
       setTrending(true)
     }
     else {
@@ -74,7 +74,7 @@ const Post = (props) => {
     }
     let contentWidth = 0;
     postData.categories.forEach(item => {
-      contentWidth += item.length * 8;
+      contentWidth += item.name.length * 8;
     });
 
     if (contentWidth <= actualDimensions.width) {

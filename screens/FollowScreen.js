@@ -51,11 +51,11 @@ const FollowScreen = () => {
   }
 
   const postDATA = useSelector((state) => {
-    const filterData = state.post.filterData
-    return filterData.length > 0 ? state.post.filterData : state.post.postDetailData}
+    const filterData = state.data.filterData
+    return filterData.length > 0 ? filterData : state.data.postDetailData}
     )
     const placeData = useSelector((state) => {
-      return state.post.locationData
+      return state.data.locationData
     })
 
   return (
@@ -91,7 +91,7 @@ const FollowScreen = () => {
       <FlatList
         data={postDATA}
         renderItem={postItem}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => item.post_id}
         showsVerticalScrollIndicator={false}
       />
     </View>

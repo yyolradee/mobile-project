@@ -4,7 +4,7 @@ import Colors from "../constants/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Post from "../components/Post";
 import { useNavigation } from "@react-navigation/native";
-import postDATA from "../data/postDetail.json";
+// import postDATA from "../data/postDetail.json";
 import { Button, Flex } from "@ant-design/react-native";
 import { auth } from "../data/firebaseConfig";
 import { signOut } from "firebase/auth";
@@ -16,6 +16,7 @@ const ProfileScreen = () => {
   const userInfo = useSelector((state) => {
     return state.user.userInfo;
   });
+  const postDATA = useSelector((state) => state.data.postDetailData)
   return (
     <View style={styles.container}>
       <View
@@ -74,7 +75,7 @@ const ProfileScreen = () => {
       <FlatList
         data={postDATA}
         renderItem={({ item }) => <Post postData={item} />}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => item.post_id}
         showsVerticalScrollIndicator={false}
       />
     </View>
