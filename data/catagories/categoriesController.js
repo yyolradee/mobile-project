@@ -1,30 +1,9 @@
-
 import firebase from "../firebaseConfig";
-
 
 // ---------- Catagories ---------------
 
 export const getAllCategories = () => {
-    return new Promise((resolve, reject) => {
-      firebase
-        .firestore()
-        .collection("Categories")
-        .get()
-        .then((documentSnapshot) => {
-          const data = [];
-          documentSnapshot.forEach((doc) => {
-            data.push({ ...doc.data(), category_id: doc.id });
-          });
-          resolve(data);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  };
-
-
-  export const getSelectorCategories = (setState) => {
+  return new Promise((resolve, reject) => {
     firebase
       .firestore()
       .collection("Categories")
@@ -32,8 +11,26 @@ export const getAllCategories = () => {
       .then((documentSnapshot) => {
         const data = [];
         documentSnapshot.forEach((doc) => {
-          data.push({ key: doc.id, value: doc.data().name });
+          data.push({ ...doc.data(), category_id: doc.id });
         });
-        setState(data);
+        resolve(data);
+      })
+      .catch((error) => {
+        reject(error);
       });
-  };
+  });
+};
+
+export const getSelectorCategories = (setState) => {
+  firebase
+    .firestore()
+    .collection("Categories")
+    .get()
+    .then((documentSnapshot) => {
+      const data = [];
+      documentSnapshot.forEach((doc) => {
+        data.push({ key: doc.id, value: doc.data().name });
+      });
+      setState(data);
+    });
+};

@@ -14,6 +14,8 @@ import {
 import { Modal, Flex } from "@ant-design/react-native";
 import {actualDimensions} from "../constants/responsiveHeight";
 import Colors from "../constants/Colors";
+import moment from "moment";
+
 
 
 const CommentModal = ({ isVisible, onClose, commentsItem }) => {
@@ -87,10 +89,11 @@ const CommentModal = ({ isVisible, onClose, commentsItem }) => {
   }
 
   const renderComment = ({ item }) => {
+    const time_passed = moment(item.create_date.toDate()).fromNow();
     return (
         <Flex direction="row" align="start" style={{flex: 1, marginBottom: 20, gap: 10}} >
           <Flex direction="column">
-            <Image style={{ height: 50, width: 50, borderRadius: 100 }} source={item.img ? {uri: item.img} : require('../assets/no-image.png')}></Image>
+            <Image style={{ height: 50, width: 50, borderRadius: 100 }} source={item.img_path ? {uri: item.img_path} : require('../assets/no-image.png')}></Image>
             {/* !!!! admin design 2 */}
             {renderRole(item.role)}
           </Flex>
@@ -99,9 +102,9 @@ const CommentModal = ({ isVisible, onClose, commentsItem }) => {
             {/* {renderRole(item.role)} */}
             <Flex align="center" wrap="wrap-reverse" style={{marginBottom: 2}}>
               <Text style={{color: Colors.gray2, fontWeight: "600", fontSize: 16, marginRight: 7}}>{item.name}</Text>
-              <Text style={{color: Colors.gray2, fontSize: 11}}>{item.date}m ago</Text>
+              <Text style={{color: Colors.gray2, fontSize: 11}}>{time_passed}</Text>
             </Flex>
-            <Text>{item.content}</Text>
+            <Text>{item.contents}</Text>
           </Flex>
         </Flex>
       );

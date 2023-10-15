@@ -1,5 +1,5 @@
-import React from "react";
-import { FlatList, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 import Post from "../components/Post";
 import { useSelector } from "react-redux";
 
@@ -7,14 +7,14 @@ const renderItem = ({ item }) => <Post postData={item} />;
 
 const HomeScreen = () => {
   const DATA = useSelector((state) => {
-    const filterData = state.post.filterData;
-    return filterData.length > 0 ? state.post.filterData : state.post.postDetailData;
+    const filterData = state.data.filterData;
+    return filterData.length > 0 ? filterData : state.data.postDetailData;
   });
   return (
     <FlatList
       data={DATA}
       renderItem={renderItem}
-      keyExtractor={(item) => item._id}
+      keyExtractor={(item) => item.post_id}
       showsVerticalScrollIndicator={false}
     />
   );

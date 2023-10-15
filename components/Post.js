@@ -7,12 +7,13 @@ import ManagePostModal from './ManagePostModal';
 import CommentModal from "./CommentModal";
 import {actualDimensions} from "../constants/responsiveHeight";
 import {ReadMoreText} from "../constants/ReadMoreText"
+import moment from "moment";
 
 
 // Render Category
 const renderItem = ({ item }) => (
   <View style={styles.Cat} disabled>
-    <Text style={{color: "white", fontSize: 12}}>{item.value}</Text>
+    <Text style={{color: "white", fontSize: 12}}>{item.name}</Text>
   </View>
 );
 
@@ -36,6 +37,7 @@ const Post = (props) => {
   // Check if post category is can move or not
   const postData = props.postData
   const [data, setData] = useState([])
+  const [timePassed, setTimePassed] = useState(null)
   const [trending, setTrending] = useState(false)
   const [comments, setComments] = useState([])
 
@@ -50,6 +52,7 @@ const Post = (props) => {
   useEffect(() => {
     setData(postData)
     setComments(postData.comments)
+    setTimePassed(moment(postData.create_date.toDate()).fromNow())
     if (postData.isTrending) {
       setTrending(true)
     }
@@ -71,7 +74,7 @@ const Post = (props) => {
     }
     let contentWidth = 0;
     postData.categories.forEach(item => {
-      contentWidth += item.value.length * 8;
+      contentWidth += item.length * 8;
     });
 
     if (contentWidth <= actualDimensions.width) {
@@ -106,14 +109,14 @@ const Post = (props) => {
             <WingBlank size="sm">
               <Flex direction="column" align="start">
                 <Flex justify="center" align="center">
-                  <Text style={{color: Colors.gray}}>จาก</Text><Text> {data.location}</Text>
+                  <Text style={{color: Colors.gray}}>จาก</Text><Text> {data.location ? data.location.name: null}</Text>
                   <WingBlank size="md" >
                     <Button size="small" style={styles.button} activeStyle={{backgroundColor: Colors.primary_sub}}>
                       <Text style={{color: "white", fontSize: 12}}>ติดตาม</Text>
                     </Button>
                   </WingBlank>
                 </Flex>
-                <Text style={{color: Colors.gray, fontSize: 12}}>{data.date}m ago</Text>
+                <Text style={{color: Colors.gray, fontSize: 12}}>{timePassed}</Text>
               </Flex>
             </WingBlank>
           </Flex>
@@ -129,7 +132,7 @@ const Post = (props) => {
             horizontal
             data={data.categories}
             renderItem={renderItem}
-            keyExtractor={item => item.key}
+            keyExtractor={item => item.category_id}
             scrollEnabled={scrollEnabled}
             showsHorizontalScrollIndicator={false}
           />
@@ -139,11 +142,11 @@ const Post = (props) => {
             <Text style={{fontWeight: "bold", fontSize: 20}}>{data.title}</Text>
             {renderTrending(trending)}
           </Flex>
-        <ReadMoreText contents={data.des} MAX_LINES={3} style={{marginTop: 5}}/>
+        <ReadMoreText contents={data.description} MAX_LINES={3} style={{marginTop: 5}}/>
           {/* <Text style={{marginTop: 5}} numberOfLines={5} flexWrap="wrap">{data.des}</Text> */}
         </View>
       </WingBlank>
-        <Image style={{ height: 250, width: "100%", display:data.img ? "flex": "none" }} source={data.img ? {uri: data.img} : require('../assets/no-image.png')}></Image>
+        <Image style={{ height: 250, width: "100%", display:data.img_path ? "flex": "none" }} source={data.img_path ? {uri: data.img_path} : require('../assets/no-image.png')}></Image>
 
         <Flex direction="row" justify="between" style={styles.sub_container2}>
             <Flex style={{gap: 5}}>
