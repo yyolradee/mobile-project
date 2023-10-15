@@ -22,7 +22,7 @@ const NotificationScreen = () => {
   };
 
   useEffect(() => {
-    getMyNotifications(userInfo.uid, setNotifications);
+    getMyNotifications(userInfo.uid, setNotifications)
   }, []);
 
   return (
@@ -36,10 +36,11 @@ const NotificationScreen = () => {
         showsVerticalScrollIndicator={false}
       />
       <Button title="sent Noti" onPress={() => {
-        createNotification("VF2A0jeb9Hff8n7NwhgoCR9nOqS2", {
+        createNotification({
           post_id : "Ydus0sroXBCaxgpQwOlr",
           type: "update status",
-          description : "ของคุณ กำลังดำเนินการแก้ไช"
+          description : "ของคุณ แก้ไขเสร็จสิ้นแล้ว",
+          status: "แก้ไขเสร็จสิ้น"
         })
       }} />
     </View>

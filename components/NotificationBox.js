@@ -6,36 +6,40 @@ import {
   FontAwesome5,
   Ionicons,
   MaterialIcons,
+  Octicons
 } from "@expo/vector-icons";
 import moment from "moment";
 import { getPostsById } from "../data/posts/postsController";
 
 const NotificationBox = (props) => {
   const notiItem = props.notiItem;
-  let colorBadge;
-  let iconBadge;
+  let colorBadge = Colors.primary;
+  let iconBadge = <FontAwesome5 name="question" size={14} color="white" />;
   const time_passed = moment(notiItem.date_time.toDate()).fromNow();
-  const [postData, setPostData] = useState({});
+  const postData = notiItem.post;
 
-  useEffect(() => {
-    getPostsById(notiItem.post_id, setPostData)
-  }, []);
+  // useEffect(() => {
+  //   getPostsById(notiItem.post_id, setPostData)
+  // }, []);
 
   if (notiItem.type == "trending") {
     colorBadge = Colors.pink;
     iconBadge = (
       <MaterialIcons name="local-fire-department" size={16} color="white" />
     );
-  } else {
-    if (postData.status == "รอรับเรื่อง") {
+  } else if (notiItem.type == "update status") {
+    if (notiItem.status == "รอรับเรื่อง") {
       colorBadge = Colors.warning;
       iconBadge = <Ionicons name="ios-timer-outline" size={16} color="white" />;
-    } else if (postData.status == "กำลังดำเนินการ") {
+    } else if (notiItem.status == "กำลังดำเนินการ") {
       colorBadge = Colors.success;
       iconBadge = <FontAwesome name="gear" size={16} color="white" />;
-    } else if (postData.status == "แก้ไขเสร็จสิ้น") {
+    } else if (notiItem.status == "แก้ไขเสร็จสิ้น") {
       colorBadge = Colors.gray2;
       iconBadge = <FontAwesome5 name="check" size={14} color="white" />;
+    } else if (notiItem.status == "ไม่แก้ไข") {
+      colorBadge = Colors.red;
+      iconBadge = <Octicons name="x" size={20} color="white" />;
     }
   }
 
@@ -51,7 +55,7 @@ const NotificationBox = (props) => {
             style={{ height: 65, width: 65, borderRadius: 50 }}
             source={
               postData.img_path
-                ? { uri: notiItem.img_path }
+                ? { uri: postData.img_path }
                 : require("../assets/no-image.png")
             }
           />
@@ -59,7 +63,7 @@ const NotificationBox = (props) => {
             {iconBadge}
           </View>
         </View>
-        <View style={{ marginTop: 4, marginLeft: 25, width: "65%" }}>
+        <View style={{ marginTop: 4, marginLeft: 20, width: "65%" }}>
           <Text style={{ fontSize: 15 }} numberOfLines={2} flexWrap="wrap">
             ปัญหา{" "}
             <Text style={{ fontWeight: "bold" }}>{postData.title}</Text>
