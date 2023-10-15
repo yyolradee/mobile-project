@@ -35,14 +35,14 @@ const NotificationScreen = () => {
         keyExtractor={(item) => item.notification_id}
         showsVerticalScrollIndicator={false}
       />
-      <Button title="sent Noti" onPress={() => {
+      {/* <Button title="sent Noti" onPress={() => {
         createNotification({
           post_id : "Ydus0sroXBCaxgpQwOlr",
           type: "update status",
           description : "ของคุณ แก้ไขเสร็จสิ้นแล้ว",
           status: "แก้ไขเสร็จสิ้น"
         })
-      }} />
+      }} /> */}
     </View>
   );
 };
