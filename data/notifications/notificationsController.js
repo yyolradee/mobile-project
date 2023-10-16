@@ -28,6 +28,8 @@ export const getMyNotifications = (userId, setState) => {
             console.error("Error fetching notification:", error);
           }
         }
+        
+        notificationData.sort((a, b) => b.date_time - a.date_time);
         setState(notificationData);
       });
     return () => subscriber();
