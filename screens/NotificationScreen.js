@@ -9,12 +9,13 @@ import {
   createNotification,
 } from "../data/notifications/notificationsController";
 import { useSelector } from "react-redux";
+import Colors from "../constants/Colors";
 
 const NotificationScreen = () => {
   const userInfo = useSelector((state) => {
     return state.user.userInfo;
   });
-  const [notifications, setNotifications] = useState();
+  const [notifications, setNotifications] = useState([]);
 
   const navigation = useNavigation();
   const pressHandler = (id) => {
@@ -26,7 +27,10 @@ const NotificationScreen = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, justifyContent: notifications.length === 0 ? "center": "flex-start"}}>
+      {notifications.length === 0 ? (
+        <Text style={{fontSize: 18, color: Colors.gray, alignSelf: "center"}}>ไม่มีการแจ้งเตือนในขณะนี้...</Text>
+      ) : (
       <FlatList
         data={notifications}
         renderItem={({ item }) => (
@@ -35,6 +39,7 @@ const NotificationScreen = () => {
         keyExtractor={(item) => item.notification_id}
         showsVerticalScrollIndicator={false}
       />
+      )}
       {/* <Button title="sent Noti" onPress={() => {
         createNotification({
           post_id : "Ydus0sroXBCaxgpQwOlr",
