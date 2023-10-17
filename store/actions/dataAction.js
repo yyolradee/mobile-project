@@ -67,3 +67,34 @@ export const fetchPosts = () => {
   };
 };
 
+import { getAllLocations } from "../../data/locations/locationsController";
+export const FETCH_LOCATIONS_REQUEST = "FETCH_LOCATIONS_REQUEST";
+export const FETCH_LOCATIONS_SUCCESS = "FETCH_LOCATIONS_SUCCESS";
+export const FETCH_LOCATIONS_FAILURE = "FETCH_LOCATIONS_FAILURE";
+
+const fetchLocationsRequest = () => ({
+  type: FETCH_LOCATIONS_REQUEST,
+});
+
+const fetchLocationsSuccess = (data) => ({
+  type: FETCH_LOCATIONS_SUCCESS,
+  payload: data,
+});
+
+const fetchLocationsFailure = (error) => ({
+  type: FETCH_LOCATIONS_FAILURE,
+  payload: error,
+});
+
+export const fetctLocations = () => {
+  return async (dispatch) => {
+    dispatch(fetchLocationsRequest());
+
+    try {
+      const location = await getAllLocations();
+      dispatch(fetchLocationsSuccess(location));
+    } catch (error) {
+      dispatch(fetchLocationsFailure(error));
+    }
+  };
+};

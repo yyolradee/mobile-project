@@ -71,7 +71,7 @@ const FollowScreen = () => {
           horizontal
           data={placeData}
           renderItem={({ item }) => <PlaceBadgeItem item={item} onPressHandler={locationInfoHandler} />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.location_id}
           showsHorizontalScrollIndicator={false}
           style={{ padding: 10 }}
         />

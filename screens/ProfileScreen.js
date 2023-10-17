@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, FlatList } from "react-native";
 import Colors from "../constants/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -13,10 +13,15 @@ import { useSelector } from "react-redux";
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
-  const userInfo = useSelector((state) => {
-    return state.user.userInfo;
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const postDATA = useSelector((state) => state.data.postDetailData);
+  const filtersPostData = postDATA.filter((post) => post.owner.owner_id === userInfo.uid);
+  const [ownerPostData, setOwnerPostData] = useState(filtersPostData);
+
+  useSelector((state) => {
+    console.log(JSON.stringify(state.user.userInfo, null, 2));
   });
-  const postDATA = useSelector((state) => state.data.postDetailData)
+
   return (
     <View style={styles.container}>
       <View
@@ -73,7 +78,7 @@ const ProfileScreen = () => {
         </View>
       </View>
       <FlatList
-        data={postDATA}
+        data={ownerPostData}
         renderItem={({ item }) => <Post postData={item} />}
         keyExtractor={(item) => item.post_id}
         showsVerticalScrollIndicator={false}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { setUserInfo } from "../store/actions/userAction";
 
@@ -9,22 +9,34 @@ import { Provider } from "@ant-design/react-native";
 import { useDispatch, useSelector } from "react-redux";
 import SearchModal from "../components/SearchModal";
 import DrawerModal from "../components/DrawerComponant/DrawerModal";
-import { fetchCategories, fetchPosts } from "../store/actions/dataAction";
+import { fetchCategories, fetchPosts, fetctLocations } from "../store/actions/dataAction";
+import { getUserById } from "../data/users/usersController";
 
 const MainStackNavigator = createNativeStackNavigator();
 
 export default function MainNavigator(props) {
   const dispatch = useDispatch();
+  const userLocalInfo = props.userLocalInfo;
+  const [getUser, setGetUser] = useState(null);
   useEffect(() => {
-    dispatch(setUserInfo(props.userLocalInfo));
-    dispatch(fetchCategories())
-    dispatch(fetchPosts())
+    const fetchData = async () => {
+      try {
+        await getUserById(userLocalInfo.uid, setGetUser);
+        dispatch(await fetchCategories());
+        dispatch(await fetchPosts());
+        dispatch(await fetctLocations());
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
     console.log("login");
   }, []);
 
-  // useSelector((state) => {
-  //   console.log(JSON.stringify(state.user.userInfo, null, 2));
-  // });
+  useEffect(() => {
+    dispatch(setUserInfo({ ...userLocalInfo, ...getUser }));
+  }, [getUser]);
+
   return (
     <Provider>
       <DrawerModal

@@ -8,6 +8,7 @@ import CommentModal from "./CommentModal";
 import {actualDimensions} from "../constants/responsiveHeight";
 import {ReadMoreText} from "../constants/ReadMoreText"
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 
 // Render Category
@@ -47,17 +48,17 @@ const Post = (props) => {
   const [isPostModalVisible, setIsPostModalVisible] = useState(false);
   const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
   const [isEditable, setIsEditable] = useState(false)
+  const userInfo = useSelector(state=>state.user.userInfo);
 
   // Set When Open this page
   useEffect(() => {
     setData(postData)
     setComments(postData.comments)
     setTimePassed(moment(postData.create_date.toDate()).fromNow())
-    if (postData.is_trending) {
-      setTrending(true)
-    }
-    else {
-      setTrending("")
+    setTrending(postData.is_trending)
+
+    if (postData.owner.owner_id === userInfo.uid) {
+      setIsEditable(true)
     }
 
     if (data.status == "กำลังดำเนินการ") {
@@ -100,7 +101,7 @@ const Post = (props) => {
   return (
     <View style={styles.container}>
       <CommentModal isVisible={isCommentModalVisible} onClose={toggleCommentModal} commentsItem={comments}></CommentModal>
-      <ManagePostModal isVisible={isPostModalVisible} onClose={togglePostModal} isEditable={isEditable}/>
+      <ManagePostModal isVisible={isPostModalVisible} onClose={togglePostModal} isEditable={isEditable} postId={data.post_id}/>
       <WingBlank style={styles.sub_container1}>
         {/* Header */}
         <Flex direction="row" justify="between" style={{marginBottom: 5}}>
@@ -111,9 +112,9 @@ const Post = (props) => {
                 <Flex justify="center" align="center">
                   <Text style={{color: Colors.gray}}>จาก</Text><Text> {data.location ? data.location.name: null}</Text>
                   <WingBlank size="md" >
-                    <Button size="small" style={styles.button} activeStyle={{backgroundColor: Colors.primary_sub}}>
+                    <TouchableOpacity style={styles.button} >
                       <Text style={{color: "white", fontSize: 12}}>ติดตาม</Text>
-                    </Button>
+                    </TouchableOpacity>
                   </WingBlank>
                 </Flex>
                 <Text style={{color: Colors.gray, fontSize: 12}}>{timePassed}</Text>
@@ -191,8 +192,8 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: Colors.primary,
     flex: 1,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingVertical: 1,
+    paddingHorizontal: 10,
     borderRadius: 15
   },
   Cat: {
