@@ -18,6 +18,7 @@ export default function MainNavigator(props) {
   const dispatch = useDispatch();
   const userLocalInfo = props.userLocalInfo;
   const [getUser, setGetUser] = useState(null);
+  let check = true;
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,7 +35,10 @@ export default function MainNavigator(props) {
   }, []);
 
   useEffect(() => {
-    dispatch(setUserInfo({ ...userLocalInfo, ...getUser }));
+    if (getUser && check) {
+      dispatch(setUserInfo({ ...userLocalInfo, ...getUser }));
+      check = !check;
+    }
   }, [getUser]);
 
   return (
