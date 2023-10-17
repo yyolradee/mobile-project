@@ -16,7 +16,7 @@ const SearchModal = () => {
   const dispatch = useDispatch();
   const getStatusBarHeight = statusBarHeight();
   const DATA = useSelector((state) => state.data.postDetailData);
-  const [sortData, setSortData] = useState([])
+  const [sortData, setSortData] = useState([]);
   const LOCATION_DATA = useSelector((state) => state.data.locationData);
   const searchIsVisible = useSelector((state) => state.search.searchIsVisible);
   const [switchState, setSwitchState] = useState(false);
@@ -27,28 +27,29 @@ const SearchModal = () => {
     !switchState ? searchItem(DATA, text, switchState) : searchItem(LOCATION_DATA, text, switchState);
   }, [text]);
 
-  useEffect(()=>{
-    setSortData(DATA)
-  }, [])
+  useEffect(() => {
+    if (searchIsVisible) {
+      setSortData(DATA)
+    }
+  }, [searchIsVisible]);
 
-  useEffect(()=> {
+  useEffect(() => {
     sortData.sort((a, b) => {
-      if (a.isTrending === b.isTrending) {
+      if (a.is_trending === b.is_trending) {
         return 0; // Keep the order of equal elements unchanged
-      } else if (a.isTrending) {
+      } else if (a.is_trending) {
         return -1; // `true` comes before `false`
       } else {
         return 1; // `false` comes after `true`
       }
     });
-  }, [sortData])
+  }, [sortData]);
 
   const toggleSearchModal = () => {
     setText("");
     setSwitchState(false);
     return dispatch(toggleSearch(!searchIsVisible));
   };
-
 
   const handleTextChange = (input) => {
     setText(input);
@@ -65,13 +66,13 @@ const SearchModal = () => {
   };
 
   const navigationHanler = (id) => {
-    navigation.navigate("postInNoti", { post_id: id });
+    navigation.navigate("inPost", { post_id: id });
     toggleSearchModal();
   };
 
   const renderPostItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => navigationHanler(item._id)}>
+      <TouchableOpacity onPress={() => navigationHanler(item.post_id)}>
         <SmallPost DATA={item} />
       </TouchableOpacity>
     );
@@ -112,7 +113,7 @@ const SearchModal = () => {
               <Ionicons name="md-stats-chart" size={24} color={Colors.gray2} />
             </Flex>
           </View>
-          <FlatList data={sortData} renderItem={renderPostItem} keyExtractor={(item) => item._id} />
+          <FlatList data={sortData} renderItem={renderPostItem} keyExtractor={(item) => item.post_id} />
         </View>
       ) : (
         <View style={{ height: "100%" }}>
@@ -172,14 +173,14 @@ const SearchModal = () => {
               ListHeaderComponent={renderAmount}
               data={searchData}
               renderItem={renderPostItem}
-              keyExtractor={(item) => item._id}
+              keyExtractor={(item) => item.post_id}
             />
           ) : (
             <FlatList
               data={searchData}
               ListHeaderComponent={renderAmount}
               renderItem={({ item }) => <FacultyBox item={item} onPressHandler={locationInfoHandler} />}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item.location_id}
               showsVerticalScrollIndicator={false}
             />
           )}

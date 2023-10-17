@@ -29,7 +29,7 @@ export default function NotificationNavigator() {
       }}
     >
       <NotiStackNavigator.Screen name="noti" component={NotificationScreen} />
-      <NotiStackNavigator.Screen name="postInNoti" component={PostScreen} />
+      <NotiStackNavigator.Screen name="inPost" component={PostScreen} />
     </NotiStackNavigator.Navigator>
   );
 }

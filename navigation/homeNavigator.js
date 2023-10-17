@@ -8,6 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSearch } from "../store/actions/searchAction";
+import PostScreen from "../screens/PostScreen";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -53,6 +54,7 @@ const HomeNavigator = () => {
           },
         }}
       />
+      <HomeStack.Screen name="inPost" component={PostScreen} options={{headerTitle: headerCustomTitle}} />
     </HomeStack.Navigator>
   );
 };

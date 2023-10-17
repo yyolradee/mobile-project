@@ -11,6 +11,7 @@ import LocationScreen from "../screens/LocationScreen";
 import { Flex } from "@ant-design/react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSearch } from "../store/actions/searchAction";
+import PostScreen from "../screens/PostScreen";
 
 const FollowStack = createNativeStackNavigator();
 
@@ -109,6 +110,7 @@ export default function FollowNavigator() {
           },
         }}
       />
+      <FollowStack.Screen name="inPost" component={PostScreen} options={{headerTitle: headerCustomTitle}}/>
     </FollowStack.Navigator>
   );
 }

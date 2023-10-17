@@ -8,40 +8,34 @@ import RNPickerSelect from "react-native-picker-select";
 import { MultipleSelectList } from "react-native-dropdown-select-list";
 
 // ----------Mock Up API----------
-import categories from "../data/categories.json";
 import Colors from "../constants/Colors";
 
 // -----------API---------------
-import { getSelectorCategories } from "../data/notifications/notificationsController";
+import { getSelectorCategories } from "../data/catagories/categoriesController";
+import { useDispatch, useSelector } from "react-redux";
+import { addNewPost } from "../data/posts/postsController";
+import { fetchPosts } from "../store/actions/dataAction";
 
 const placeData = [
   {
     label: "คณะเทคโนโลยีสารสนเทศ",
-    value: "it",
-  },
-  {
-    label: "คณะวิทยาศาสตร์",
-    value: "sci",
-  },
-  {
-    label: "อาคารเรียนรวมสมเด็จพระเทพฯ",
-    value: "thep",
-  },
-  {
-    label: "หอประชุมเจ้าพระยาสุรวงษ์ไวยวัฒน์",
-    value: "main",
+    value: "ZcJBG89ZDsVCeogMP0NX",
   },
 ];
 
-const CreatePostDetailScreen = () => {
+const CreatePostDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [validate, setValidate] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [ locations, setLocations] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const { title, description, img_path } = route.params;
+  const userId = useSelector((state)=>state.user.userInfo.uid)
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log(title, description, img_path);
     getSelectorCategories(setCategories);
   }, []);
 
@@ -66,6 +60,27 @@ const CreatePostDetailScreen = () => {
     }
   };
 
+  const postHandler = async () => {
+    try {
+      const objectData = {
+        title: title,
+        description: description,
+        img_path: img_path ? img_path : null,
+        owner_id: userId,
+        categories_id: selectedCategory,
+        location_id: selectedPlace
+      }
+      console.log(objectData);
+      await addNewPost(objectData)
+      dispatch(await fetchPosts())
+    } catch (error) {
+      console.log("Add post failure: " + error);
+    } finally {
+      navigation.popToTop();
+      navigation.navigate("HomeScreen");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <CreatePostHeader
@@ -76,17 +91,12 @@ const CreatePostDetailScreen = () => {
           navigation.pop();
         }}
         rightOnPress={() => {
-          navigation.popToTop();
-          navigation.navigate("HomeScreen");
+          postHandler();
         }}
       />
       <View style={{ paddingHorizontal: 30 }}>
         <View style={styles.form}>
-          <FontAwesome5
-            name="map-marker-alt"
-            size={18}
-            color={Colors.primary}
-          />
+          <FontAwesome5 name="map-marker-alt" size={18} color={Colors.primary} />
           <Text style={{ marginLeft: 10 }}>สถานที่</Text>
           <Text style={{ color: "red", marginRight: 40 }}>*</Text>
           <RNPickerSelect
@@ -116,7 +126,7 @@ const CreatePostDetailScreen = () => {
           <MultipleSelectList
             data={categories}
             setSelected={checkMaxSelected}
-            save="value"
+            save="key"
             placeholder="เลือกประเภท"
             arrowicon={<Entypo name="chevron-down" size={24} color="black" />}
             boxStyles={{

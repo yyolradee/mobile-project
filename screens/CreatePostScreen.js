@@ -17,6 +17,8 @@ import CreatePostHeader from "../components/CreatePostHeader";
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../constants/Colors";
 
+import { addNewPost } from "../data/posts/postsController";
+
 const CreatePostScreen = () => {
   const navigation = useNavigation();
 
@@ -79,6 +81,10 @@ const CreatePostScreen = () => {
     }
   };
 
+  const nextHandler = () => {
+    navigation.navigate("detail", {title: title, description: description, img_path: image});
+  }
+
   useEffect(() => {
     if (image == null) {
       setIsImagePickerActive("เพิ่มรูปภาพ หรือวิดีโอ (สูงสุด 1 รูป)");
@@ -95,7 +101,7 @@ const CreatePostScreen = () => {
         isActive={true}
         leftOnPress={leftButtonHandler}
         rightOnPress={() => {
-          navigation.navigate("detail");
+          nextHandler();
         }}
       />
       <View style={{ flex: 1 }}>
