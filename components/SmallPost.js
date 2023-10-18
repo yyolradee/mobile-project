@@ -11,11 +11,11 @@ const SmallPost = ({ DATA }) => {
         <Flex direction="column" align="start" style={ DATA.img_path && { width: "70%", paddingRight: 10 }}>
           <Flex style={{ gap: 3 }}>
             <Ionicons name="location-sharp" size={20} color={Colors.primary} />
-            <Text style={{ fontSize: 12, color: Colors.gray }}>จาก</Text>
-            <Text style={{ fontSize: 12 }}>{DATA.location.name}</Text>
+            <Text style={{ fontSize: 13.5, color: Colors.gray }}>จาก</Text>
+            <Text style={[{ fontSize: 13.5 }, (DATA.location.name.length > 30) && {maxWidth: "80%"}]} numberOfLines={1}>{DATA.location.name}</Text>
           </Flex>
-          <Text style={{ fontSize: 20, color: Colors.primary, fontWeight: "bold" }}>{DATA.title}</Text>
-          <Text style={{ fontSize: 14, color: Colors.gray }} numberOfLines={2}>
+          <Text style={{ fontSize: 20, color: Colors.primary, fontWeight: "bold" }} numberOfLines={1}>{DATA.title}</Text>
+          <Text style={{ fontSize: 15, color: Colors.gray }} numberOfLines={2}>
             {DATA.description}
           </Text>
         </Flex>

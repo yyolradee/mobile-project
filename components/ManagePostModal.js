@@ -7,18 +7,24 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { deletePostById } from "../data/posts/postsController";
 import { useDispatch } from "react-redux";
 import { fetchPosts } from "../store/actions/dataAction";
-
+import { useNavigation } from "@react-navigation/native";
 
 const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
+  const navigation = useNavigation();
+
   const dispatch = useDispatch();
   const deleteHandler = async (postId) => {
     try {
-      await deletePostById(postId);
-      dispatch(await fetchPosts());
+      deletePostById(postId);
+      dispatch(fetchPosts());
     } catch (error) {
       console.error("Error:", error);
     }
+    finally {
+      onClose();
+    }
   };
+
   const renderItem = () => {
     if (isEditable) {
       return (
@@ -26,20 +32,30 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
         <View style={styles.container}>
           <Text style={{ textAlign: "center", fontSize: 16 }}>การจัดการโพสต์</Text>
           <View style={{ borderBottomColor: Colors.gray2, borderBottomWidth: 1 }} />
-          <Flex align="center" style={{ gap: 5 }}>
+          {/* <Flex align="center" style={{ gap: 5 }}>
             <MaterialIcons name="visibility-off" size={24} color={Colors.gray} />
             <Text style={{ color: Colors.gray }}>ซ่อนโพสต์</Text>
-          </Flex>
+          </Flex> */}
           <TouchableOpacity onPress={() => deleteHandler(postId)}>
             <Flex align="center" style={{ gap: 5 }}>
               <Feather name="trash-2" size={24} color="red" />
               <Text style={{ color: "red" }}>ลบโพสต์</Text>
             </Flex>
           </TouchableOpacity>
-          <Flex align="center" style={{ gap: 5 }}>
-            <FontAwesome5 name="edit" size={24} color={Colors.gray} />
-            <Text style={{ color: Colors.gray }}>แก้ไขโพสต์</Text>
-          </Flex>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("CreatePostScreen", {
+                screen: 'content',
+                params: {postId: postId},
+              });
+              onClose()
+            }}
+          >
+            <Flex align="center" style={{ gap: 5 }}>
+              <FontAwesome5 name="edit" size={24} color={Colors.gray} />
+              <Text style={{ color: Colors.gray }}>แก้ไขโพสต์</Text>
+            </Flex>
+          </TouchableOpacity>
         </View>
       );
     } else {
@@ -48,18 +64,18 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
         <View style={styles.container}>
           <Text style={{ textAlign: "center", fontSize: 16 }}>การจัดการโพสต์</Text>
           <View style={{ borderBottomColor: Colors.gray2, borderBottomWidth: 1 }} />
-          <Flex align="center" style={{ gap: 5 }}>
+          {/* <Flex align="center" style={{ gap: 5 }}>
             <MaterialIcons name="visibility-off" size={24} color={Colors.gray} />
             <Text style={{ color: Colors.gray }}>ซ่อนโพสต์</Text>
-          </Flex>
+          </Flex> */}
           <Flex align="center" style={{ gap: 5 }}>
             <AntDesign name="warning" size={24} color="red" />
             <Text style={{ color: "red" }}>รายงานโพสต์</Text>
           </Flex>
-          <Flex align="center" style={{ gap: 5 }}>
+          {/* <Flex align="center" style={{ gap: 5 }}>
             <Octicons name="bell" size={24} color={Colors.gray} />
             <Text style={{ color: Colors.gray }}>เปิดการแจ้งเตือนเกี่ยวกับโพสต์นี้</Text>
-          </Flex>
+          </Flex> */}
         </View>
       );
     }

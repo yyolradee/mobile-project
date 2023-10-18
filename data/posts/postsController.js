@@ -2,19 +2,63 @@ import firebase from "../firebaseConfig";
 
 // ---------- Posts ---------------
 
-export const getPostsById = (postId, setState) => {
-  firebase
-    .firestore()
-    .collection("Posts")
-    .doc(postId)
-    .then((documentSnapshot) => {
-      if (documentSnapshot.exists) {
-        setState({ ...documentSnapshot.data(), post_id: postId });
-      } else {
-        console.error("Document does not exist");
-        setState(null);
-      }
-    });
+export const getPostsById = async (postId, setState) => {
+  try {
+    await Promise.all(
+      firebase
+        .firestore()
+        .collection("Posts")
+        .doc(postId)
+        .get()
+        .then(async (doc) => {
+          if (doc.exists) {
+            const db = doc.data();
+            const locationRef = db.location_id;
+            let locationData = null;
+            const categoriesRef = db.categories || [];
+            const categoriesList = [];
+
+            if (locationRef) {
+              try {
+                const locationSnapshot = await locationRef.get();
+                if (locationSnapshot.exists) {
+                  locationData = {
+                    // ...locationSnapshot.data(), //disable for performance
+                    name: locationSnapshot.data().name,
+                    location_id: locationSnapshot.id,
+                  };
+                }
+              } catch (error) {
+                console.error("Error fetching location:", error);
+              }
+            }
+
+            await Promise.all(
+              categoriesRef.map(async (item) => {
+                try {
+                  const categoriesSnapshot = await item.get();
+                  if (categoriesSnapshot.exists) {
+                    categoriesList.push({
+                      ...categoriesSnapshot.data(), //disable for performance
+                      category_id: categoriesSnapshot.id,
+                    });
+                  }
+                } catch (error) {
+                  console.error("Error fetching categories:", error);
+                }
+              })
+            );
+
+            setState({ ...db, post_id: postId, location: locationData, categories: categoriesList });
+          } else {
+            console.error("Document does not exist");
+            setState(null);
+          }
+        })
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getAllPosts = async () => {
@@ -25,8 +69,8 @@ export const getAllPosts = async () => {
     await Promise.all(
       documentSnapshot.docs.map(async (doc) => {
         const post = doc.data();
-        const categoriesList = doc.data().categories || [];
-        const tempCategoriesList = [];
+        const categoriesRef = doc.data().categories || [];
+        const categoriesList = [];
         const locationRef = doc.data().location_id;
         let locationData = null;
         const ownerRef = doc.data().owner_id;
@@ -61,13 +105,13 @@ export const getAllPosts = async () => {
         }
 
         await Promise.all(
-          categoriesList.map(async (item) => {
+          categoriesRef.map(async (item) => {
             try {
-              const docSnapshot = await item.get();
-              if (docSnapshot.exists) {
-                tempCategoriesList.push({
-                  ...docSnapshot.data(),
-                  category_id: docSnapshot.id,
+              const categoriesSnapshot = await item.get();
+              if (categoriesSnapshot.exists) {
+                categoriesList.push({
+                  ...categoriesSnapshot.data(),
+                  category_id: categoriesSnapshot.id,
                 });
               }
             } catch (error) {
@@ -79,7 +123,7 @@ export const getAllPosts = async () => {
         data.push({
           ...post,
           post_id: doc.id,
-          categories: tempCategoriesList,
+          categories: categoriesList,
           location: locationData,
           owner: ownerData,
         });
@@ -119,7 +163,7 @@ export const addNewPost = (itemData) => {
       categories: categoryRef,
       location_id: locationRef,
       owner_id: userRef,
-      is_trending: false
+      is_trending: false,
     })
     .then((docRef) => {
       if (docRef) {
@@ -134,32 +178,46 @@ export const addNewPost = (itemData) => {
     });
 };
 
-export const updatePostWithId = (documentId, newData) => {
+export const updatePostWithId = (postId, itemData) => {
   const db = firebase.firestore();
+  const locationsRef = db.collection("Locations");
+  const usersRef = db.collection("Users");
+
+  const categoryRef = itemData.categories_id.map((category_id) => {
+    return db.doc(`Categories/${category_id}`);
+  });
+
+  const locationRef = locationsRef.doc(itemData.location_id);
+  const userRef = usersRef.doc(itemData.owner_id);
+
+  const img_path = itemData.img_path;
 
   db.collection("Posts")
-    .doc(documentId)
-    .update(newData)
-    .then((docRef) => {
-      if (docRef.exists) {
-        console.log("Post updated with ID: ", docRef.id);
-        return true;
-      } else {
-        throw new Error("Collection is not exists");
-      }
+    .doc(postId)
+    .update({
+      title: itemData.title,
+      description: itemData.description,
+      img_path: img_path,
+      update_date: new Date(),
+      categories: categoryRef,
+      location_id: locationRef,
+      owner_id: userRef,
+    })
+    .then(() => {
+      console.log("Post updated with ID: ", postId);
+      return true;
     })
     .catch((error) => {
       console.error("Error updating item:", error);
     });
 };
 
-
 export const getUserPosts = (userId, onDataReceived) => {
   const db = firebase.firestore();
-  const postsRef = db.collection('Posts');
+  const postsRef = db.collection("Posts");
 
   // Set up a listener for real-time updates
-  const query = postsRef.where('owner_id', '==', userId);
+  const query = postsRef.where("owner_id", "==", userId);
   const unsubscribe = query.onSnapshot((snapshot) => {
     const Posts = snapshot.docs.map((doc) => ({
       post_id: doc.id,
@@ -172,18 +230,18 @@ export const getUserPosts = (userId, onDataReceived) => {
   return unsubscribe;
 };
 
-
 export const deletePostById = (postId) => {
   const db = firebase.firestore();
 
-  const itemsRef = db.collection('Posts');
+  const itemsRef = db.collection("Posts");
 
-  itemsRef.doc(postId)
+  itemsRef
+    .doc(postId)
     .delete()
     .then(() => {
-      console.log('Post deleted successfully');
+      console.log("Post deleted successfully");
     })
     .catch((error) => {
-      console.error('Error deleting post:', error);
+      console.error("Error deleting post:", error);
     });
-}
+};
