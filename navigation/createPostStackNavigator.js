@@ -10,7 +10,7 @@ const CreatePostStack = createNativeStackNavigator();
 export default function CreatePostNavigator(){
     return (
         <CreatePostStack.Navigator initialRouteName="content" screenOptions={{headerShown: false}}>
-            <CreatePostStack.Screen name="content" component={CreatePostScreen} />
+            <CreatePostStack.Screen name="content" component={CreatePostScreen}/>
             <CreatePostStack.Screen name="detail" component={CreatePostDetailScreen} />
         </CreatePostStack.Navigator>
     )

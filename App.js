@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
 import { Provider } from "react-redux";
 import store from "./store";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -15,9 +14,11 @@ import { auth } from "./data/firebaseConfig";
 import { checkLocalUser, handleGoogleSignIn, subscribeToAuthStateChanges } from "./data/auth/authUtils";
 import { LoadingScreen } from "./screens/LoadingScreen";
 
+
 WebBrowser.maybeCompleteAuthSession();
 
 export default function App() {
+
   const [userLocalInfo, setUserLocalInfo] = useState();
   const [loading, setLoading] = useState(false);
   const [req, res, promptAsync] = Google.useAuthRequest({
