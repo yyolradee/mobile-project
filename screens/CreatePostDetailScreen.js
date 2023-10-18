@@ -25,26 +25,22 @@ const CreatePostDetailScreen = ({ route }) => {
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
   const { title, description, img_path } = route.params;
-  const userId = useSelector((state)=>state.user.userInfo.uid)
+  const userId = useSelector((state) => state.user.userInfo.uid);
+  const locationsTemp = useSelector((state) => state.data.locationData);
   const dispatch = useDispatch();
 
-  async function fetchLocations(){
-    try {
-      const locationsTemp = await getAllLocations();
-      const locationList = [];
-      locationsTemp.forEach((location) => {
-        locationList.push({label: location.name, value: location.location_id})
-      })
-      setLocations(locationList);
-    } catch (error) {
-      console.error("Fetch Locations Error", error)
-    } 
+  function refactorLocations() {
+    const locationList = [];
+    locationsTemp.forEach((location) => {
+      locationList.push({ label: location.name, value: location.location_id });
+    });
+    setLocations(locationList);
   }
 
   useEffect(() => {
     console.log(title, description, img_path);
     getSelectorCategories(setCategories);
-    fetchLocations()
+    refactorLocations();
   }, []);
 
   useEffect(() => {
@@ -76,11 +72,11 @@ const CreatePostDetailScreen = ({ route }) => {
         img_path: img_path ? img_path : null,
         owner_id: userId,
         categories_id: selectedCategory,
-        location_id: selectedPlace
-      }
+        location_id: selectedPlace,
+      };
       console.log(objectData);
-      await addNewPost(objectData)
-      dispatch(await fetchPosts())
+      await addNewPost(objectData);
+      dispatch(await fetchPosts());
     } catch (error) {
       console.log("Add post failure: " + error);
     } finally {
