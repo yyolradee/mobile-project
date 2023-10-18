@@ -15,13 +15,7 @@ import { getSelectorCategories } from "../data/catagories/categoriesController";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewPost } from "../data/posts/postsController";
 import { fetchPosts } from "../store/actions/dataAction";
-
-const placeData = [
-  {
-    label: "คณะเทคโนโลยีสารสนเทศ",
-    value: "ZcJBG89ZDsVCeogMP0NX",
-  },
-];
+import { getAllLocations } from "../data/locations/locationsController";
 
 const CreatePostDetailScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -34,9 +28,23 @@ const CreatePostDetailScreen = ({ route }) => {
   const userId = useSelector((state)=>state.user.userInfo.uid)
   const dispatch = useDispatch();
 
+  async function fetchLocations(){
+    try {
+      const locationsTemp = await getAllLocations();
+      const locationList = [];
+      locationsTemp.forEach((location) => {
+        locationList.push({label: location.name, value: location.location_id})
+      })
+      setLocations(locationList);
+    } catch (error) {
+      console.error("Fetch Locations Error", error)
+    } 
+  }
+
   useEffect(() => {
     console.log(title, description, img_path);
     getSelectorCategories(setCategories);
+    fetchLocations()
   }, []);
 
   useEffect(() => {
@@ -104,7 +112,7 @@ const CreatePostDetailScreen = ({ route }) => {
             onValueChange={(value) => {
               setSelectedPlace(value);
             }}
-            items={placeData}
+            items={locations}
             placeholder={{ label: "เลือกสถานที่", value: null }}
             Icon={() => {
               return (

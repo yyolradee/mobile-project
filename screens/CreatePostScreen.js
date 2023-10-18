@@ -25,6 +25,7 @@ const CreatePostScreen = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const [validate, setValidate] = useState(false);
   const [isImagePickerActive, setIsImagePickerActive] = useState("เพิ่มรูปภาพ หรือวิดีโอ (สูงสุด 1 รูป)");
 
   const clearState = () => {
@@ -93,12 +94,20 @@ const CreatePostScreen = () => {
     }
   }, [image]);
 
-  return (
+  useEffect(() => {
+    if ((!title == null || !title == "") && (!description == null || !description == "")) {
+      setValidate(true);
+    } else {
+      setValidate(false);
+    }
+  }, [title, description])
+
+return (
     <View style={styles.container}>
       <CreatePostHeader
         leftButton="ยกเลิก"
         rightButton="ถัดไป"
-        isActive={true}
+        isActive={validate}
         leftOnPress={leftButtonHandler}
         rightOnPress={() => {
           nextHandler();
