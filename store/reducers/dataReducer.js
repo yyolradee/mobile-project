@@ -7,7 +7,8 @@ import {
   FETCH_CATEGORIES_FAILURE,
   FETCH_LOCATIONS_REQUEST,
   FETCH_LOCATIONS_SUCCESS,
-  FETCH_LOCATIONS_FAILURE
+  FETCH_LOCATIONS_FAILURE,
+  FETCH_FOLLOWLOCATIONS,
 } from "../actions/dataAction";
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   postDetailData: [],
   statusData: ["รอรับเรื่อง", "กำลังดำเนินการ", "แก้ไขเสร็จสิ้น"],
   filterData: [],
+  followLocationsData: [],
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -48,7 +50,7 @@ const dataReducer = (state = initialState, action) => {
       console.log(action.payload);
       return state;
 
-      // LOCATIONS Handler
+    // LOCATIONS Handler
     case FETCH_LOCATIONS_REQUEST:
       return state;
 
@@ -61,6 +63,9 @@ const dataReducer = (state = initialState, action) => {
     case FETCH_LOCATIONS_FAILURE:
       console.log(action.payload);
       return state;
+
+    case FETCH_FOLLOWLOCATIONS:
+      return { ...state, followLocationsData: action.payload };
 
     default:
       return state;

@@ -10,44 +10,70 @@ import {
 } from "../data/notifications/notificationsController";
 import { useSelector } from "react-redux";
 import Colors from "../constants/Colors";
+import { addMember, deleteMember } from "../data/locations/locationsController";
+import { LoadingScreen } from "./LoadingScreen";
+import { set } from "lodash";
 
 const NotificationScreen = () => {
   const userInfo = useSelector((state) => {
     return state.user.userInfo;
   });
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState(null);
 
   const navigation = useNavigation();
   const pressHandler = (id) => {
     navigation.navigate("postInNoti", { post_id: id });
   };
 
+  async function fetchNotifications() {
+    try {
+      await getMyNotifications(userInfo.uid, setNotifications);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
-    getMyNotifications(userInfo.uid, setNotifications)
+    fetchNotifications();
   }, []);
 
+  if (notifications == null) {
+    return <LoadingScreen />
+  }
+
   return (
-    <View style={{...styles.container, justifyContent: notifications.length === 0 ? "center": "flex-start"}}>
+    <View
+      style={{
+        ...styles.container,
+        justifyContent: notifications.length === 0 ? "center" : "flex-start",
+      }}
+    >
       {notifications.length === 0 ? (
-        <Text style={{fontSize: 18, color: Colors.gray, alignSelf: "center"}}>ไม่มีการแจ้งเตือนในขณะนี้...</Text>
+        <Text style={{ fontSize: 18, color: Colors.gray, alignSelf: "center" }}>
+          ไม่มีการแจ้งเตือนในขณะนี้...
+        </Text>
       ) : (
-      <FlatList
-        data={notifications}
-        renderItem={({ item }) => (
-          <NotificationBox notiItem={item} onPress={pressHandler} />
-        )}
-        keyExtractor={(item) => item.notification_id}
-        showsVerticalScrollIndicator={false}
-      />
+        <FlatList
+          data={notifications}
+          renderItem={({ item }) => (
+            <NotificationBox notiItem={item} onPress={pressHandler} />
+          )}
+          keyExtractor={(item) => item.notification_id}
+          showsVerticalScrollIndicator={false}
+        />
       )}
-      {/* <Button title="sent Noti" onPress={() => {
-        createNotification({
-          post_id : "Ydus0sroXBCaxgpQwOlr",
-          type: "update status",
-          description : "ของคุณ แก้ไขเสร็จสิ้นแล้ว",
-          status: "แก้ไขเสร็จสิ้น"
-        })
-      }} /> */}
+      <Button
+        title="Follow"
+        onPress={() => {
+          addMember("ZcJBG89ZDsVCeogMP0NX", "VF2A0jeb9Hff8n7NwhgoCR9nOqS2");
+        }}
+      />
+      <Button
+        title="unFollow"
+        onPress={() => {
+          deleteMember("OHPLF1Ztxn9JGWGfGvgw", "VF2A0jeb9Hff8n7NwhgoCR9nOqS2");
+        }}
+      />
     </View>
   );
 };

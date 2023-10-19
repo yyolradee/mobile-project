@@ -12,27 +12,30 @@ import Colors from "../constants/Colors";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import FacultyBox from "../components/facultyBox";
+import { useSelector } from "react-redux";
 
 const FollowingAllScreen = () => {
   const navigation = useNavigation();
   const [sort, setSort] = useState("เรียงจากตัวอักษร");
   const [show, setShow] = useState(false);
+  const followLocationsData = useSelector((state) => state.data.followLocationsData);
 
-  placeData.sort((item1, item2) =>
+  followLocationsData.sort((item1, item2) =>
     item1.name > item2.name ? 1 : item1.name < item2.name ? -1 : 0
   );
 
   useEffect(() => {
     if (sort == "เรียงจากตัวอักษร") {
-      placeData.sort((item1, item2) =>
+      followLocationsData.sort((item1, item2) =>
         item1.name > item2.name ? 1 : item1.name < item2.name ? -1 : 0
       );
     } else {
+      console.log("เวลาเหลือค่อยทำนะ")
     }
   }, [sort]);
 
   const locationInfoHandler = (item) => {
-    navigation.navigate("Location", {location: item})
+    navigation.navigate("Location", {location_id: item})
   }
 
   return (
@@ -52,9 +55,9 @@ const FollowingAllScreen = () => {
         <Entypo name="chevron-down" size={18} color="black" />
       </TouchableOpacity>
       <FlatList
-        data={placeData}
+        data={followLocationsData}
         renderItem={({ item }) => <FacultyBox item={item} onPressHandler={locationInfoHandler} />}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.location_id}
         showsVerticalScrollIndicator={false}
       />
       <View

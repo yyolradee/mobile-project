@@ -16,7 +16,7 @@ const facultyBox = (props) => {
       <TouchableOpacity
         style={{ flexDirection: "row", alignItems: "center", width: "75%" }}
         onPress={() => {
-          props.onPressHandler(props.item);
+          props.onPressHandler(props.item.location_id);
         }}
       >
         <Image
@@ -26,7 +26,7 @@ const facultyBox = (props) => {
             height: 40,
             borderRadius: 30,
           }}
-          source={item.logo ? { uri: item.logo } : require("../assets/no-image.png")}
+          source={item.img_path ? { uri: item.img_path } : require("../assets/no-image.png")}
         />
         <Text style={{ fontSize: 14, marginLeft: 14, width: "80%" }} numberOfLines={1} flexWrap="wrap">
           {item.name}

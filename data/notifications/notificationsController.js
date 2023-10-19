@@ -3,8 +3,9 @@ import { useSelector } from "react-redux";
 
 // ---------- Notifictaions --------------
 
-export const getMyNotifications = (userId, setState) => {
-    firebase
+export const getMyNotifications = async (userId, setState) => {
+  try {
+    await firebase
       .firestore()
       .collection("Users")
       .doc(userId)
@@ -17,22 +18,25 @@ export const getMyNotifications = (userId, setState) => {
             const docSnapshot = await noti.get();
             if (docSnapshot.exists) {
               const postSnapshot = await docSnapshot.data().post_id.get();
-              const post = postSnapshot.data()
+              const post = postSnapshot.data();
               notificationData.push({
                 ...docSnapshot.data(),
                 notification_id: docSnapshot.id,
-                post: {...post, post_id: postSnapshot.id}
+                post: { ...post, post_id: postSnapshot.id },
               });
             }
           } catch (error) {
             console.error("Error fetching notification:", error);
           }
         }
-        
+
         notificationData.sort((a, b) => b.date_time - a.date_time);
         setState(notificationData);
       });
     return () => subscriber();
+  } catch (error) {
+    console.error("getNotificationError");
+  }
 };
 
 export const createNotification = (payload) => {
@@ -48,7 +52,7 @@ export const createNotification = (payload) => {
       await transaction.get(postDoc).then((docSnapshot) => {
         userDoc = docSnapshot.data().owner_id;
       });
-      
+
       // get notiArray form user
       let notificationsArray;
       await transaction.get(userDoc).then((docSnapshot) => {

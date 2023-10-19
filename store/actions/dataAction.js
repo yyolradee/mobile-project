@@ -32,7 +32,6 @@ export const fetchCategories = () => {
   };
 };
 
-
 // Posts
 
 import { getAllPosts } from "../../data/posts/postsController";
@@ -67,7 +66,11 @@ export const fetchPosts = () => {
   };
 };
 
-import { getAllLocations } from "../../data/locations/locationsController";
+import {
+  getAllLocations,
+  getFollowLocations,
+} from "../../data/locations/locationsController";
+import { useSelector } from "react-redux";
 export const FETCH_LOCATIONS_REQUEST = "FETCH_LOCATIONS_REQUEST";
 export const FETCH_LOCATIONS_SUCCESS = "FETCH_LOCATIONS_SUCCESS";
 export const FETCH_LOCATIONS_FAILURE = "FETCH_LOCATIONS_FAILURE";
@@ -95,6 +98,21 @@ export const fetctLocations = () => {
       dispatch(fetchLocationsSuccess(location));
     } catch (error) {
       dispatch(fetchLocationsFailure(error));
+    }
+  };
+};
+
+// get Following Location
+
+export const FETCH_FOLLOWLOCATIONS = "FETCH_FOLLOWLOCATIONS";
+
+export const fetchFollowLocations = (user_id) => {
+  return async (dispatch) => {
+    try {
+      const followLocations = await getFollowLocations(user_id);
+      dispatch({ type: FETCH_FOLLOWLOCATIONS, payload: followLocations });
+    } catch (error) {
+      console.error(error);
     }
   };
 };
