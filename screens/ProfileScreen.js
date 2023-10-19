@@ -18,9 +18,9 @@ const ProfileScreen = () => {
   const filtersPostData = postDATA.filter((post) => post.owner.owner_id === userInfo.uid);
   const [ownerPostData, setOwnerPostData] = useState(filtersPostData);
 
-  useSelector((state) => {
-    console.log(JSON.stringify(state.user.userInfo, null, 2));
-  });
+  // useSelector((state) => {
+  //   console.log(JSON.stringify(state.user.userInfo, null, 2));
+  // });
 
   return (
     <View style={styles.container}>

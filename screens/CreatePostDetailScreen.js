@@ -13,15 +13,8 @@ import Colors from "../constants/Colors";
 // -----------API---------------
 import { getSelectorCategories } from "../data/catagories/categoriesController";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewPost } from "../data/posts/postsController";
+import { addNewPost, updatePostWithId } from "../data/posts/postsController";
 import { fetchPosts } from "../store/actions/dataAction";
-
-const placeData = [
-  {
-    label: "คณะเทคโนโลยีสารสนเทศ",
-    value: "ZcJBG89ZDsVCeogMP0NX",
-  },
-];
 
 const CreatePostDetailScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -30,13 +23,25 @@ const CreatePostDetailScreen = ({ route }) => {
   const [validate, setValidate] = useState(false);
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
-  const { title, description, img_path } = route.params;
-  const userId = useSelector((state)=>state.user.userInfo.uid)
+  const { title, description, img_path, post_id, locationData, categoriesData, clearState } = route.params;
+  const userId = useSelector((state) => state.user.userInfo.uid);
+  const locationsTemp = useSelector((state) => state.data.locationData);
   const dispatch = useDispatch();
 
+  function refactorLocations() {
+    const locationList = [];
+    locationsTemp.forEach((location) => {
+      locationList.push({ label: location.name, value: location.location_id });
+    });
+    setLocations(locationList);
+  }
+
   useEffect(() => {
-    console.log(title, description, img_path);
+    // console.log(post_id);
+    // console.log(locationData);
+    // console.log(categoriesData);
     getSelectorCategories(setCategories);
+    refactorLocations();
   }, []);
 
   useEffect(() => {
@@ -60,38 +65,55 @@ const CreatePostDetailScreen = ({ route }) => {
     }
   };
 
+  const objectData = {
+    title: title,
+    description: description,
+    img_path: img_path ? img_path : null,
+    owner_id: userId,
+    categories_id: selectedCategory,
+    location_id: selectedPlace,
+  };
   const postHandler = async () => {
     try {
-      const objectData = {
-        title: title,
-        description: description,
-        img_path: img_path ? img_path : null,
-        owner_id: userId,
-        categories_id: selectedCategory,
-        location_id: selectedPlace
-      }
       console.log(objectData);
-      await addNewPost(objectData)
-      dispatch(await fetchPosts())
+      await addNewPost(objectData);
+      dispatch(await fetchPosts());
     } catch (error) {
       console.log("Add post failure: " + error);
     } finally {
+      clearState();
       navigation.popToTop();
       navigation.navigate("HomeScreen");
     }
   };
 
+  const editHander = async () => {
+    try {
+      console.log(objectData);
+      await updatePostWithId(post_id, objectData);
+      dispatch(await fetchPosts());
+    } catch (error) {
+      console.log("Add post failure: " + error);
+    } finally {
+      clearState();
+      navigation.popToTop();
+      navigation.navigate("HomeScreen");
+    }
+  };
+
+  const textSwap = !post_id ? "โพสต์" : "แก้ไข";
+
   return (
     <View style={styles.container}>
       <CreatePostHeader
         leftButton="ย้อนกลับ"
-        rightButton="โพสต์"
+        rightButton={textSwap}
         isActive={validate}
         leftOnPress={() => {
           navigation.pop();
         }}
         rightOnPress={() => {
-          postHandler();
+          !post_id ? postHandler() : editHander();
         }}
       />
       <View style={{ paddingHorizontal: 30 }}>
@@ -104,7 +126,7 @@ const CreatePostDetailScreen = ({ route }) => {
             onValueChange={(value) => {
               setSelectedPlace(value);
             }}
-            items={placeData}
+            items={locations}
             placeholder={{ label: "เลือกสถานที่", value: null }}
             Icon={() => {
               return (

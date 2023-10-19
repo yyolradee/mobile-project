@@ -17,51 +17,61 @@ import CreatePostHeader from "../components/CreatePostHeader";
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../constants/Colors";
 
-import { addNewPost } from "../data/posts/postsController";
+import { getPostsById } from "../data/posts/postsController";
 
-const CreatePostScreen = () => {
+const CreatePostScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const [categories, setCategories] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [validate, setValidate] = useState(false);
   const [isImagePickerActive, setIsImagePickerActive] = useState("เพิ่มรูปภาพ หรือวิดีโอ (สูงสุด 1 รูป)");
+  const [postData, setPostData] = useState(null);
+
+  const [check, setCheck] = useState(true);
+
+  const { postId } = route.params ? route.params : {};
 
   const clearState = () => {
+    route.params = { postId: undefined };
     setTitle("");
     setDescription("");
     setImage(null);
+    setPostData(null);
+    setCheck(true);
+    setCategories(null);
+    setLocation(null);
+    console.log("Clear state");
   };
 
   const leftButtonHandler = () => {
     if (title == "" && (description == "") & (image == null)) {
       navigation.navigate("HomeScreen");
     } else {
-      Alert.alert(
-        "ต้องการบันทึกแบบร่างหรือไม่",
-        "หากคุณละทิ้ง ค่าทุกอย่างของโพสต์จะหายไป",
-        [
-          {
-            text: "บันทึกแบบร่าง",
-            onPress: () => {
-              navigation.navigate("HomeScreen");
-            },
+      Alert.alert("ต้องการบันทึกแบบร่างหรือไม่", "หากคุณละทิ้ง ค่าทุกอย่างของโพสต์จะหายไป", [
+        {
+          text: "บันทึกแบบร่าง",
+          onPress: () => {
+            navigation.navigate("HomeScreen");
           },
-          {
-            text: "ละทิ้งโพสต์",
-            onPress: () => {
-              clearState();
-              navigation.navigate("HomeScreen");
-            },
-            style: "destructive",
+        },
+        {
+          text: "ละทิ้งโพสต์",
+          onPress: () => {
+            clearState();
+            navigation.navigate("HomeScreen");
           },
-          {
-            text: "เขียนโพสต์ต่อ",
-            onPress: () => {},
-            style: "cancle",
-          },
-        ]
-      );
+          style: "destructive",
+        },
+        {
+          text: "เขียนโพสต์ต่อ",
+          onPress: () => {},
+          style: "cancle",
+        },
+      ]);
     }
   };
 
@@ -82,8 +92,16 @@ const CreatePostScreen = () => {
   };
 
   const nextHandler = () => {
-    navigation.navigate("detail", {title: title, description: description, img_path: image});
-  }
+    navigation.navigate("detail", {
+      post_id: postId,
+      title: title,
+      description: description,
+      img_path: image,
+      categoriesData: categories,
+      locationData: location,
+      clearState,
+    });
+  };
 
   useEffect(() => {
     if (image == null) {
@@ -93,12 +111,38 @@ const CreatePostScreen = () => {
     }
   }, [image]);
 
+  useEffect(() => {
+    if ((!title == null || !title == "") && (!description == null || !description == "")) {
+      setValidate(true);
+    } else {
+      setValidate(false);
+    }
+  }, [title, description]);
+
+  useEffect(() => {
+    if (postId && !postData && check) {
+      getPostsById(postId, setPostData);
+      setCheck(false);
+      console.log("get post by id");
+    }
+  });
+
+  useEffect(() => {
+    if (postData) {
+      setTitle(postData.title);
+      setDescription(postData.description);
+      setImage(postData.img_path);
+      setLocation(postData.location);
+      setCategories(postData.categories);
+    }
+  }, [postData]);
+
   return (
     <View style={styles.container}>
       <CreatePostHeader
         leftButton="ยกเลิก"
         rightButton="ถัดไป"
-        isActive={true}
+        isActive={validate}
         leftOnPress={leftButtonHandler}
         rightOnPress={() => {
           nextHandler();
@@ -116,7 +160,7 @@ const CreatePostScreen = () => {
           }}
         />
         <TextInput
-          style={{ fontSize: 15, paddingVertical: 4, paddingHorizontal: 30 }}
+          style={{ fontSize: 15, paddingVertical: 14, paddingHorizontal: 30 }}
           placeholder="อธิบายเนื้อหาของปัญหา..."
           multiline={true}
           autoCorrect={false}
@@ -125,7 +169,7 @@ const CreatePostScreen = () => {
             setDescription(text);
           }}
         />
-        <Image style={{ width: "100%", height: 300 }} source={{ uri: image }} />
+        {image && <Image style={{ width: "100%", height: 300 }} source={{ uri: image }} />}
       </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}

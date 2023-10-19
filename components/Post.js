@@ -1,20 +1,19 @@
-import React, {useState, useEffect} from "react";
-import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
-import { Button, Flex, WingBlank } from '@ant-design/react-native';
-import { Ionicons, Entypo, Feather, FontAwesome, AntDesign, MaterialIcons } from '@expo/vector-icons';
-import ManagePostModal from './ManagePostModal';
+import { Button, Flex, WingBlank } from "@ant-design/react-native";
+import { Ionicons, Entypo, Feather, FontAwesome, AntDesign, MaterialIcons } from "@expo/vector-icons";
+import ManagePostModal from "./ManagePostModal";
 import CommentModal from "./CommentModal";
-import {actualDimensions} from "../constants/responsiveHeight";
-import {ReadMoreText} from "../constants/ReadMoreText"
+import { actualDimensions } from "../constants/responsiveHeight";
+import { ReadMoreText } from "../constants/ReadMoreText";
 import moment from "moment";
 import { useSelector } from "react-redux";
-
 
 // Render Category
 const renderItem = ({ item }) => (
   <View style={styles.Cat} disabled>
-    <Text style={{color: "white", fontSize: 12}}>{item.name}</Text>
+    <Text style={{ color: "white", fontSize: 12 }}>{item.name}</Text>
   </View>
 );
 
@@ -22,59 +21,56 @@ const renderItem = ({ item }) => (
 const renderTrending = (trending) => {
   if (trending) {
     return (
-      <Flex style={{marginLeft: 12, gap: 3}}>
+      <Flex style={{ marginLeft: 12, gap: 3 }}>
         <MaterialIcons name="local-fire-department" size={20} color={Colors.pink} />
-        <Text style={{color: Colors.pink}}>ยอดนิยม</Text>
+        <Text style={{ color: Colors.pink }}>ยอดนิยม</Text>
       </Flex>
-      )
+    );
   } else {
-    return null
+    return null;
   }
-}
-
-
+};
 
 const Post = (props) => {
   // Check if post category is can move or not
-  const postData = props.postData
-  const [data, setData] = useState([])
-  const [timePassed, setTimePassed] = useState(null)
-  const [trending, setTrending] = useState(false)
-  const [comments, setComments] = useState([])
+  const postData = props.postData;
+  const [data, setData] = useState([]);
+  const [timePassed, setTimePassed] = useState(null);
+  const [trending, setTrending] = useState(false);
+  const [comments, setComments] = useState([]);
 
   const [scrollEnabled, setScrollEnabled] = useState(true);
-  const [statusColor, setStatusColor] = useState("red")
+  const [statusColor, setStatusColor] = useState("red");
 
   const [isPostModalVisible, setIsPostModalVisible] = useState(false);
   const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
-  const [isEditable, setIsEditable] = useState(false)
-  const userInfo = useSelector(state=>state.user.userInfo);
-
+  const [isEditable, setIsEditable] = useState(false);
+  const userInfo = useSelector((state) => state.user.userInfo);
   // Set When Open this page
   useEffect(() => {
-    setData(postData)
-    setComments(postData.comments)
-    setTimePassed(moment(postData.create_date.toDate()).fromNow())
-    setTrending(postData.is_trending)
+    setData(postData);
+    setComments(postData.comments);
+    setTimePassed(moment(postData.create_date.toDate()).fromNow());
+    setTrending(postData.is_trending);
 
     if (postData.owner.owner_id === userInfo.uid) {
-      setIsEditable(true)
+      setIsEditable(true);
+    }
+    else {
+      setIsEditable(false);
     }
 
     if (data.status == "กำลังดำเนินการ") {
-      setStatusColor(Colors.success)
-    }
-    else if (data.status == "รอรับเรื่อง") {
-      setStatusColor(Colors.warning)
-    }
-    else if (data.status == "แก้ไขเสร็จสิ้น") {
-      setStatusColor(Colors.gray2)
-    }
-    else {
-      setStatusColor("red")
+      setStatusColor(Colors.success);
+    } else if (data.status == "รอรับเรื่อง") {
+      setStatusColor(Colors.warning);
+    } else if (data.status == "แก้ไขเสร็จสิ้น") {
+      setStatusColor(Colors.gray2);
+    } else {
+      setStatusColor("red");
     }
     let contentWidth = 0;
-    postData.categories.forEach(item => {
+    postData.categories.forEach((item) => {
       contentWidth += item.name.length * 8;
     });
 
@@ -84,7 +80,6 @@ const Post = (props) => {
       setScrollEnabled(true);
     }
   });
-
 
   // Manage Post Modal Visible
   const togglePostModal = () => {
@@ -96,28 +91,36 @@ const Post = (props) => {
     setIsCommentModalVisible(!isCommentModalVisible);
   };
 
-
-
   return (
     <View style={styles.container}>
-      <CommentModal isVisible={isCommentModalVisible} onClose={toggleCommentModal} commentsItem={comments}></CommentModal>
-      <ManagePostModal isVisible={isPostModalVisible} onClose={togglePostModal} isEditable={isEditable} postId={data.post_id}/>
+      <CommentModal
+        isVisible={isCommentModalVisible}
+        onClose={toggleCommentModal}
+        commentsItem={comments}
+      ></CommentModal>
+      <ManagePostModal
+        isVisible={isPostModalVisible}
+        onClose={togglePostModal}
+        isEditable={isEditable}
+        postId={data.post_id}
+      />
       <WingBlank style={styles.sub_container1}>
         {/* Header */}
-        <Flex direction="row" justify="between" style={{marginBottom: 5}}>
+        <Flex direction="row" justify="between" style={{ marginBottom: 5 }}>
           <Flex>
             <Ionicons name="location-sharp" size={32} color={Colors.primary} />
             <WingBlank size="sm">
               <Flex direction="column" align="start">
                 <Flex justify="center" align="center">
-                  <Text style={{color: Colors.gray}}>จาก</Text><Text> {data.location ? data.location.name: null}</Text>
-                  <WingBlank size="md" >
-                    <TouchableOpacity style={styles.button} >
-                      <Text style={{color: "white", fontSize: 12}}>ติดตาม</Text>
+                  <Text style={{ color: Colors.gray }}>จาก</Text>
+                  <Text style={data.location && ((data.location.name.length > 30) && {maxWidth: "60%"})} numberOfLines={1}> {data.location ? data.location.name : null}</Text>
+                  <WingBlank size="md">
+                    <TouchableOpacity style={styles.button}>
+                      <Text style={{ color: "white", fontSize: 12 }}>ติดตาม</Text>
                     </TouchableOpacity>
                   </WingBlank>
                 </Flex>
-                <Text style={{color: Colors.gray, fontSize: 12}}>{timePassed}</Text>
+                <Text style={{ color: Colors.gray, fontSize: 12 }}>{timePassed}</Text>
               </Flex>
             </WingBlank>
           </Flex>
@@ -130,39 +133,47 @@ const Post = (props) => {
         </Flex>
         {/* Category */}
         <FlatList
-            horizontal
-            data={data.categories}
-            renderItem={renderItem}
-            keyExtractor={item => item.category_id}
-            scrollEnabled={scrollEnabled}
-            showsHorizontalScrollIndicator={false}
-          />
+          horizontal
+          data={data.categories}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.category_id}
+          scrollEnabled={scrollEnabled}
+          showsHorizontalScrollIndicator={false}
+        />
         {/* Content */}
-        <View style={{marginTop: 10}}>
+        <View style={{ marginTop: 10 }}>
           <Flex align="center">
-            <Text style={{fontWeight: "bold", fontSize: 20}}>{data.title}</Text>
+            <Text style={{ fontWeight: "bold", fontSize: 20 }}>{data.title}</Text>
             {renderTrending(trending)}
           </Flex>
-        <ReadMoreText contents={data.description} MAX_LINES={3} style={{marginTop: 5}}/>
+          <ReadMoreText contents={data.description} MAX_LINES={3} style={{ marginTop: 5 }} />
           {/* <Text style={{marginTop: 5}} numberOfLines={5} flexWrap="wrap">{data.des}</Text> */}
         </View>
       </WingBlank>
-        <Image style={{ height: 250, width: "100%", display:data.img_path ? "flex": "none" }} source={data.img_path ? {uri: data.img_path} : require('../assets/no-image.png')}></Image>
+      <Image
+        style={{ height: 250, width: "100%", display: data.img_path ? "flex" : "none" }}
+        source={data.img_path ? { uri: data.img_path } : require("../assets/no-image.png")}
+      ></Image>
 
-        <Flex direction="row" justify="between" style={styles.sub_container2}>
-            <Flex style={{gap: 5}}>
-              <Feather name="chevrons-up" size={24} color={Colors.gray}/>
-              <Text>{data.vote}</Text>
-              <Feather name="chevrons-down" size={24} color={Colors.gray} />
-              <TouchableOpacity onPress={toggleCommentModal}>
-                <FontAwesome name="commenting-o" size={24} color={Colors.gray} style={{marginLeft: 7, marginRight: 2, top: -1}}/>
-                {/* <Text style={{color: Colors.gray}}>{comments.length} ความคิดเห็น</Text> */}
-              </TouchableOpacity>
-            </Flex>
-            <Flex style={{gap: 5}}>
-              <AntDesign name="infocirlceo" size={20} color={Colors.gray} />
-              <Text style={{color: statusColor}}> {data.status}</Text>
-            </Flex>
+      <Flex direction="row" justify="between" style={styles.sub_container2}>
+        <Flex style={{ gap: 5 }}>
+          <Feather name="chevrons-up" size={24} color={Colors.gray} />
+          <Text>{data.vote}</Text>
+          <Feather name="chevrons-down" size={24} color={Colors.gray} />
+          <TouchableOpacity onPress={toggleCommentModal}>
+            <FontAwesome
+              name="commenting-o"
+              size={24}
+              color={Colors.gray}
+              style={{ marginLeft: 7, marginRight: 2, top: -1 }}
+            />
+            {/* <Text style={{color: Colors.gray}}>{comments.length} ความคิดเห็น</Text> */}
+          </TouchableOpacity>
+        </Flex>
+        <Flex style={{ gap: 5 }}>
+          <AntDesign name="infocirlceo" size={20} color={Colors.gray} />
+          <Text style={{ color: statusColor }}> {data.status}</Text>
+        </Flex>
       </Flex>
     </View>
   );
@@ -175,7 +186,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderColor: Colors.gray2,
     borderBottomWidth: 1,
-    width: "100%"
+    width: "100%",
   },
   sub_container1: {
     marginTop: 15,
@@ -194,7 +205,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 1,
     paddingHorizontal: 10,
-    borderRadius: 15
+    borderRadius: 15,
   },
   Cat: {
     backgroundColor: Colors.primary_sub,
@@ -205,8 +216,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginRight: 5,
     border: 0,
-  }
+  },
 });
-
 
 export default Post;

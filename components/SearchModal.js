@@ -109,7 +109,7 @@ const SearchModal = () => {
         <View style={{ height: "100%" }}>
           <View style={{ paddingVertical: 8, paddingLeft: 17, borderBottomWidth: 1, borderColor: Colors.gray2 }}>
             <Flex align="end" style={{ gap: 6 }}>
-              <Text style={{ fontWeight: "bold" }}>โพสต์ที่กำลังยอดนิยม</Text>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>โพสต์ที่กำลังยอดนิยม</Text>
               <Ionicons name="md-stats-chart" size={24} color={Colors.gray2} />
             </Flex>
           </View>
