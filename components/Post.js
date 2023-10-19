@@ -68,6 +68,7 @@ const Post = (props) => {
   const [isCommentModalVisible, setIsCommentModalVisible] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const userInfo = useSelector((state) => state.user.userInfo);
+  const followData = useSelector((state) => state.data.followLocationsData);
   // Set When Open this page
   useEffect(() => {
     setData(postData);
@@ -100,6 +101,11 @@ const Post = (props) => {
     } else {
       setScrollEnabled(true);
     }
+
+    const checkFollow = followData.findIndex(
+      (location) => location.location_id == postData.location.location_id
+    );
+    setIsFollow(checkFollow == -1 ? false : true);
   });
 
   // Manage Post Modal Visible
@@ -153,11 +159,29 @@ const Post = (props) => {
                     </Text>
                   </TouchableOpacity>
                   <WingBlank size="md">
-                    <TouchableOpacity style={styles.button}>
-                      <Text style={{ color: "white", fontSize: 12 }}>
-                        ติดตาม
-                      </Text>
-                    </TouchableOpacity>
+                    {isFollow ? (
+                      <TouchableOpacity
+                        style={{
+                          backgroundColor: "#fff",
+                          flex: 1,
+                          paddingVertical: 1,
+                          paddingHorizontal: 10,
+                          borderRadius: 15,
+                          borderColor: Colors.primary,
+                          borderWidth: 1,
+                        }}
+                      >
+                        <Text style={{ color: Colors.primary, fontSize: 12 }}>
+                          ติดตามแล้ว
+                        </Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity style={styles.button}>
+                        <Text style={{ color: "white", fontSize: 12 }}>
+                          ติดตาม
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                   </WingBlank>
                 </Flex>
                 <Text style={{ color: Colors.gray, fontSize: 12 }}>

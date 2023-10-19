@@ -21,47 +21,49 @@ export const getAllLocations = () => {
   });
 };
 
-export const getFollowLocations = (user_id) => {
-  return new Promise((resolve, reject) => {
+export const getFollowLocations = async (user_id) => {
+  try {
+    const followList = [];
     const db = firebase.firestore();
-    db.collection("Users")
-      .doc(user_id)
-      .get()
-      .then((documentSnapshot) => {
-        const followList = [];
-        documentSnapshot.data().follow_locations.forEach((location) => {
-          location.get().then((documentSnapshot) => {
-            console.log(documentSnapshot.data())
-            followList.push({
-              ...documentSnapshot.data(),
-              location_id: documentSnapshot.id,
-            });
-          });
+    const documentSnapshot = await db.collection("Users").doc(user_id).get();
+    const followLocationPromises = documentSnapshot
+      .data()
+      .follow_locations.map(async (location) => {
+        const locationSnapshot = await location.get();
+        followList.push({
+          ...locationSnapshot.data(),
+          location_id: locationSnapshot.id,
         });
-        resolve(followList);
-        console.log("getFollowLocation", followList);
-      })
-      .catch((error) => {
-        reject(error);
       });
-  });
+
+    await Promise.all(followLocationPromises);
+    return followList;
+  } catch (error) {
+    return error;
+  }
 };
 
-export const getLocationById = (location_id) => {
-  return new Promise((resolve, reject) => {
-    firebase
-      .firestore()
+export const getLocationById = async (location_id) => {
+  try {
+    const db = firebase.firestore();
+    const documentSnapshot = await db
       .collection("Locations")
       .doc(location_id)
-      .get()
-      .then((documentSnapshot) => {
-        const locationData = {...documentSnapshot.data(), location_id: documentSnapshot.id}
-        resolve(locationData)
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+      .get();
+
+    if (documentSnapshot.exists) {
+      const locationData = {
+        ...documentSnapshot.data(),
+        location_id: documentSnapshot.id,
+      };
+      return locationData;
+    } else {
+      throw new Error("Document does not exist");
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 export const addMember = (location_id, user_id) => {
@@ -161,7 +163,7 @@ export const deleteMember = (location_id, user_id) => {
       let removeMemberIndex = locationMemberArray.findIndex(
         (ref) => ref.path == userRef.path
       );
-      if (removeMemberIndex !== 1) {
+      if (removeMemberIndex !== -1) {
         locationMemberArray.splice(removeMemberIndex, 1);
       } else {
         throw new Error("not have this member in Location");

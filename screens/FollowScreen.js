@@ -69,7 +69,7 @@ const FollowScreen = () => {
   };
 
   useEffect(() => {
-    if (followLocationsData.length > 0) {
+    if (followLocationsData !== null) {
       setLoading(true);
     } else {
       setLoading(false);
@@ -81,7 +81,7 @@ const FollowScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, justifyContent: followLocationsData.length == 0? "center": "flex-start"}}>
       {followLocationsData.length == 0 ? (
         <Text style={{ fontSize: 18, color: Colors.gray, alignSelf: "center" }}>
           คุณยังไม่ติดตามสถานที่ใดๆ
