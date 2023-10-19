@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -52,8 +52,7 @@ const PlaceBadgeItem = (props) => {
 const FollowScreen = () => {
   const navigation = useNavigation();
   const followLocationsData = useSelector((state) => {
-    console.log("Follow state ==========", state.data.followLocationsData);
-    return (state.data.followLocationsData)
+    return state.data.followLocationsData;
   });
   const postDATA = useSelector((state) => {
     const filterData = state.data.filterData;
@@ -62,74 +61,74 @@ const FollowScreen = () => {
   const placeData = useSelector((state) => {
     return state.data.locationData;
   });
-  const userInfo = useSelector((state) => state.user.userInfo)
+  const userInfo = useSelector((state) => state.user.userInfo);
+  const [loading, setLoading] = useState(false);
 
   const locationInfoHandler = (item) => {
     navigation.navigate("Location", { location_id: item });
   };
 
   useEffect(() => {
-    console.log("payload", getFollowLocations(userInfo.uid))
-  })
+    if (followLocationsData.length > 0) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  });
 
-  if (followLocationsData.exist) {
-    return <LoadingScreen />
-  }
-
-  if (followLocationsData.length == 0) {
-    return (
-      <View
-        style={{
-          ...styles.container,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ fontSize: 18, color: Colors.gray, alignSelf: "center" }}>
-          คุณยังไม่ติดตามสถานที่ใดๆ
-        </Text>
-      </View>
-    );
+  if (!loading) {
+    return <LoadingScreen />;
   }
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <FlatList
-          horizontal
-          data={followLocationsData}
-          renderItem={({ item }) => (
-            <PlaceBadgeItem item={item} onPressHandler={locationInfoHandler} />
-          )}
-          keyExtractor={(item) => item.location_id}
-          showsHorizontalScrollIndicator={false}
-          style={{ padding: 10 }}
-        />
-        <TouchableOpacity
-          style={{
-            padding: 10,
-            backgroundColor: "#fff",
-            paddingHorizontal: 20,
-          }}
-          onPress={() => {
-            navigation.navigate("FollowingAll");
-          }}
-        >
-          <Text style={{ color: Colors.primary }}>ทั้งหมด</Text>
-        </TouchableOpacity>
-      </View>
-      <FlatList
-        data={postDATA}
-        renderItem={postItem}
-        keyExtractor={(item) => item.post_id}
-        showsVerticalScrollIndicator={false}
-      />
+      {followLocationsData.length == 0 ? (
+        <Text style={{ fontSize: 18, color: Colors.gray, alignSelf: "center" }}>
+          คุณยังไม่ติดตามสถานที่ใดๆ
+        </Text>
+      ) : (
+        <View style={styles.container}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <FlatList
+              horizontal
+              data={followLocationsData}
+              renderItem={({ item }) => (
+                <PlaceBadgeItem
+                  item={item}
+                  onPressHandler={locationInfoHandler}
+                />
+              )}
+              keyExtractor={(item) => item.location_id}
+              showsHorizontalScrollIndicator={false}
+              style={{ padding: 10 }}
+            />
+            <TouchableOpacity
+              style={{
+                padding: 10,
+                backgroundColor: "#fff",
+                paddingHorizontal: 20,
+              }}
+              onPress={() => {
+                navigation.navigate("FollowingAll");
+              }}
+            >
+              <Text style={{ color: Colors.primary }}>ทั้งหมด</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={postDATA}
+            renderItem={postItem}
+            keyExtractor={(item) => item.post_id}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      )}
     </View>
   );
 };
