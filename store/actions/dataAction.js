@@ -109,7 +109,9 @@ export const FETCH_FOLLOWLOCATIONS = "FETCH_FOLLOWLOCATIONS";
 export const fetchFollowLocations = (user_id) => {
   return async (dispatch) => {
     try {
+      console.log("user ID ===", user_id)
       const followLocations = await getFollowLocations(user_id);
+      console.log("New Data Fetching", followLocations)
       dispatch({ type: FETCH_FOLLOWLOCATIONS, payload: followLocations });
     } catch (error) {
       console.error(error);

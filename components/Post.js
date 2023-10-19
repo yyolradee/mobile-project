@@ -1,14 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import Colors from "../constants/Colors";
 import { Button, Flex, WingBlank } from "@ant-design/react-native";
-import { Ionicons, Entypo, Feather, FontAwesome, AntDesign, MaterialIcons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  Entypo,
+  Feather,
+  FontAwesome,
+  AntDesign,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import ManagePostModal from "./ManagePostModal";
 import CommentModal from "./CommentModal";
 import { actualDimensions } from "../constants/responsiveHeight";
 import { ReadMoreText } from "../constants/ReadMoreText";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
 // Render Category
 const renderItem = ({ item }) => (
@@ -22,7 +38,11 @@ const renderTrending = (trending) => {
   if (trending) {
     return (
       <Flex style={{ marginLeft: 12, gap: 3 }}>
-        <MaterialIcons name="local-fire-department" size={20} color={Colors.pink} />
+        <MaterialIcons
+          name="local-fire-department"
+          size={20}
+          color={Colors.pink}
+        />
         <Text style={{ color: Colors.pink }}>ยอดนิยม</Text>
       </Flex>
     );
@@ -33,11 +53,13 @@ const renderTrending = (trending) => {
 
 const Post = (props) => {
   // Check if post category is can move or not
+  const navigation = useNavigation();
   const postData = props.postData;
   const [data, setData] = useState([]);
   const [timePassed, setTimePassed] = useState(null);
   const [trending, setTrending] = useState(false);
   const [comments, setComments] = useState([]);
+  const [isFollow, setIsFollow] = useState(false);
 
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [statusColor, setStatusColor] = useState("red");
@@ -55,8 +77,7 @@ const Post = (props) => {
 
     if (postData.owner.owner_id === userInfo.uid) {
       setIsEditable(true);
-    }
-    else {
+    } else {
       setIsEditable(false);
     }
 
@@ -113,14 +134,35 @@ const Post = (props) => {
               <Flex direction="column" align="start">
                 <Flex justify="center" align="center">
                   <Text style={{ color: Colors.gray }}>จาก</Text>
-                  <Text style={data.location && ((data.location.name.length > 30) && {maxWidth: "60%"})} numberOfLines={1}> {data.location ? data.location.name : null}</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("Location", {
+                        location_id: data.location.location_id,
+                      });
+                    }}
+                  >
+                    <Text
+                      style={
+                        data.location &&
+                        data.location.name.length > 30 && { maxWidth: "60%" }
+                      }
+                      numberOfLines={1}
+                    >
+                      {" "}
+                      {data.location ? data.location.name : null}
+                    </Text>
+                  </TouchableOpacity>
                   <WingBlank size="md">
                     <TouchableOpacity style={styles.button}>
-                      <Text style={{ color: "white", fontSize: 12 }}>ติดตาม</Text>
+                      <Text style={{ color: "white", fontSize: 12 }}>
+                        ติดตาม
+                      </Text>
                     </TouchableOpacity>
                   </WingBlank>
                 </Flex>
-                <Text style={{ color: Colors.gray, fontSize: 12 }}>{timePassed}</Text>
+                <Text style={{ color: Colors.gray, fontSize: 12 }}>
+                  {timePassed}
+                </Text>
               </Flex>
             </WingBlank>
           </Flex>
@@ -143,16 +185,30 @@ const Post = (props) => {
         {/* Content */}
         <View style={{ marginTop: 10 }}>
           <Flex align="center">
-            <Text style={{ fontWeight: "bold", fontSize: 20 }}>{data.title}</Text>
+            <Text style={{ fontWeight: "bold", fontSize: 20, marginBottom: 5 }}>
+              {data.title}
+            </Text>
             {renderTrending(trending)}
           </Flex>
-          <ReadMoreText contents={data.description} MAX_LINES={3} style={{ marginTop: 5 }} />
+          <ReadMoreText
+            contents={data.description}
+            MAX_LINES={3}
+            style={{ marginTop: 5 }}
+          />
           {/* <Text style={{marginTop: 5}} numberOfLines={5} flexWrap="wrap">{data.des}</Text> */}
         </View>
       </WingBlank>
       <Image
-        style={{ height: 250, width: "100%", display: data.img_path ? "flex" : "none" }}
-        source={data.img_path ? { uri: data.img_path } : require("../assets/no-image.png")}
+        style={{
+          height: 250,
+          width: "100%",
+          display: data.img_path ? "flex" : "none",
+        }}
+        source={
+          data.img_path
+            ? { uri: data.img_path }
+            : require("../assets/no-image.png")
+        }
       ></Image>
 
       <Flex direction="row" justify="between" style={styles.sub_container2}>

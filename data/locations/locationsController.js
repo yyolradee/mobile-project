@@ -22,14 +22,15 @@ export const getAllLocations = () => {
 };
 
 export const getFollowLocations = (user_id) => {
+  console.log("user ID in getFollow", user_id)
   return new Promise((resolve, reject) => {
     const db = firebase.firestore();
     db.collection("Users")
       .doc(user_id)
       .get()
-      .then((documentSnapshot) => {
+      .then(async(documentSnapshot) => {
         const followList = [];
-        documentSnapshot.data().follow_locations.forEach((location) => {
+        await documentSnapshot.data().follow_locations.forEach((location) => {
           location.get().then((documentSnapshot) => {
             followList.push({
               ...documentSnapshot.data(),
@@ -37,7 +38,7 @@ export const getFollowLocations = (user_id) => {
             });
           });
         });
-        console.log(followList);
+        console.log("getFollowLocation", followList);
         resolve(followList);
       })
       .catch((error) => {

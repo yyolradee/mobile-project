@@ -22,7 +22,7 @@ const NotificationScreen = () => {
 
   const navigation = useNavigation();
   const pressHandler = (id) => {
-    navigation.navigate("postInNoti", { post_id: id });
+    navigation.navigate("inPost", { post_id: id });
   };
 
   async function fetchNotifications() {

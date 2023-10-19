@@ -12,6 +12,7 @@ import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { LoadingScreen } from "./LoadingScreen";
+import { getFollowLocations } from "../data/locations/locationsController";
 
 const postItem = ({ item }) => <Post postData={item} />;
 
@@ -32,7 +33,9 @@ const PlaceBadgeItem = (props) => {
           borderRadius: 30,
         }}
         source={
-          item.img_path ? { uri: item.img_path } : require("../assets/no-image.png")
+          item.img_path
+            ? { uri: item.img_path }
+            : require("../assets/no-image.png")
         }
       />
       <Text
@@ -48,8 +51,10 @@ const PlaceBadgeItem = (props) => {
 
 const FollowScreen = () => {
   const navigation = useNavigation();
-  const followLocationsData = useSelector((state) => state.data.followLocationsData);
-
+  const followLocationsData = useSelector((state) => {
+    console.log("Follow state ==========", state.data.followLocationsData);
+    return (state.data.followLocationsData)
+  });
   const postDATA = useSelector((state) => {
     const filterData = state.data.filterData;
     return filterData.length > 0 ? filterData : state.data.postDetailData;
@@ -57,13 +62,35 @@ const FollowScreen = () => {
   const placeData = useSelector((state) => {
     return state.data.locationData;
   });
+  const userInfo = useSelector((state) => state.user.userInfo)
+
   const locationInfoHandler = (item) => {
     navigation.navigate("Location", { location_id: item });
   };
 
-  // useEffect(() => {
-  //   console.log(followLocationsData);
-  // });
+  useEffect(() => {
+    console.log("payload", getFollowLocations(userInfo.uid))
+  })
+
+  if (followLocationsData.exist) {
+    return <LoadingScreen />
+  }
+
+  if (followLocationsData.length == 0) {
+    return (
+      <View
+        style={{
+          ...styles.container,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ fontSize: 18, color: Colors.gray, alignSelf: "center" }}>
+          คุณยังไม่ติดตามสถานที่ใดๆ
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
