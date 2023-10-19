@@ -85,7 +85,7 @@ const SearchModal = () => {
   );
 
   const locationInfoHandler = (item) => {
-    navigation.navigate("Location", { location: item });
+    navigation.navigate("Location", { location_id: item });
     toggleSearchModal();
   };
 
