@@ -9,7 +9,7 @@ import { Provider } from "@ant-design/react-native";
 import { useDispatch, useSelector } from "react-redux";
 import SearchModal from "../components/SearchModal";
 import DrawerModal from "../components/DrawerComponant/DrawerModal";
-import { fetchCategories, fetchPosts, fetctLocations } from "../store/actions/dataAction";
+import { fetchCategories, fetchFollowLocations, fetchPosts, fetctLocations } from "../store/actions/dataAction";
 import { getUserById } from "../data/users/usersController";
 
 const MainStackNavigator = createNativeStackNavigator();
@@ -26,6 +26,7 @@ export default function MainNavigator(props) {
         dispatch(await fetchCategories());
         dispatch(await fetchPosts());
         dispatch(await fetctLocations());
+        dispatch(await fetchFollowLocations(userLocalInfo.uid));
       } catch (error) {
         console.error("Error fetching data:", error);
       }

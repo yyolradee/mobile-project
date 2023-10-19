@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import Post from "../components/Post";
 import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+import { LoadingScreen } from "./LoadingScreen";
 
 const postItem = ({ item }) => <Post postData={item} />;
 
@@ -19,7 +20,9 @@ const PlaceBadgeItem = (props) => {
   return (
     <TouchableOpacity
       style={{ alignItems: "center", width: 65, justifyContent: "center" }}
-      onPress={() => {props.onPressHandler(item)}}
+      onPress={() => {
+        props.onPressHandler(item.location_id);
+      }}
     >
       <Image
         style={{
@@ -29,7 +32,7 @@ const PlaceBadgeItem = (props) => {
           borderRadius: 30,
         }}
         source={
-          item.logo ? { uri: item.logo } : require("../assets/no-image.png")
+          item.img_path ? { uri: item.img_path } : require("../assets/no-image.png")
         }
       />
       <Text
@@ -45,18 +48,22 @@ const PlaceBadgeItem = (props) => {
 
 const FollowScreen = () => {
   const navigation = useNavigation();
-
-  const locationInfoHandler = (item) => {
-    navigation.navigate("Location", {location: item})
-  }
+  const followLocationsData = useSelector((state) => state.data.followLocationsData);
 
   const postDATA = useSelector((state) => {
-    const filterData = state.data.filterData
-    return filterData.length > 0 ? filterData : state.data.postDetailData}
-    )
-    const placeData = useSelector((state) => {
-      return state.data.locationData
-    })
+    const filterData = state.data.filterData;
+    return filterData.length > 0 ? filterData : state.data.postDetailData;
+  });
+  const placeData = useSelector((state) => {
+    return state.data.locationData;
+  });
+  const locationInfoHandler = (item) => {
+    navigation.navigate("Location", { location_id: item });
+  };
+
+  // useEffect(() => {
+  //   console.log(followLocationsData);
+  // });
 
   return (
     <View style={styles.container}>
@@ -69,8 +76,10 @@ const FollowScreen = () => {
       >
         <FlatList
           horizontal
-          data={placeData}
-          renderItem={({ item }) => <PlaceBadgeItem item={item} onPressHandler={locationInfoHandler} />}
+          data={followLocationsData}
+          renderItem={({ item }) => (
+            <PlaceBadgeItem item={item} onPressHandler={locationInfoHandler} />
+          )}
           keyExtractor={(item) => item.location_id}
           showsHorizontalScrollIndicator={false}
           style={{ padding: 10 }}
