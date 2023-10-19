@@ -9,6 +9,7 @@ import {
   Octicons,
 } from "@expo/vector-icons";
 import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
 
 const NotificationBox = (props) => {
   const notiItem = props.notiItem;
@@ -16,6 +17,7 @@ const NotificationBox = (props) => {
   let iconBadge = <FontAwesome5 name="question" size={14} color="white" />;
   const time_passed = moment(notiItem.date_time.toDate()).fromNow();
   const postData = notiItem.post;
+  const navigation = useNavigation();
 
   // useEffect(() => {
   //   getPostsById(notiItem.post_id, setPostData)
@@ -45,7 +47,7 @@ const NotificationBox = (props) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        props.onPress(postData.post_id);
+        navigation.navigate("inPost", {post_id: postData.post_id})
       }}
     >
       <View style={styles.container}>

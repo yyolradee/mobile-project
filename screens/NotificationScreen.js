@@ -20,11 +20,6 @@ const NotificationScreen = () => {
   });
   const [notifications, setNotifications] = useState(null);
 
-  const navigation = useNavigation();
-  const pressHandler = (id) => {
-    navigation.navigate("inPost", { post_id: id });
-  };
-
   async function fetchNotifications() {
     try {
       await getMyNotifications(userInfo.uid, setNotifications);
@@ -56,7 +51,7 @@ const NotificationScreen = () => {
         <FlatList
           data={notifications}
           renderItem={({ item }) => (
-            <NotificationBox notiItem={item} onPress={pressHandler} />
+            <NotificationBox notiItem={item} />
           )}
           keyExtractor={(item) => item.notification_id}
           showsVerticalScrollIndicator={false}

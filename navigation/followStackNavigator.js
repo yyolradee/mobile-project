@@ -90,6 +90,7 @@ export default function FollowNavigator() {
         options={{
           headerTitle: "",
           headerTintColor: "#000",
+          headerBackTitleVisible: false,
           headerRight: ({ color, size, focused }) => {
             color = "black";
             size = 24;
