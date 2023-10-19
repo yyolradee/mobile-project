@@ -22,7 +22,7 @@ const NotificationScreen = () => {
 
   const navigation = useNavigation();
   const pressHandler = (id) => {
-    navigation.navigate("postInNoti", { post_id: id });
+    navigation.navigate("inPost", { post_id: id });
   };
 
   async function fetchNotifications() {
@@ -62,7 +62,7 @@ const NotificationScreen = () => {
           showsVerticalScrollIndicator={false}
         />
       )}
-      <Button
+      {/* <Button
         title="Follow"
         onPress={() => {
           addMember("ZcJBG89ZDsVCeogMP0NX", "VF2A0jeb9Hff8n7NwhgoCR9nOqS2");
@@ -73,7 +73,7 @@ const NotificationScreen = () => {
         onPress={() => {
           deleteMember("OHPLF1Ztxn9JGWGfGvgw", "VF2A0jeb9Hff8n7NwhgoCR9nOqS2");
         }}
-      />
+      /> */}
     </View>
   );
 };

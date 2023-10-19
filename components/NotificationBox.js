@@ -6,10 +6,9 @@ import {
   FontAwesome5,
   Ionicons,
   MaterialIcons,
-  Octicons
+  Octicons,
 } from "@expo/vector-icons";
 import moment from "moment";
-import { getPostsById } from "../data/posts/postsController";
 
 const NotificationBox = (props) => {
   const notiItem = props.notiItem;
@@ -46,7 +45,7 @@ const NotificationBox = (props) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        props.onPress(notiItem.post_id);
+        props.onPress(postData.post_id);
       }}
     >
       <View style={styles.container}>
@@ -65,8 +64,7 @@ const NotificationBox = (props) => {
         </View>
         <View style={{ marginTop: 4, marginLeft: 20, width: "65%" }}>
           <Text style={{ fontSize: 15 }} numberOfLines={2} flexWrap="wrap">
-            ปัญหา{" "}
-            <Text style={{ fontWeight: "bold" }}>{postData.title}</Text>
+            ปัญหา <Text style={{ fontWeight: "bold" }}>{postData.title}</Text>
             {" " + notiItem.description}
           </Text>
           <Text style={{ fontSize: 10, color: Colors.gray, marginTop: 3 }}>

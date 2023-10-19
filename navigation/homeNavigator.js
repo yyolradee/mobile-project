@@ -9,6 +9,7 @@ import Colors from "../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSearch } from "../store/actions/searchAction";
 import PostScreen from "../screens/PostScreen";
+import LocationScreen from "../screens/LocationScreen";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -54,7 +55,37 @@ const HomeNavigator = () => {
           },
         }}
       />
-      <HomeStack.Screen name="inPost" component={PostScreen} options={{headerTitle: headerCustomTitle}} />
+      <HomeStack.Screen
+        name="Location"
+        component={LocationScreen}
+        options={{
+          headerTitle: "",
+          headerTintColor: "#000",
+          headerRight: ({ color, size, focused }) => {
+            color = "black";
+            size = 24;
+            return (
+              <Flex style={{ gap: 10 }}>
+                <TouchableOpacity onPress={toggleSearchModal}>
+                  <Ionicons name="search" size={size} color={Colors.gray2} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    return this.drawer && this.drawer.openDrawer();
+                  }}
+                >
+                  <Feather name="menu" size={size} color={color} />
+                </TouchableOpacity>
+              </Flex>
+            );
+          },
+        }}
+      />
+      <HomeStack.Screen
+        name="inPost"
+        component={PostScreen}
+        options={{ headerTitle: headerCustomTitle }}
+      />
     </HomeStack.Navigator>
   );
 };
