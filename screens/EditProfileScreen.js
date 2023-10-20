@@ -4,6 +4,9 @@ import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
 import { Entypo } from "@expo/vector-icons";
+import { auth } from "../data/firebaseConfig";
+import { signOut } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import faculties from "../data/faculties.json";
 import { useSelector } from "react-redux";
@@ -13,75 +16,103 @@ const EditProfileScreen = () => {
 
   const [faculty, setFaculty] = useState("it");
   const userInfo = useSelector((state) => state.user.userInfo);
+  const isAdmin = userInfo.role == "admin" ? true : false;
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          borderColor: Colors.gray3,
-          borderBottomWidth: 1,
-          marginHorizontal: 25,
-          paddingVertical: 20,
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-        }}
-      >
-        <Image
-          style={{ height: 120, width: 120, borderRadius: 100 }}
-          source={userInfo ? { uri: userInfo.photoURL } : require("../assets/no-image.png")}
-        />
+      <View style={{ flex: 1 }}>
         <View
           style={{
-            backgroundColor: Colors.primary,
-            position: "absolute",
-            paddingHorizontal: 15,
-            paddingVertical: 3,
-            borderRadius: 25,
-            top: 125,
-            left: 25,
+            flexDirection: "row",
+            borderColor: Colors.gray3,
+            borderBottomWidth: 1,
+            marginHorizontal: 25,
+            paddingVertical: 20,
+            justifyContent: "space-between",
+            alignItems: "flex-end",
           }}
         >
-          <Text style={{ color: "#fff" }}>Admin</Text>
+          <Image
+            style={{ height: 120, width: 120, borderRadius: 100 }}
+            source={
+              userInfo
+                ? { uri: userInfo.photoURL }
+                : require("../assets/no-image.png")
+            }
+          />
+          <View
+            style={{
+              backgroundColor: Colors.primary,
+              position: "absolute",
+              paddingHorizontal: 15,
+              paddingVertical: 4,
+              borderRadius: 25,
+              top: 125,
+              left: 25,
+              display: isAdmin ? "flex" : "none",
+            }}
+          >
+            <Text style={{ color: "#fff" }}>Admin</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.borderButton}
+            onPress={() => {
+              navigation.navigate("Profile");
+            }}
+          >
+            <Text>บันทึก</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={styles.borderButton}
-          onPress={() => {
-            navigation.navigate("Profile");
-          }}
-        >
-          <Text>บันทึก</Text>
-        </TouchableOpacity>
+        <View style={styles.form}>
+          <Text style={styles.label}>ชื่อ นามสกุล</Text>
+          <Text style={styles.value}>{userInfo.displayName}</Text>
+        </View>
+        <View style={styles.form}>
+          <Text style={styles.label}>E-mail</Text>
+          <Text style={styles.value}>{userInfo.email}</Text>
+        </View>
+        <View style={styles.form}>
+          <Text style={styles.label}>คณะ</Text>
+          <RNPickerSelect
+            style={pickerSelectStyles}
+            items={faculties}
+            onValueChange={(value) => {
+              setFaculty(value);
+            }}
+            value={faculty}
+            placeholder={{ label: "กรุณาเลือกคณะ", value: null }}
+            Icon={() => {
+              return (
+                <View style={{ marginRight: 0 }}>
+                  <Entypo name="chevron-down" size={24} color="black" />
+                </View>
+              );
+            }}
+            useNativeAndroidPickerStyle={false}
+            fixAndroidTouchableBug={true}
+          />
+        </View>
       </View>
-      <View style={styles.form}>
-        <Text style={styles.label}>ชื่อ นามสกุล</Text>
-        <Text style={styles.value}>{userInfo.displayName}</Text>
-      </View>
-      <View style={styles.form}>
-        <Text style={styles.label}>E-mail</Text>
-        <Text style={styles.value}>{userInfo.email}</Text>
-      </View>
-      <View style={styles.form}>
-        <Text style={styles.label}>คณะ</Text>
-        <RNPickerSelect
-          style={pickerSelectStyles}
-          items={faculties}
-          onValueChange={(value) => {
-            setFaculty(value);
-          }}
-          value={faculty}
-          placeholder={{ label: "กรุณาเลือกคณะ", value: null }}
-          Icon={() => {
-            return (
-              <View style={{ marginRight: 0 }}>
-                <Entypo name="chevron-down" size={24} color="black" />
-              </View>
-            );
-          }}
-          useNativeAndroidPickerStyle={false}
-          fixAndroidTouchableBug={true}
-        />
-      </View>
+      <TouchableOpacity
+        style={{
+          // borderColor: "red",
+          // borderWidth: 1,
+          alignSelf: "flex-end",
+          marginHorizontal: 30,
+          marginVertical: 20,
+          paddingVertical: 8,
+          paddingHorizontal: 20,
+          borderRadius: 25,
+          backgroundColor: Colors.red
+        }}
+        onPress={async () => {
+          console.log("sign out");
+          await AsyncStorage.removeItem("@user");
+          await signOut(auth);
+        }}
+      >
+        <Text style={{ fontSize: 16, color: "white" }}>ออกจากระบบ</Text>
+      </TouchableOpacity>
     </View>
   );
 };

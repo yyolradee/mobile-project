@@ -9,5 +9,6 @@ export default {
     pink: "#FC7D7D",
     success: "#4BB543",
     warning: "#FFB818",
-    red: "#FF0000"
+    red: "#FF0000",
+    adminary: "#4A2FF4",
 }

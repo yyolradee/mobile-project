@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+} from "react-native";
 import Colors from "../constants/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Post from "../components/Post";
@@ -14,8 +22,11 @@ import { useSelector } from "react-redux";
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const userInfo = useSelector((state) => state.user.userInfo);
+  const isAdmin = userInfo.role == "admin" ? true : false;
   const postDATA = useSelector((state) => state.data.postDetailData);
-  const filtersPostData = postDATA.filter((post) => post.owner.owner_id === userInfo.uid);
+  const filtersPostData = postDATA.filter(
+    (post) => post.owner.owner_id === userInfo.uid
+  );
   const [ownerPostData, setOwnerPostData] = useState(filtersPostData);
 
   // useSelector((state) => {
@@ -42,7 +53,11 @@ const ProfileScreen = () => {
         >
           <Image
             style={{ height: 120, width: 120, borderRadius: 100 }}
-            source={userInfo ? { uri: userInfo.photoURL } : require("../assets/no-image.png")}
+            source={
+              userInfo
+                ? { uri: userInfo.photoURL }
+                : require("../assets/no-image.png")
+            }
           />
           <TouchableOpacity
             style={styles.borderButton}
@@ -53,24 +68,28 @@ const ProfileScreen = () => {
             <Text>จัดการโปรไฟล์</Text>
           </TouchableOpacity>
         </View>
-        <Flex justify="between">
-          <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 5 }}>{userInfo.displayName}</Text>
-          {/* ขก design อ้ะ อยากแก้ แก้ได้เลย */}
-          <Button
-            size="small"
+        <View style={{ flexDirection: "row", alignItems: "flex-start"}}>
+          <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 5 }}>
+            {userInfo.displayName}
+          </Text>
+          <View
             style={{
-              borderColor: "red",
-            }}
-            onPress={async () => {
-              console.log("sign out");
-              await AsyncStorage.removeItem("@user");
-              await signOut(auth);
+              backgroundColor: Colors.primary,
+              paddingHorizontal: 15,
+              paddingVertical: 3,
+              justifyContent: "center",
+              borderRadius: 20,
+              marginLeft: 10,
+              marginTop: 3,
+              display: isAdmin ? "flex": "none"
             }}
           >
-            <Text style={{ fontSize: 12, color: "red", fontWeight: 600 }}>ออกจากระบบ</Text>
-          </Button>
-        </Flex>
-        <Text style={{ color: Colors.gray, fontSize: 13, marginBottom: 5 }}>{userInfo.email}</Text>
+            <Text style={{ fontSize: 14, color: "#fff" }}>Admin</Text>
+          </View>
+        </View>
+        <Text style={{ color: Colors.gray, fontSize: 13, marginBottom: 5 }}>
+          {userInfo.email}
+        </Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <FontAwesome5 name="map-marker-alt" size={15} color={Colors.gray} />
           <Text style={{ fontSize: 15, marginLeft: 5 }}>คณะ</Text>
