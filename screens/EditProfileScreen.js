@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
@@ -8,15 +8,27 @@ import { auth } from "../data/firebaseConfig";
 import { signOut } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import faculties from "../data/faculties.json";
+import faculties from "../data/dummy-data/faculties.json";
 import { useSelector } from "react-redux";
+import { updateUserFaculty } from "../data/users/usersController";
 
-const EditProfileScreen = () => {
+const EditProfileScreen = ({route}) => {
   const navigation = useNavigation();
 
-  const [faculty, setFaculty] = useState("it");
+  const [faculty, setFaculty] = useState(null);
   const userInfo = useSelector((state) => state.user.userInfo);
   const isAdmin = userInfo.role == "admin" ? true : false;
+
+  const saveFaculty = async () => {
+    await updateUserFaculty(userInfo.uid, faculty)
+    navigation.navigate("Profile", {faculty: faculty});
+  }
+
+  const {tempFaculty} = route.params ? route.params : {};
+
+  useEffect(()=>{
+    setFaculty(tempFaculty)
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -57,7 +69,7 @@ const EditProfileScreen = () => {
           <TouchableOpacity
             style={styles.borderButton}
             onPress={() => {
-              navigation.navigate("Profile");
+              saveFaculty()
             }}
           >
             <Text>บันทึก</Text>
@@ -76,10 +88,10 @@ const EditProfileScreen = () => {
           <RNPickerSelect
             style={pickerSelectStyles}
             items={faculties}
+            value={faculty}
             onValueChange={(value) => {
               setFaculty(value);
             }}
-            value={faculty}
             placeholder={{ label: "กรุณาเลือกคณะ", value: null }}
             Icon={() => {
               return (

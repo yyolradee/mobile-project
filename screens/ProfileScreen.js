@@ -1,37 +1,33 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, FlatList } from "react-native";
 import Colors from "../constants/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Post from "../components/Post";
 import { useNavigation } from "@react-navigation/native";
-// import postDATA from "../data/postDetail.json";
-import { Button, Flex } from "@ant-design/react-native";
-import { auth } from "../data/firebaseConfig";
-import { signOut } from "firebase/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ route }) => {
   const navigation = useNavigation();
   const userInfo = useSelector((state) => state.user.userInfo);
   const isAdmin = userInfo.role == "admin" ? true : false;
   const postDATA = useSelector((state) => state.data.postDetailData);
-  const filtersPostData = postDATA.filter(
-    (post) => post.owner.owner_id === userInfo.uid
-  );
+  const filtersPostData = postDATA.filter((post) => post.owner.owner_id === userInfo.uid);
   const [ownerPostData, setOwnerPostData] = useState(filtersPostData);
+  const [tempFaculty, setTempFaculty] = useState(null);
 
+  const { faculty } = route.params ? route.params : {};
   // useSelector((state) => {
   //   console.log(JSON.stringify(state.user.userInfo, null, 2));
   // });
+
+  useEffect(() => {
+    if (faculty) {
+      setTempFaculty(faculty)
+    }
+    else {
+      setTempFaculty(userInfo.faculty)
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -53,25 +49,19 @@ const ProfileScreen = () => {
         >
           <Image
             style={{ height: 120, width: 120, borderRadius: 100 }}
-            source={
-              userInfo
-                ? { uri: userInfo.photoURL }
-                : require("../assets/no-image.png")
-            }
+            source={userInfo ? { uri: userInfo.photoURL } : require("../assets/no-image.png")}
           />
           <TouchableOpacity
             style={styles.borderButton}
             onPress={() => {
-              navigation.navigate("EditProfile");
+              navigation.navigate("EditProfile", { tempFaculty: tempFaculty });
             }}
           >
             <Text>จัดการโปรไฟล์</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ flexDirection: "row", alignItems: "flex-start"}}>
-          <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 5 }}>
-            {userInfo.displayName}
-          </Text>
+        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+          <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 5 }}>{userInfo.displayName}</Text>
           <View
             style={{
               backgroundColor: Colors.primary,
@@ -81,19 +71,17 @@ const ProfileScreen = () => {
               borderRadius: 20,
               marginLeft: 10,
               marginTop: 3,
-              display: isAdmin ? "flex": "none"
+              display: isAdmin ? "flex" : "none",
             }}
           >
             <Text style={{ fontSize: 14, color: "#fff" }}>Admin</Text>
           </View>
         </View>
-        <Text style={{ color: Colors.gray, fontSize: 13, marginBottom: 5 }}>
-          {userInfo.email}
-        </Text>
+        <Text style={{ color: Colors.gray, fontSize: 13, marginBottom: 5 }}>{userInfo.email}</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <FontAwesome5 name="map-marker-alt" size={15} color={Colors.gray} />
           <Text style={{ fontSize: 15, marginLeft: 5 }}>คณะ</Text>
-          <Text style={{ fontSize: 15 }}> เทคโนโลยีสารสนเทศ</Text>
+          <Text style={{ fontSize: 15 }}> {!faculty ? tempFaculty : faculty}</Text>
         </View>
       </View>
       <FlatList
