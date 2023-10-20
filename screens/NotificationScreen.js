@@ -67,6 +67,14 @@ const NotificationScreen = () => {
           deleteMember("OHPLF1Ztxn9JGWGfGvgw", "VF2A0jeb9Hff8n7NwhgoCR9nOqS2");
         }}
       /> */}
+      {/* <Button title="createNewNoti" onPress={() => {
+        createNotification({
+          post_id: "FR6KLTFmFtWB5fUcf8Oz",
+          type: "trending",
+          description: "ของคุณ กำลังเป็นที่น่าสนใจ",
+          status: "กำลังดำเนินการ",
+        })
+      }} /> */}
     </View>
   );
 };

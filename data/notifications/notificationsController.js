@@ -39,6 +39,19 @@ export const getMyNotifications = async (userId, setState) => {
   }
 };
 
+/**
+ * This function create new notification
+ *
+ * @param {Object} payload num1 - The first number to be added.
+ * 
+ * payload Spec
+ * {
+ *  post_id : post_id,
+ *  type : enum("update status", "trending"),
+ *  status: enum("รอรับเรื่อง", "กำลังดำเนินการ", "แก้ไขเสร็จสิ้น", "ไม่แก้ไข"),
+ *  description: description
+ * }
+ */
 export const createNotification = (payload) => {
   firebase
     .firestore()
