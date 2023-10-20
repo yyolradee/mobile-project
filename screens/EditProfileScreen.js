@@ -12,7 +12,7 @@ import faculties from "../data/dummy-data/faculties.json";
 import { useSelector } from "react-redux";
 import { updateUserFaculty } from "../data/users/usersController";
 
-const EditProfileScreen = ({route}) => {
+const EditProfileScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const [faculty, setFaculty] = useState(null);
@@ -20,15 +20,21 @@ const EditProfileScreen = ({route}) => {
   const isAdmin = userInfo.role == "admin" ? true : false;
 
   const saveFaculty = async () => {
-    await updateUserFaculty(userInfo.uid, faculty)
-    navigation.navigate("Profile", {faculty: faculty});
-  }
+    await updateUserFaculty(userInfo.uid, faculty);
+    navigation.navigate("Profile", { faculty: faculty });
+  };
 
-  const {tempFaculty} = route.params ? route.params : {};
+  const { tempFaculty } = route.params ? route.params : {};
 
-  useEffect(()=>{
-    setFaculty(tempFaculty)
-  }, [])
+  useEffect(() => {
+    if (tempFaculty) {
+      setFaculty(tempFaculty);
+    }
+    else {
+      setFaculty(userInfo.faculty)
+    }
+    // console.log(tempFaculty);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -46,11 +52,7 @@ const EditProfileScreen = ({route}) => {
         >
           <Image
             style={{ height: 120, width: 120, borderRadius: 100 }}
-            source={
-              userInfo
-                ? { uri: userInfo.photoURL }
-                : require("../assets/no-image.png")
-            }
+            source={userInfo ? { uri: userInfo.photoURL } : require("../assets/no-image.png")}
           />
           <View
             style={{
@@ -69,7 +71,7 @@ const EditProfileScreen = ({route}) => {
           <TouchableOpacity
             style={styles.borderButton}
             onPress={() => {
-              saveFaculty()
+              saveFaculty();
             }}
           >
             <Text>บันทึก</Text>
@@ -115,7 +117,7 @@ const EditProfileScreen = ({route}) => {
           paddingVertical: 8,
           paddingHorizontal: 20,
           borderRadius: 25,
-          backgroundColor: Colors.red
+          backgroundColor: Colors.red,
         }}
         onPress={async () => {
           console.log("sign out");
