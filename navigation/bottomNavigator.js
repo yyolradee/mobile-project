@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Entypo, Ionicons, Octicons } from "@expo/vector-icons";
+import { Entypo, Ionicons, Octicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import { useSelector } from "react-redux";
 
@@ -13,10 +13,11 @@ import CreatePostNavigator from "./createPostStackNavigator";
 import NotificationNavigator from "./notificationNavigator";
 import ProfileNavigator from "./profileStackNavigator";
 import SearchModal from "../components/SearchModal";
+import AdminNavigator from "./AdminNavigator";
 
 const BottomTab = createBottomTabNavigator();
 
-const CustomTabBarButton = ({ children, onPress }) => {
+const CustomTabBarButton = ({ children, onPress, isAdmin }) => {
   return (
     <TouchableOpacity
       style={{
@@ -32,7 +33,7 @@ const CustomTabBarButton = ({ children, onPress }) => {
           width: 60,
           height: 60,
           borderRadius: 35,
-          backgroundColor: Colors.primary,
+          backgroundColor: isAdmin ? Colors.adminary : Colors.primary,
         }}
       >
         {children}
@@ -43,6 +44,7 @@ const CustomTabBarButton = ({ children, onPress }) => {
 
 export default function BottomNavigator() {
   const userInfo = useSelector((state) => state.user.userInfo);
+  const isAdmin = userInfo ? userInfo.role == "admin" ? true : false : false;
   return (
       <BottomTab.Navigator
         initialRouteName="HomeScreen"
@@ -100,11 +102,11 @@ export default function BottomNavigator() {
         />
         <BottomTab.Screen
           name="CreatePostScreen"
-          component={CreatePostNavigator}
+          component={isAdmin ? AdminNavigator : CreatePostNavigator}
           options={{
-            tabBarIcon: ({ focused }) => <Entypo name="plus" size={35} color="white" />,
-            tabBarButton: (props) => <CustomTabBarButton {...props} />,
-            tabBarStyle: { display: "none" },
+            tabBarIcon: ({ focused }) => isAdmin? <MaterialCommunityIcons name="chart-box-outline" size={35} color="white" /> : <Entypo name="plus" size={35} color="white" />,
+            tabBarButton: (props) => <CustomTabBarButton {...props} isAdmin={isAdmin} />,
+            tabBarStyle: { display: isAdmin ? "flex" :"none" },
             headerShown: false,
           }}
         />

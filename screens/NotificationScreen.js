@@ -10,9 +10,7 @@ import {
 } from "../data/notifications/notificationsController";
 import { useSelector } from "react-redux";
 import Colors from "../constants/Colors";
-import { addMember, deleteMember } from "../data/locations/locationsController";
 import { LoadingScreen } from "./LoadingScreen";
-import { set } from "lodash";
 
 const NotificationScreen = () => {
   const userInfo = useSelector((state) => {
