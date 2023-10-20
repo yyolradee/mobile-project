@@ -23,8 +23,10 @@ import CommentModal from "./CommentModal";
 import { actualDimensions } from "../constants/responsiveHeight";
 import { ReadMoreText } from "../constants/ReadMoreText";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import { addMember, deleteMember } from "../data/locations/locationsController";
+import { fetchFollowLocations } from "../store/actions/dataAction";
 
 // Render Category
 const renderItem = ({ item }) => (
@@ -54,6 +56,7 @@ const renderTrending = (trending) => {
 const Post = (props) => {
   // Check if post category is can move or not
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const postData = props.postData;
   const [data, setData] = useState([]);
   const [timePassed, setTimePassed] = useState(null);
@@ -170,13 +173,39 @@ const Post = (props) => {
                           borderColor: Colors.primary,
                           borderWidth: 1,
                         }}
+                        onPress={async () => {
+                          try {
+                            await deleteMember(
+                              data.location.location_id,
+                              userInfo.uid
+                            );
+                            dispatch(await fetchFollowLocations(userInfo.uid));
+                            setIsFollow(false);
+                          } catch (error) {
+                            console.error(error);
+                          }
+                        }}
                       >
                         <Text style={{ color: Colors.primary, fontSize: 12 }}>
                           ติดตามแล้ว
                         </Text>
                       </TouchableOpacity>
                     ) : (
-                      <TouchableOpacity style={styles.button}>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={async () => {
+                          try {
+                            await addMember(
+                              data.location.location_id,
+                              userInfo.uid
+                            );
+                            dispatch(await fetchFollowLocations(userInfo.uid));
+                            setIsFollow(false);
+                          } catch (error) {
+                            console.error(error);
+                          }
+                        }}
+                      >
                         <Text style={{ color: "white", fontSize: 12 }}>
                           ติดตาม
                         </Text>

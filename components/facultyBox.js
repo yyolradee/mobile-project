@@ -1,8 +1,15 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import Colors from "../constants/Colors";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteMember } from "../data/locations/locationsController";
+import { fetchFollowLocations } from "../store/actions/dataAction";
 
 const facultyBox = (props) => {
   const item = props.item;
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.user.userInfo);
   return (
     <View
       style={{
@@ -16,7 +23,7 @@ const facultyBox = (props) => {
       <TouchableOpacity
         style={{ flexDirection: "row", alignItems: "center", width: "75%" }}
         onPress={() => {
-          props.onPressHandler(props.item.location_id);
+          navigation.navigate("Location", { location_id: item.location_id });
         }}
       >
         <Image
@@ -26,9 +33,17 @@ const facultyBox = (props) => {
             height: 40,
             borderRadius: 30,
           }}
-          source={item.img_path ? { uri: item.img_path } : require("../assets/no-image.png")}
+          source={
+            item.img_path
+              ? { uri: item.img_path }
+              : require("../assets/no-image.png")
+          }
         />
-        <Text style={{ fontSize: 14, marginLeft: 14, width: "80%" }} numberOfLines={1} flexWrap="wrap">
+        <Text
+          style={{ fontSize: 14, marginLeft: 14, width: "80%" }}
+          numberOfLines={1}
+          flexWrap="wrap"
+        >
           {item.name}
         </Text>
       </TouchableOpacity>
@@ -39,6 +54,14 @@ const facultyBox = (props) => {
           borderRadius: 20,
           paddingVertical: 4,
           paddingHorizontal: 10,
+        }}
+        onPress={async () => {
+          try {
+            await deleteMember(item.location_id, userInfo.uid);
+            dispatch(fetchFollowLocations(userInfo.uid));
+          } catch (error) {
+            console.error(error);
+          }
         }}
       >
         <Text style={{ color: Colors.primary, fontSize: 12 }}>ติดตามแล้ว</Text>
