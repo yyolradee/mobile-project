@@ -42,6 +42,7 @@ const CreatePostDetailScreen = ({ route }) => {
     // console.log(categoriesData);
     getSelectorCategories(setCategories);
     refactorLocations();
+    setSelectedPlace(locationData.location_id)
   }, []);
 
   useEffect(() => {
@@ -50,6 +51,9 @@ const CreatePostDetailScreen = ({ route }) => {
     } else {
       setValidate(true);
     }
+
+    // setSelectedPlace("OHPLF1Ztxn9JGWGfGvgw")
+    // console.log("select", selectedPlace);
   });
 
   const checkMaxSelected = (val) => {
@@ -63,6 +67,7 @@ const CreatePostDetailScreen = ({ route }) => {
     } else {
       setSelectedCategory(val);
     }
+    console.log(selectedCategory);
   };
 
   const objectData = {
@@ -126,6 +131,7 @@ const CreatePostDetailScreen = ({ route }) => {
             onValueChange={(value) => {
               setSelectedPlace(value);
             }}
+            value={selectedPlace}
             items={locations}
             placeholder={{ label: "เลือกสถานที่", value: null }}
             Icon={() => {
