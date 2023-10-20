@@ -14,6 +14,7 @@ const ProfileScreen = ({ route }) => {
   const filtersPostData = postDATA.filter((post) => post.owner.owner_id === userInfo.uid);
   const [ownerPostData, setOwnerPostData] = useState(filtersPostData);
   const [tempFaculty, setTempFaculty] = useState(null);
+  const facultyText = !faculty ? tempFaculty ? tempFaculty : "กรุณาเลือกคณะ" : faculty ? faculty : "กรุณาเลือกคณะ"
 
   const { faculty } = route.params ? route.params : {};
   // useSelector((state) => {
@@ -27,7 +28,7 @@ const ProfileScreen = ({ route }) => {
     else {
       setTempFaculty(userInfo.faculty)
     }
-  }, []);
+  }, [faculty]);
 
   return (
     <View style={styles.container}>
@@ -81,7 +82,7 @@ const ProfileScreen = ({ route }) => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <FontAwesome5 name="map-marker-alt" size={15} color={Colors.gray} />
           <Text style={{ fontSize: 15, marginLeft: 5 }}>คณะ</Text>
-          <Text style={{ fontSize: 15 }}> {!faculty ? tempFaculty : faculty}</Text>
+          <Text style={[{ fontSize: 15 }, facultyText == "กรุณาเลือกคณะ" ? {color: Colors.warning} : {}]}> {facultyText}</Text>
         </View>
       </View>
       <FlatList
