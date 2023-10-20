@@ -34,10 +34,6 @@ const FollowingAllScreen = () => {
     }
   }, [sort]);
 
-  const locationInfoHandler = (item) => {
-    navigation.navigate("Location", {location_id: item})
-  }
-
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -56,7 +52,7 @@ const FollowingAllScreen = () => {
       </TouchableOpacity>
       <FlatList
         data={followLocationsData}
-        renderItem={({ item }) => <FacultyBox item={item} onPressHandler={locationInfoHandler} />}
+        renderItem={({ item }) => <FacultyBox item={item}/>}
         keyExtractor={(item) => item.location_id}
         showsVerticalScrollIndicator={false}
       />
