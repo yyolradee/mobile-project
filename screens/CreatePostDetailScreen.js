@@ -42,7 +42,9 @@ const CreatePostDetailScreen = ({ route }) => {
     // console.log(categoriesData);
     getSelectorCategories(setCategories);
     refactorLocations();
-    setSelectedPlace(locationData.location_id)
+    if (locationData) {
+      setSelectedPlace(locationData.location_id);
+    }
   }, []);
 
   useEffect(() => {
