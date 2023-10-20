@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Button } from "react-native";
 import NotificationBox from "../components/NotificationBox";
-import NotiData from "../data/notificationData.json";
-import { useNavigation } from "@react-navigation/native";
 
 import {
   getMyNotifications,
-  createNotification,
 } from "../data/notifications/notificationsController";
 import { useSelector } from "react-redux";
 import Colors from "../constants/Colors";

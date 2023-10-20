@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import placeData from "../data/location.json";
 import Colors from "../constants/Colors";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
