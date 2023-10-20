@@ -5,11 +5,10 @@ import {
   FlatList,
   Image,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
 } from "react-native";
 import Colors from "../constants/Colors";
-import { Button, Flex, WingBlank } from "@ant-design/react-native";
+import { Flex, WingBlank } from "@ant-design/react-native";
 import {
   Ionicons,
   Entypo,
