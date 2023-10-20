@@ -44,7 +44,7 @@ const CustomTabBarButton = ({ children, onPress, isAdmin }) => {
 
 export default function BottomNavigator() {
   const userInfo = useSelector((state) => state.user.userInfo);
-  const isAdmin = userInfo.role == "admin" ? true : false;
+  const isAdmin = userInfo ? userInfo.role == "admin" ? true : false : false;
   return (
       <BottomTab.Navigator
         initialRouteName="HomeScreen"
