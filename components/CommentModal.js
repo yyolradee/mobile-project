@@ -15,16 +15,37 @@ import { Modal, Flex } from "@ant-design/react-native";
 import {actualDimensions} from "../constants/responsiveHeight";
 import Colors from "../constants/Colors";
 import moment from "moment";
+import { addComment } from "../data/posts/postsController";
+import { useSelector } from "react-redux";
 
 
 
-const CommentModal = ({ isVisible, onClose, commentsItem }) => {
+const CommentModal = ({ isVisible, onClose, commentsData, postId }) => {
   const [text, setText] = useState("");
   const textInputRef = useRef(null);
   const [getHeight, setGetHeight] = useState("");
   const [noCommentMargin, setNoCommentMargin] = useState(getHeight - (getHeight * 80) / 100);
   const translateY = useRef(new Animated.Value(0)).current;
+  const userInfo = useSelector((state)=>state.user.userInfo)
+  const [commentsItem, setCommentsItem] = useState([])
 
+  const postComment = async (postId, comment) => {
+    try {
+      await addComment(postId, comment, setCommentsItem)
+      // console.log(commentsItem);
+    } catch (error) {
+      console.log("Cannot add comment:", error);
+    }
+    setText("");
+  }
+
+  const newComment = {
+    contents: text,
+    create_date: new Date(),
+    img_path: userInfo.photoURL,
+    name: userInfo.displayName,
+    role: userInfo.role,
+  };
 
   useEffect(() => {
     setGetHeight(actualDimensions.height);
@@ -33,6 +54,10 @@ const CommentModal = ({ isVisible, onClose, commentsItem }) => {
       setNoCommentMargin(getHeight - (getHeight * 80) / 100)
     }
   });
+
+  useEffect(()=>{
+    setCommentsItem(commentsData);
+  }, [commentsData])
 
   const slideUpAnimation = (value, param) => {
     Animated.spring(param, {
@@ -113,7 +138,7 @@ const CommentModal = ({ isVisible, onClose, commentsItem }) => {
   const renderPostButton = () => {
     if (text) {
       return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=> postComment(postId, newComment)}>
           <Text style={{ color: Colors.primary, fontWeight: "bold" }}>โพสต์</Text>
         </TouchableOpacity>
       );

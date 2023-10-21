@@ -125,7 +125,8 @@ const Post = (props) => {
       <CommentModal
         isVisible={isCommentModalVisible}
         onClose={toggleCommentModal}
-        commentsItem={comments}
+        commentsData={comments}
+        postId={postData.post_id}
       ></CommentModal>
       <ManagePostModal
         isVisible={isPostModalVisible}
