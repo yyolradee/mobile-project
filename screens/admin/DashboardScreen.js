@@ -26,7 +26,7 @@ const DashboardScreen = () => {
   const sliceColor = ["#fbd203", "#ffb300", "#ff9100", "#ff6c00", "#ff3c00"];
   return (
     <View style={[styles.container, { paddingTop: localStatusBarHeight }]}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Flex justify="between">
           <Flex direction="column" align="starts" style={{ gap: 5 }}>
             <Text style={{ fontSize: 16, color: Colors.gray2 }}>ยินดีต้อนรับ</Text>
