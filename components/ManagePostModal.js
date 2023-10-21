@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { Modal, Flex } from "@ant-design/react-native";
 import Colors from "../constants/Colors";
 import { MaterialIcons, AntDesign, Octicons, Feather, FontAwesome5 } from "@expo/vector-icons";
@@ -14,15 +14,27 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
 
   const dispatch = useDispatch();
   const deleteHandler = async (postId) => {
-    try {
-      deletePostById(postId);
-      dispatch(fetchPosts());
-    } catch (error) {
-      console.error("Error:", error);
-    }
-    finally {
-      onClose();
-    }
+    Alert.alert("ต้องการที่จะลบโพสต์หรือไม่", "หากคุณลบโพสต์ จะไม่สามารถกู้คืนโพสต์ได้อีกต่อไป", [
+      {
+        text: "ลบโพสต์",
+        onPress: async () => {
+          try {
+            await deletePostById(postId);
+            dispatch(await fetchPosts());
+          } catch (error) {
+            console.error("Error:", error);
+          } finally {
+            onClose();
+          }
+        },
+        style: "destructive",
+      },
+      {
+        text: "ยกเลิก",
+        onPress: () => {},
+        style: "cancel",
+      },
+    ]);
   };
 
   const renderItem = () => {
@@ -45,10 +57,10 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("CreatePostScreen", {
-                screen: 'content',
-                params: {postId: postId},
+                screen: "content",
+                params: { postId: postId },
               });
-              onClose()
+              onClose();
             }}
           >
             <Flex align="center" style={{ gap: 5 }}>

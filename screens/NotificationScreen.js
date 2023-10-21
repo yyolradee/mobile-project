@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Button } from "react-native";
 import NotificationBox from "../components/NotificationBox";
 
-import {
-  getMyNotifications,
-} from "../data/notifications/notificationsController";
+import { createNotification, getMyNotifications } from "../data/notifications/notificationsController";
 import { useSelector } from "react-redux";
 import Colors from "../constants/Colors";
 import { LoadingScreen } from "./LoadingScreen";
@@ -28,7 +26,7 @@ const NotificationScreen = () => {
   }, []);
 
   if (notifications == null) {
-    return <LoadingScreen />
+    return <LoadingScreen />;
   }
 
   return (
@@ -39,15 +37,11 @@ const NotificationScreen = () => {
       }}
     >
       {notifications.length === 0 ? (
-        <Text style={{ fontSize: 18, color: Colors.gray, alignSelf: "center" }}>
-          ไม่มีการแจ้งเตือนในขณะนี้...
-        </Text>
+        <Text style={{ fontSize: 18, color: Colors.gray, alignSelf: "center" }}>ไม่มีการแจ้งเตือนในขณะนี้...</Text>
       ) : (
         <FlatList
           data={notifications}
-          renderItem={({ item }) => (
-            <NotificationBox notiItem={item} />
-          )}
+          renderItem={({ item }) => <NotificationBox notiItem={item} />}
           keyExtractor={(item) => item.notification_id}
           showsVerticalScrollIndicator={false}
         />
@@ -64,6 +58,14 @@ const NotificationScreen = () => {
           deleteMember("OHPLF1Ztxn9JGWGfGvgw", "VF2A0jeb9Hff8n7NwhgoCR9nOqS2");
         }}
       /> */}
+      {/* <Button title="createNewNoti" onPress={() => {
+        createNotification({
+          post_id: "PNQJg1r6yTcXZBokk14e",
+          type: "trending",
+          description: "ของคุณ กำลังเป็นที่น่าสนใจ",
+          status: "กำลังดำเนินการ",
+        })
+      }} /> */}
     </View>
   );
 };
