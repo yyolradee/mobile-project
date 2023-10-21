@@ -1,15 +1,20 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Text } from "react-native";
 import Colors from "../constants/Colors";
 
 //import screen
 import DashboardScreen from "../screens/admin/DashboardScreen";
-import ManageProblemScreen from "../screens/admin/ManageProblemScreen";
 import ReportedScreen from "../screens/admin/reportedPost/ReportedScreen";
 import ReportedPostScreen from "../screens/admin/reportedPost/ReportedPostScreen";
+import WaitingScreen from "../screens/admin/manageProblem/WaitingScreen";
+import DoingScreen from "../screens/admin/manageProblem/DoingScreen";
+import DoneScreen from "../screens/admin/manageProblem/DoneScreen";
+import ManageProblemPostScreen from "../screens/admin/manageProblem/ManageProblemPostScreen";
 
 const AdminStackNavigator = createNativeStackNavigator();
+const ManageProblemNavigator = createMaterialTopTabNavigator();
 
 const headerCustomTitle = () => {
   return (
@@ -29,6 +34,32 @@ const headerCustomTitle2 = () => {
   );
 };
 
+function TopTabNavigator() {
+  return (
+    <ManageProblemNavigator.Navigator
+      screenOptions={{
+        tabBarIndicatorStyle: { backgroundColor: Colors.primary },
+      }}
+    >
+      <ManageProblemNavigator.Screen
+        name="waiting"
+        component={WaitingScreen}
+        options={{ tabBarLabel: "รอรับเรื่อง" }}
+      />
+      <ManageProblemNavigator.Screen
+        name="doing"
+        component={DoingScreen}
+        options={{ tabBarLabel: "กำลังดำเนินการ" }}
+      />
+      <ManageProblemNavigator.Screen
+        name="Done"
+        component={DoneScreen}
+        options={{ tabBarLabel: "แก้ไขเสร็จสิ้น" }}
+      />
+    </ManageProblemNavigator.Navigator>
+  );
+}
+
 export default function AdminNavigator() {
   return (
     <AdminStackNavigator.Navigator
@@ -46,7 +77,14 @@ export default function AdminNavigator() {
       />
       <AdminStackNavigator.Screen
         name="ManageProblem"
-        component={ManageProblemScreen}
+        component={TopTabNavigator}
+        options={{
+          headerTitle: headerCustomTitle,
+        }}
+      />
+      <AdminStackNavigator.Screen
+        name="detailManagePost"
+        component={ManageProblemPostScreen}
         options={{
           headerTitle: headerCustomTitle,
         }}
