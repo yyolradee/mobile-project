@@ -15,16 +15,15 @@ import {
   Octicons,
   Feather,
 } from "@expo/vector-icons";
-// import PieChart from 'react-native-pie-chart'
-
+import PieChart from "react-native-pie-chart";
 
 const DashboardScreen = () => {
   const navigation = useNavigation();
   const localStatusBarHeight = statusBarHeight();
   const userInfo = useSelector((state) => state.user.userInfo);
-  const widthAndHeight = 250
-    const series = [123, 321, 123, 789, 537]
-    const sliceColor = ['#fbd203', '#ffb300', '#ff9100', '#ff6c00', '#ff3c00']
+  const widthAndHeight = 250;
+  const series = [123, 321, 123, 789, 537];
+  const sliceColor = ["#fbd203", "#ffb300", "#ff9100", "#ff6c00", "#ff3c00"];
   return (
     <View style={[styles.container, { paddingTop: localStatusBarHeight }]}>
       <ScrollView>
@@ -124,15 +123,17 @@ const DashboardScreen = () => {
         </View>
         <View style={styles.line} />
         <View style={styles.boxContainer2}>
-          <Text style={{color: Colors.gray2}}>จำนวนปัญหาในแต่ละหมวดหมู่</Text>
-          <Text style={{fontSize: 18, fontWeight: "bold"}}>สถิตจำนวนปัญหาแยกตามหมวดหมู่</Text>
-          {/* <PieChart
-            widthAndHeight={widthAndHeight}
-            series={series}
-            sliceColor={sliceColor}
-            coverRadius={0.45}
-            coverFill={'#FFF'}
-          /> */}
+          <Text style={{ color: Colors.gray2 }}>จำนวนปัญหาในแต่ละหมวดหมู่</Text>
+          <Text style={{ fontSize: 18, fontWeight: "bold" }}>สถิตจำนวนปัญหาแยกตามหมวดหมู่</Text>
+          <Flex direction="column" style={{marginVertical: 26}}>
+            <PieChart
+              widthAndHeight={widthAndHeight}
+              series={series}
+              sliceColor={sliceColor}
+              coverRadius={0.45}
+              coverFill={"#FFF"}
+            />
+          </Flex>
         </View>
       </ScrollView>
     </View>
