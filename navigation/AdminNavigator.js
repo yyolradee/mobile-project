@@ -2,11 +2,12 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text } from "react-native";
 import Colors from "../constants/Colors";
-import DashboardScreen from "../screens/admin/DashboardScreen";
-import ManageProblemScreen from "../screens/admin/ManageProblemScreen";
-import ReportedScreen from "../screens/admin/ReportedScreen";
 
 //import screen
+import DashboardScreen from "../screens/admin/DashboardScreen";
+import ManageProblemScreen from "../screens/admin/ManageProblemScreen";
+import ReportedScreen from "../screens/admin/reportedPost/ReportedScreen";
+import ReportedPostScreen from "../screens/admin/reportedPost/ReportedPostScreen";
 
 const AdminStackNavigator = createNativeStackNavigator();
 
@@ -48,8 +49,6 @@ export default function AdminNavigator() {
         component={ManageProblemScreen}
         options={{
           headerTitle: headerCustomTitle,
-          headerBackTitleVisible: false,
-          headerTintColor: "#000",
         }}
       />
       <AdminStackNavigator.Screen
@@ -57,8 +56,13 @@ export default function AdminNavigator() {
         component={ReportedScreen}
         options={{
           headerTitle: headerCustomTitle2,
-          headerBackTitleVisible: false,
-          headerTintColor: "#000",
+        }}
+      />
+      <AdminStackNavigator.Screen
+        name="detailReportedPost"
+        component={ReportedPostScreen}
+        options={{
+          headerTitle: headerCustomTitle2,
         }}
       />
     </AdminStackNavigator.Navigator>
