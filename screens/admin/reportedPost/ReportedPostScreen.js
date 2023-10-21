@@ -7,12 +7,14 @@ import {
   ScrollView,
 } from "react-native";
 import Post from "../../../components/Post";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import Colors from "../../../constants/Colors";
+import { deleteReportedPost } from "../../../data/admin/ReportedController";
 
 const ReportedPostScreen = () => {
   const route = useRoute();
+  const navigation = useNavigation();
   const DATA = useSelector((state) => state.data.postDetailData);
   const post_id = route.params.post_id;
   const data = DATA.find((post) => post.post_id === post_id);
@@ -40,7 +42,11 @@ const ReportedPostScreen = () => {
               paddingHorizontal: 20,
               marginRight: 10,
             }}
-            onPress={() => {}}
+            onPress={async () => {
+              await deleteReportedPost(route.params.report_id);
+              route.params.fetchPost();
+              navigation.pop();
+            }}
           >
             <Text style={{ color: "#fff", fontSize: 15 }}>ไม่มีปัญหา</Text>
           </TouchableOpacity>

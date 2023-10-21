@@ -4,7 +4,10 @@ export const getReportedPost = async () => {
   try {
     const reportedPostsArray = [];
     const db = firebase.firestore();
-    const documentSnapshot = await db.collection("ReportedPosts").get();
+    const documentSnapshot = await db
+      .collection("ReportedPosts")
+      .orderBy("date_time", "asc")
+      .get();
     for (const doc of documentSnapshot.docs) {
       const reportedPost = doc.data();
       const postSnapshot = await reportedPost.post_id.get();

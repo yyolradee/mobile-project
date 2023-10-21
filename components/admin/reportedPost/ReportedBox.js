@@ -45,7 +45,7 @@ const ReportedBox = (props) => {
           style={{ height: 65, width: 65, borderRadius: 40 }}
           source={
             data.post.img_path
-              ? { uri: img_path }
+              ? { uri: data.post.img_path }
               : require("../../../assets/no-image.png")
           }
         />
@@ -83,6 +83,8 @@ const ReportedBox = (props) => {
           onPress={() => {
             navigation.navigate("detailReportedPost", {
               post_id: data.post_id,
+              report_id: data.report_id,
+              fetchPost: props.fetchPost,
             });
           }}
         >

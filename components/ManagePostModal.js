@@ -97,7 +97,7 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
                   {
                     text: "ตกลง",
                     onPress: () => {
-                      console.log("ตกลง");
+                      onClose();
                     },
                   },
                 ]);
@@ -106,7 +106,7 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
                   {
                     text: "ตกลง",
                     onPress: () => {
-                      console.log("ตกลง");
+                      onClose();
                     },
                   },
                 ]);
