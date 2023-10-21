@@ -230,18 +230,33 @@ export const getUserPosts = (userId, onDataReceived) => {
   return unsubscribe;
 };
 
-export const deletePostById = (postId) => {
-  const db = firebase.firestore();
+export const deletePostById = async (postId) => {
+  try {
+    const db = firebase.firestore();
+    const postsRef = db.collection("Posts").doc(postId);
+    const notiPostsRef = db.collection("Notifications").where("post_id", "==", postsRef);
+    const notiPostsQuery = await notiPostsRef.get();
+    const reportedPostsRef = db.collection("ReportedPosts").where("post_id", "==", postsRef);
+    const reportedPostsQuery = await reportedPostsRef.get();
+    await db.runTransaction(async (transaction) => {
+      // Delete Notifications associated with the post
+      notiPostsQuery.forEach(async (doc) => {
+        transaction.delete(doc.ref);
+        console.log("delete noti");
+      });
 
-  const itemsRef = db.collection("Posts");
+      // Delete ReportedPosts associated with the post
+      reportedPostsQuery.forEach(async (doc) => {
+        transaction.delete(doc.ref);
+        console.log("delete report post");
+      });
 
-  itemsRef
-    .doc(postId)
-    .delete()
-    .then(() => {
-      console.log("Post deleted successfully");
-    })
-    .catch((error) => {
-      console.error("Error deleting post:", error);
+      // Delete the post itself
+      transaction.delete(postsRef);
     });
+
+    console.log("Post and associated data deleted successfully");
+  } catch (error) {
+    console.error("Error deleting post and associated data:", error);
+  }
 };

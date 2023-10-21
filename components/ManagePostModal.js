@@ -24,14 +24,27 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
   });
 
   const deleteHandler = async (postId) => {
-    try {
-      deletePostById(postId);
-      dispatch(fetchPosts());
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      onClose();
-    }
+    Alert.alert("ต้องการที่จะลบโพสต์หรือไม่", "หากคุณลบโพสต์ จะไม่สามารถกู้คืนโพสต์ได้อีกต่อไป", [
+      {
+        text: "ลบโพสต์",
+        onPress: async () => {
+          try {
+            await deletePostById(postId);
+            dispatch(await fetchPosts());
+          } catch (error) {
+            console.error("Error:", error);
+          } finally {
+            onClose();
+          }
+        },
+        style: "destructive",
+      },
+      {
+        text: "ยกเลิก",
+        onPress: () => {},
+        style: "cancel",
+      },
+    ]);
   };
 
   const renderItem = () => {
