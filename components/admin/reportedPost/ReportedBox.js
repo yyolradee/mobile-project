@@ -3,9 +3,13 @@ import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import Colors from "../../../constants/Colors";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
+import { deletePostById } from "../../../data/posts/postsController";
+import { useDispatch } from "react-redux";
+import { fetchPosts } from "../../../store/actions/dataAction";
 
 const ReportedBox = (props) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const data = props.reportedPost;
   const time = moment(data.date_time.toDate()).format("D MMM YYYY HH:mm");
 
@@ -23,8 +27,10 @@ const ReportedBox = (props) => {
         },
         {
           text: "ยืนยัน",
-          onPress: () => {
+          onPress: async () => {
+            await deletePostById(data.post_id);
             props.fetchPost();
+            dispatch(fetchPosts());
           },
         },
       ]
