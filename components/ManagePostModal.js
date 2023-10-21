@@ -1,26 +1,35 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { Modal, Flex } from "@ant-design/react-native";
 import Colors from "../constants/Colors";
-import { MaterialIcons, AntDesign, Octicons, Feather, FontAwesome5 } from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  AntDesign,
+  Octicons,
+  Feather,
+  FontAwesome5,
+} from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { deletePostById } from "../data/posts/postsController";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchPosts } from "../store/actions/dataAction";
 import { useNavigation } from "@react-navigation/native";
+import { addReportedPost } from "../data/admin/ReportedController";
 
 const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
   const navigation = useNavigation();
-
   const dispatch = useDispatch();
+  const userInfo = useSelector((state) => {
+    return state.user.userInfo;
+  });
+
   const deleteHandler = async (postId) => {
     try {
       deletePostById(postId);
       dispatch(fetchPosts());
     } catch (error) {
       console.error("Error:", error);
-    }
-    finally {
+    } finally {
       onClose();
     }
   };
@@ -30,8 +39,12 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
       return (
         // Editable Post
         <View style={styles.container}>
-          <Text style={{ textAlign: "center", fontSize: 16 }}>การจัดการโพสต์</Text>
-          <View style={{ borderBottomColor: Colors.gray2, borderBottomWidth: 1 }} />
+          <Text style={{ textAlign: "center", fontSize: 16 }}>
+            การจัดการโพสต์
+          </Text>
+          <View
+            style={{ borderBottomColor: Colors.gray2, borderBottomWidth: 1 }}
+          />
           {/* <Flex align="center" style={{ gap: 5 }}>
             <MaterialIcons name="visibility-off" size={24} color={Colors.gray} />
             <Text style={{ color: Colors.gray }}>ซ่อนโพสต์</Text>
@@ -45,10 +58,10 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("CreatePostScreen", {
-                screen: 'content',
-                params: {postId: postId},
+                screen: "content",
+                params: { postId: postId },
               });
-              onClose()
+              onClose();
             }}
           >
             <Flex align="center" style={{ gap: 5 }}>
@@ -62,16 +75,49 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
       return (
         // Repost Post
         <View style={styles.container}>
-          <Text style={{ textAlign: "center", fontSize: 16 }}>การจัดการโพสต์</Text>
-          <View style={{ borderBottomColor: Colors.gray2, borderBottomWidth: 1 }} />
+          <Text style={{ textAlign: "center", fontSize: 16 }}>
+            การจัดการโพสต์
+          </Text>
+          <View
+            style={{ borderBottomColor: Colors.gray2, borderBottomWidth: 1 }}
+          />
           {/* <Flex align="center" style={{ gap: 5 }}>
             <MaterialIcons name="visibility-off" size={24} color={Colors.gray} />
             <Text style={{ color: Colors.gray }}>ซ่อนโพสต์</Text>
           </Flex> */}
-          <Flex align="center" style={{ gap: 5 }}>
-            <AntDesign name="warning" size={24} color="red" />
-            <Text style={{ color: "red" }}>รายงานโพสต์</Text>
-          </Flex>
+          <TouchableOpacity
+            onPress={async () => {
+              try {
+                const response = await addReportedPost(
+                  postId,
+                  userInfo.uid,
+                  userInfo.displayName
+                );
+                Alert.alert("", response, [
+                  {
+                    text: "ตกลง",
+                    onPress: () => {
+                      onClose();
+                    },
+                  },
+                ]);
+              } catch (error) {
+                Alert.alert("เกิดข้อผิดพลาด", error.toString(), [
+                  {
+                    text: "ตกลง",
+                    onPress: () => {
+                      onClose();
+                    },
+                  },
+                ]);
+              }
+            }}
+          >
+            <Flex align="center" style={{ gap: 5 }}>
+              <AntDesign name="warning" size={24} color="red" />
+              <Text style={{ color: "red" }}>รายงานโพสต์</Text>
+            </Flex>
+          </TouchableOpacity>
           {/* <Flex align="center" style={{ gap: 5 }}>
             <Octicons name="bell" size={24} color={Colors.gray} />
             <Text style={{ color: Colors.gray }}>เปิดการแจ้งเตือนเกี่ยวกับโพสต์นี้</Text>
@@ -82,7 +128,13 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
   };
 
   return (
-    <Modal popup visible={isVisible} animationType="slide-up" onClose={onClose} maskClosable>
+    <Modal
+      popup
+      visible={isVisible}
+      animationType="slide-up"
+      onClose={onClose}
+      maskClosable
+    >
       <View style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>{renderItem()}</View>
     </Modal>
   );
