@@ -27,9 +27,8 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="mobile-project"/>
-        <data android:scheme="com.kelkuzah.mobileproject"/>
-        <data android:scheme="exp+mobile-project"/>
         <data android:scheme="com.anonymous.mobileproject"/>
+        <data android:scheme="exp+mobile-project"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

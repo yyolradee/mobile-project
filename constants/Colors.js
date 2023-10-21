@@ -11,4 +11,5 @@ export default {
     warning: "#FFB818",
     red: "#FF0000",
     adminary: "#4A2FF4",
+    adminary_sub: "#6147FF",
 }
