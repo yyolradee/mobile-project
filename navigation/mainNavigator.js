@@ -11,6 +11,7 @@ import SearchModal from "../components/SearchModal";
 import DrawerModal from "../components/DrawerComponant/DrawerModal";
 import { fetchCategories, fetchFollowLocations, fetchPosts, fetctLocations } from "../store/actions/dataAction";
 import { getUserById } from "../data/users/usersController";
+import CreatePostNavigator from "./createPostStackNavigator";
 
 const MainStackNavigator = createNativeStackNavigator();
 
@@ -42,6 +43,20 @@ export default function MainNavigator(props) {
     }
   }, [getUser]);
 
+  let renderCreatePost = (
+    <MainStackNavigator.Screen
+      name="CreatePostScreen"
+      component={CreatePostNavigator}
+      options={{
+        tabBarStyle: {
+          display: "none",
+        },
+        headerShown: false,
+      }}
+    />
+  );
+
+
   return (
     <Provider>
       <DrawerModal
@@ -50,6 +65,7 @@ export default function MainNavigator(props) {
             <SearchModal />
             <MainStackNavigator.Navigator initialRouteName="App" screenOptions={{ headerShown: false }}>
               <MainStackNavigator.Screen name="App" component={BottomNavigator} />
+              {renderCreatePost}
             </MainStackNavigator.Navigator>
           </NavigationContainer>
         }

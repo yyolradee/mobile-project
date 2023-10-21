@@ -48,7 +48,7 @@ const ManagePostModal = ({ isVisible, onClose, isEditable, postId }) => {
   };
 
   const renderItem = () => {
-    if (isEditable) {
+    if (isEditable || userInfo.role === "admin") {
       return (
         // Editable Post
         <View style={styles.container}>

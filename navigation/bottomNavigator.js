@@ -12,7 +12,6 @@ import FollowNavigator from "./followStackNavigator";
 import CreatePostNavigator from "./createPostStackNavigator";
 import NotificationNavigator from "./notificationNavigator";
 import ProfileNavigator from "./profileStackNavigator";
-import SearchModal from "../components/SearchModal";
 import AdminNavigator from "./AdminNavigator";
 
 const BottomTab = createBottomTabNavigator();
@@ -44,117 +43,132 @@ const CustomTabBarButton = ({ children, onPress, isAdmin }) => {
 
 export default function BottomNavigator() {
   const userInfo = useSelector((state) => state.user.userInfo);
-  const isAdmin = userInfo ? userInfo.role == "admin" ? true : false : false;
+  const isAdmin = userInfo ? (userInfo.role == "admin" ? true : false) : false;
   return (
-      <BottomTab.Navigator
-        initialRouteName="HomeScreen"
-        screenOptions={{
-          tabBarShowLabel: false,
-          tabBarActiveTintColor: "black",
-          tabBarInactiveTintColor: Colors.gray2,
+    <BottomTab.Navigator
+      initialRouteName="HomeScreen"
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: "black",
+        tabBarInactiveTintColor: Colors.gray2,
+      }}
+    >
+      <BottomTab.Screen
+        name="HomeScreen"
+        component={HomeNavigator}
+        options={{
+          tabBarIcon: ({ focused, color }) => {
+            var name = "";
+            if (focused) {
+              name = "home";
+              color = "black";
+            } else {
+              name = "home-outline";
+              color = Colors.gray2;
+            }
+            return (
+              <View style={{ alignItems: "center" }}>
+                <Ionicons name={name} size={24} color={color} />
+                <Text style={{ color: color, fontSize: 10 }}>หน้าแรก</Text>
+              </View>
+            );
+          },
+          headerShown: false,
         }}
-      >
+      />
+      <BottomTab.Screen
+        name="FollowScreen"
+        component={FollowNavigator}
+        options={{
+          tabBarIcon: ({ focused, color }) => {
+            var name = "";
+            if (focused) {
+              name = "heart";
+              color = "black";
+            } else {
+              name = "heart-outline";
+              color = Colors.gray2;
+            }
+            return (
+              <View style={{ alignItems: "center" }}>
+                <Ionicons name={name} size={24} color={color} />
+                <Text style={{ color: color, fontSize: 10 }}>การติดตาม</Text>
+              </View>
+            );
+          },
+          headerShown: false,
+        }}
+      />
+      {isAdmin ? (
         <BottomTab.Screen
-          name="HomeScreen"
-          component={HomeNavigator}
+          name="AdminScreen"
+          component={AdminNavigator}
           options={{
-            tabBarIcon: ({ focused, color }) => {
-              var name = "";
-              if (focused) {
-                name = "home";
-                color = "black";
-              } else {
-                name = "home-outline";
-                color = Colors.gray2;
-              }
-              return (
-                <View style={{ alignItems: "center" }}>
-                  <Ionicons name={name} size={24} color={color} />
-                  <Text style={{ color: color, fontSize: 10 }}>หน้าแรก</Text>
-                </View>
-              );
-            },
+            tabBarIcon: ({ focused }) => <MaterialCommunityIcons name="chart-box-outline" size={35} color="white" />,
+            tabBarButton: (props) => <CustomTabBarButton {...props} isAdmin={isAdmin} />,
+            tabBarStyle: { display: "flex" },
             headerShown: false,
           }}
         />
-        <BottomTab.Screen
-          name="FollowScreen"
-          component={FollowNavigator}
-          options={{
-            tabBarIcon: ({ focused, color }) => {
-              var name = "";
-              if (focused) {
-                name = "heart";
-                color = "black";
-              } else {
-                name = "heart-outline";
-                color = Colors.gray2;
-              }
-              return (
-                <View style={{ alignItems: "center" }}>
-                  <Ionicons name={name} size={24} color={color} />
-                  <Text style={{ color: color, fontSize: 10 }}>การติดตาม</Text>
-                </View>
-              );
-            },
-            headerShown: false,
-          }}
-        />
+      ) : (
         <BottomTab.Screen
           name="CreatePostScreen"
-          component={isAdmin ? AdminNavigator : CreatePostNavigator}
+          component={CreatePostNavigator}
           options={{
-            tabBarIcon: ({ focused }) => isAdmin? <MaterialCommunityIcons name="chart-box-outline" size={35} color="white" /> : <Entypo name="plus" size={35} color="white" />,
+            tabBarIcon: ({ focused }) => <Entypo name="plus" size={35} color="white" />,
             tabBarButton: (props) => <CustomTabBarButton {...props} isAdmin={isAdmin} />,
-            tabBarStyle: { display: isAdmin ? "flex" :"none" },
-            headerShown: false,
-          }}
-        />
-        <BottomTab.Screen
-          name="NotificationScreen"
-          component={NotificationNavigator}
-          options={{
-            tabBarIcon: ({ focused, color }) => {
-              var name = "";
-              if (focused) {
-                name = "bell-fill";
-                color = "black";
-              } else {
-                name = "bell";
-                color = Colors.gray2;
-              }
-              return (
-                <View style={{ alignItems: "center" }}>
-                  <Octicons name={name} size={24} color={color} />
-                  <Text style={{ color: color, fontSize: 10 }}>การแจ้งเตือน</Text>
-                </View>
-              );
+            tabBarStyle: {
+              display: "none",
             },
             headerShown: false,
           }}
         />
-        <BottomTab.Screen
-          name="ProfileScreen"
-          component={ProfileNavigator}
-          options={{
-            tabBarIcon: ({ focused }) => {
-              return (
-                <View style={focused ? styles.shadow : {}}>
-                  <Image
-                    style={{
-                      height: 35,
-                      width: 35,
-                      borderRadius: 35,
-                    }}
-                    source={userInfo ? { uri: userInfo.photoURL } : require("../assets/no-image.png")}
-                  />
-                </View>
-              );
-            },
-            headerShown: false,
-          }}
-        />
-      </BottomTab.Navigator>
+      )}
+      <BottomTab.Screen
+        name="NotificationScreen"
+        component={NotificationNavigator}
+        options={{
+          tabBarIcon: ({ focused, color }) => {
+            var name = "";
+            if (focused) {
+              name = "bell-fill";
+              color = "black";
+            } else {
+              name = "bell";
+              color = Colors.gray2;
+            }
+            return (
+              <View style={{ alignItems: "center" }}>
+                <Octicons name={name} size={24} color={color} />
+                <Text style={{ color: color, fontSize: 10 }}>การแจ้งเตือน</Text>
+              </View>
+            );
+          },
+          headerShown: false,
+        }}
+      />
+      <BottomTab.Screen
+        name="ProfileScreen"
+        component={ProfileNavigator}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <View style={focused ? styles.shadow : {}}>
+                <Image
+                  style={{
+                    height: 35,
+                    width: 35,
+                    borderRadius: 35,
+                  }}
+                  source={userInfo ? { uri: userInfo.photoURL } : require("../assets/no-image.png")}
+                />
+              </View>
+            );
+          },
+          headerShown: false,
+        }}
+      />
+    </BottomTab.Navigator>
   );
 }
 

@@ -260,3 +260,44 @@ export const deletePostById = async (postId) => {
     console.error("Error deleting post and associated data:", error);
   }
 };
+
+export const addComment = async (postId, comment, setComments) => {
+  try {
+    const commentsRef = firebase.firestore().collection("Posts").doc(postId);
+
+    // Define the comment object
+    const newComment = {
+      contents: comment.contents,
+      create_date: new Date(),
+      img_path: comment.img_path,
+      name: comment.name,
+      role: comment.role,
+    };
+
+    // Get the current comments array
+    const doc = await commentsRef.get();
+    const post = doc.data();
+    const comments = post.comments || [];
+
+    // Add the new comment to the comments array
+    comments.push(newComment);
+
+    // Update the comments in Firestore
+    await commentsRef.update({
+      comments: comments,
+    });
+
+    // Set up a real-time listener to watch for changes in the comments
+    commentsRef.onSnapshot((doc) => {
+      const updatedPost = doc.data();
+      const updatedComments = updatedPost.comments || [];
+
+      // You can update your UI with the new comments array
+      console.log("Added comments success");
+      setComments(updatedComments);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
