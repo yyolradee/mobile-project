@@ -21,6 +21,7 @@ const DashboardScreen = () => {
   const navigation = useNavigation();
   const localStatusBarHeight = statusBarHeight();
   const userInfo = useSelector((state) => state.user.userInfo);
+  const userName = userInfo ? userInfo.displayName.split(" ") : ["", ""];
   const widthAndHeight = 250;
   const series = [123, 321, 123, 789, 537];
   const sliceColor = ["#fbd203", "#ffb300", "#ff9100", "#ff6c00", "#ff3c00"];
@@ -30,7 +31,11 @@ const DashboardScreen = () => {
         <Flex justify="between">
           <Flex direction="column" align="starts" style={{ gap: 5 }}>
             <Text style={{ fontSize: 16, color: Colors.gray2 }}>ยินดีต้อนรับ</Text>
-            <Text style={{ fontSize: 24, fontWeight: 600 }}>{userInfo.displayName}</Text>
+            <Flex wrap="wrap" style={{width: 260}}>
+              <Text style={{ fontSize: 24, fontWeight: 600 }}>{userName[0]}</Text>
+              <Text> </Text>
+              <Text style={{ fontSize: 24, fontWeight: 600 }}>{userName[1]}</Text>
+            </Flex>
           </Flex>
           <Image style={{ width: 70, height: 70 }} source={require("../../assets/kmitl_logo.png")} />
         </Flex>
@@ -125,7 +130,7 @@ const DashboardScreen = () => {
         <View style={styles.boxContainer2}>
           <Text style={{ color: Colors.gray2 }}>จำนวนปัญหาในแต่ละหมวดหมู่</Text>
           <Text style={{ fontSize: 18, fontWeight: "bold" }}>สถิตจำนวนปัญหาแยกตามหมวดหมู่</Text>
-          <Flex direction="column" style={{marginVertical: 26}}>
+          <Flex direction="column" style={{ marginVertical: 26 }}>
             <PieChart
               widthAndHeight={widthAndHeight}
               series={series}
