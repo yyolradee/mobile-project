@@ -23,7 +23,7 @@ const CreatePostDetailScreen = ({ route }) => {
   const [validate, setValidate] = useState(false);
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
-  const { title, description, img_path, post_id, locationData, categoriesData, clearState } = route.params;
+  const { title, description, img_path, post_id, locationData, categoriesData, old_img_path, clearState } = route.params;
   const userId = useSelector((state) => state.user.userInfo.uid);
   const locationsTemp = useSelector((state) => state.data.locationData);
   const dispatch = useDispatch();
@@ -37,9 +37,6 @@ const CreatePostDetailScreen = ({ route }) => {
   }
 
   useEffect(() => {
-    // console.log(post_id);
-    // console.log(locationData);
-    // console.log(categoriesData);
     getSelectorCategories(setCategories);
     refactorLocations();
     if (locationData) {
@@ -76,6 +73,7 @@ const CreatePostDetailScreen = ({ route }) => {
     title: title,
     description: description,
     img_path: img_path ? img_path : null,
+    old_img_path: old_img_path ? old_img_path : null,
     owner_id: userId,
     categories_id: selectedCategory,
     location_id: selectedPlace,
