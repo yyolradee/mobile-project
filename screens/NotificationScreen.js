@@ -60,7 +60,7 @@ const NotificationScreen = () => {
       /> */}
       {/* <Button title="createNewNoti" onPress={() => {
         createNotification({
-          post_id: "FR6KLTFmFtWB5fUcf8Oz",
+          post_id: "f40V1aLnm8Npmxv4QNQh",
           type: "trending",
           description: "ของคุณ กำลังเป็นที่น่าสนใจ",
           status: "กำลังดำเนินการ",
