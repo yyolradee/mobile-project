@@ -1,8 +1,8 @@
 import { initializeApp } from "firebase/app";
-import {getAuth, initializeAuth, getReactNativePersistence} from "firebase/auth"
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getAuth, initializeAuth, getReactNativePersistence } from "firebase/auth";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import * as firebase from "firebase/compat";
-import { getFirestore } from "firebase/firestore"
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB38QN1F43ZKfdyG1HFmIqtWrtlgkil2R4",
@@ -11,19 +11,18 @@ const firebaseConfig = {
   storageBucket: "kmitl-trouble.appspot.com",
   messagingSenderId: "864621180068",
   appId: "1:864621180068:web:22219ed75ca09a44bfe231",
-  measurementId: "G-LQ1PRTNJ36"
+  measurementId: "G-LQ1PRTNJ36",
 };
 
 app = initializeApp(firebaseConfig);
-const db = getFirestore();
 
-// export const auth = getAuth(app);
 export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
 });
 
-export default firebase.initializeApp(firebaseConfig)
+export const storage = getStorage(app);
 
+export default firebase.initializeApp(firebaseConfig);
 
 // credentials for google cloud services
 // Android: 159187597555-jta8s5e5mhlh4et2st5lq45eu2bvhs3q.apps.googleusercontent.com

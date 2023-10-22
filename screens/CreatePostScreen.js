@@ -19,12 +19,14 @@ import Colors from "../constants/Colors";
 
 import { getPostsById } from "../data/posts/postsController";
 
+
 const CreatePostScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const [oldImage, setOldImage] = useState(null);
   const [categories, setCategories] = useState(null);
   const [location, setLocation] = useState(null);
   const [validate, setValidate] = useState(false);
@@ -44,6 +46,7 @@ const CreatePostScreen = ({ route }) => {
     setCheck(true);
     setCategories(null);
     setLocation(null);
+    setOldImage(null);
     console.log("Clear state");
   };
 
@@ -77,14 +80,20 @@ const CreatePostScreen = ({ route }) => {
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== "granted") {
+      console.error("Permission to access image gallery denied");
+      return false;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0,
     });
-
-    console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
@@ -97,6 +106,7 @@ const CreatePostScreen = ({ route }) => {
       title: title,
       description: description,
       img_path: image,
+      old_img_path: oldImage,
       categoriesData: categories,
       locationData: location,
       clearState,
@@ -132,6 +142,7 @@ const CreatePostScreen = ({ route }) => {
       setTitle(postData.title);
       setDescription(postData.description);
       setImage(postData.img_path);
+      setOldImage(postData.img_path);
       setLocation(postData.location);
       setCategories(postData.categories);
     }

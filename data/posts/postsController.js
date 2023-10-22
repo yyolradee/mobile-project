@@ -1,4 +1,5 @@
-import firebase from "../firebaseConfig";
+import firebase, { storage } from "../firebaseConfig";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
 // ---------- Posts ---------------
 
@@ -136,7 +137,7 @@ export const getAllPosts = async () => {
   }
 };
 
-export const addNewPost = (itemData) => {
+export const addNewPost = async (itemData) => {
   const db = firebase.firestore();
   const locationsRef = db.collection("Locations");
   const usersRef = db.collection("Users");
@@ -148,13 +149,26 @@ export const addNewPost = (itemData) => {
   const locationRef = locationsRef.doc(itemData.location_id);
   const userRef = usersRef.doc(itemData.owner_id);
 
-  const img_path = itemData.img_path;
+  try {
+    var downloadURL = null;
+    if (itemData.img_path) {
+      const localImagePath = itemData.img_path;
+      const imageFileName = `${new Date().getTime()}_image.jpg`;
+      const storageRef = ref(storage, `images/${imageFileName}`);
+      const mediaBlob = await fetch(localImagePath).then((response) => response.blob());
+      // // Upload the Blob to Firebase Storage
+      const snapshot = await uploadBytes(storageRef, mediaBlob);
+      // // Get the download URL
+      downloadURL = await getDownloadURL(snapshot.ref);
 
-  db.collection("Posts")
-    .add({
+      console.log("Download URL:", downloadURL);
+    }
+    // Add the post to Firestore with the image URL
+    const postRef = db.collection("Posts");
+    const newPost = {
       title: itemData.title,
       description: itemData.description,
-      img_path: img_path,
+      img_path: downloadURL, // Store the image URL
       vote: 0,
       comments: [],
       create_date: new Date(),
@@ -164,21 +178,19 @@ export const addNewPost = (itemData) => {
       location_id: locationRef,
       owner_id: userRef,
       is_trending: false,
-    })
-    .then((docRef) => {
-      if (docRef) {
-        console.log("Post added with ID: ", docRef.id);
-        return true;
-      } else {
-        throw new Error("Collection is not exists");
-      }
-    })
-    .catch((error) => {
-      console.error("Error adding item: ", error);
-    });
+    };
+
+    const docRef = await postRef.add(newPost);
+    console.log("Post added with ID: ", docRef.id);
+
+    return true;
+  } catch (error) {
+    console.error("Error adding item: ", error);
+    return false;
+  }
 };
 
-export const updatePostWithId = (postId, itemData) => {
+export const updatePostWithId = async (postId, itemData) => {
   const db = firebase.firestore();
   const locationsRef = db.collection("Locations");
   const usersRef = db.collection("Users");
@@ -188,28 +200,46 @@ export const updatePostWithId = (postId, itemData) => {
   });
 
   const locationRef = locationsRef.doc(itemData.location_id);
-  const userRef = usersRef.doc(itemData.owner_id);
 
-  const img_path = itemData.img_path;
+  try {
+    var downloadURL = null;
+    if (itemData.img_path) {
+      const localImagePath = itemData.img_path;
+      const imageFileName = `${new Date().getTime()}_image.jpg`;
+      const storageRef = ref(storage, `images/${imageFileName}`);
+      const mediaBlob = await fetch(localImagePath).then((response) => response.blob());
 
-  db.collection("Posts")
-    .doc(postId)
-    .update({
+      // Check if there's an old image associated with the post
+      if (itemData.old_img_path) {
+        // Delete the old image from Firebase Storage
+        const oldImageRef = ref(storage, itemData.old_img_path);
+        await deleteObject(oldImageRef);
+      }
+
+      // Upload the new Blob to Firebase Storage
+      const snapshot = await uploadBytes(storageRef, mediaBlob);
+      // Get the download URL
+      downloadURL = await getDownloadURL(snapshot.ref);
+
+      console.log("Download URL:", downloadURL);
+    }
+
+    // Update the post in Firestore with the new image URL
+    await db.collection("Posts").doc(postId).update({
       title: itemData.title,
       description: itemData.description,
-      img_path: img_path,
+      img_path: downloadURL,
       update_date: new Date(),
       categories: categoryRef,
       location_id: locationRef,
-      owner_id: userRef,
-    })
-    .then(() => {
-      console.log("Post updated with ID: ", postId);
-      return true;
-    })
-    .catch((error) => {
-      console.error("Error updating item:", error);
     });
+
+    console.log("Post updated with ID: ", postId);
+    return true;
+  } catch (error) {
+    console.log("Cannot update", error);
+    return false;
+  }
 };
 
 export const getUserPosts = (userId, onDataReceived) => {
@@ -238,23 +268,32 @@ export const deletePostById = async (postId) => {
     const notiPostsQuery = await notiPostsRef.get();
     const reportedPostsRef = db.collection("ReportedPosts").where("post_id", "==", postsRef);
     const reportedPostsQuery = await reportedPostsRef.get();
-    await db.runTransaction(async (transaction) => {
-      // Delete Notifications associated with the post
-      notiPostsQuery.forEach(async (doc) => {
-        transaction.delete(doc.ref);
-        console.log("delete noti");
+    const postDoc = await postsRef.get();
+
+    if (postDoc.exists) {
+      const post = postDoc.data();
+      if (post.img_path) {
+        // Delete the file in Firebase Storage
+        const oldImageRef = ref(storage, post.img_path);
+        await deleteObject(oldImageRef);
+      }
+      await db.runTransaction(async (transaction) => {
+        // Delete Notifications associated with the post
+        notiPostsQuery.forEach(async (doc) => {
+          transaction.delete(doc.ref);
+          console.log("delete noti");
+        });
+
+        // Delete ReportedPosts associated with the post
+        reportedPostsQuery.forEach(async (doc) => {
+          transaction.delete(doc.ref);
+          console.log("delete report post");
+        });
+
+        // Delete the post itself
+        transaction.delete(postsRef);
       });
-
-      // Delete ReportedPosts associated with the post
-      reportedPostsQuery.forEach(async (doc) => {
-        transaction.delete(doc.ref);
-        console.log("delete report post");
-      });
-
-      // Delete the post itself
-      transaction.delete(postsRef);
-    });
-
+    }
     console.log("Post and associated data deleted successfully");
   } catch (error) {
     console.error("Error deleting post and associated data:", error);
@@ -300,4 +339,3 @@ export const addComment = async (postId, comment, setComments) => {
     console.log(error);
   }
 };
-
