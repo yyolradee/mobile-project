@@ -9,10 +9,9 @@ export const chevronRender = (state) => {
   return <Entypo name={name} size={16} color="black" style={{ paddingRight: 1.5 }} />;
 };
 
-export const renderFilterDataContent = (item, open) => {
-  if (open) {
+export const renderFilterDataContent = (item, open, onChange) => {
     return (
-      <Flex direction="column" align="start" style={{ gap: 15, marginTop: 10 }}>
+      <Flex direction="column" align="start" style={[{ gap: 15, marginTop: 10}, !open ? {display: "none"} : {}]}>
         {item.contents.map((content, index) => (
           <Flex key={index} style={{ width: "100%" }}>
             <Checkbox
@@ -22,6 +21,7 @@ export const renderFilterDataContent = (item, open) => {
                 justifyContent: "space-between",
                 width: "100%",
               }}
+              onChange={() => {onChange(content)}}
             >
               <Text style={{ color: Colors.gray2 }}>{content}</Text>
             </Checkbox>
@@ -29,10 +29,9 @@ export const renderFilterDataContent = (item, open) => {
         ))}
       </Flex>
     );
-  }
 };
 
-export const renderFilterData = ({ item, openStatus, filterHandler }) => {
+export const renderFilterData = ({ item, openStatus, openHandler, onChange }) => {
   return (
     <View
       style={{
@@ -55,14 +54,14 @@ export const renderFilterData = ({ item, openStatus, filterHandler }) => {
             width: '100%',
           }}
           onPress={() => {
-            filterHandler(item.index);
+            openHandler(item.index);
           }}
         >
           <Text style={{ fontSize: 16 }}>{item.name}</Text>
           {chevronRender(openStatus[item.index])}
         </TouchableOpacity>
       </Flex>
-      {renderFilterDataContent(item, openStatus[item.index])}
+      {renderFilterDataContent(item, openStatus[item.index], onChange)}
     </View>
   );
 }
