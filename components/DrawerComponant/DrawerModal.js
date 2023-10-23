@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { renderFilterData } from "./DrawerUtils";
 import React, { useEffect, useState } from "react";
-import { Text, FlatList } from "react-native";
+import { Text, FlatList, TouchableOpacity } from "react-native";
 import Colors from "../../constants/Colors";
 import { Flex, Drawer } from "@ant-design/react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { setDrawer } from "../../store/actions/drawerAction";
 import { statusBarHeight } from "../../constants/responsiveHeight";
-import { setFilteredData } from "../../store/actions/dataAction";
+import { fetchPosts, setFilteredData } from "../../store/actions/dataAction";
 
 const DrawerModal = ({ contents }) => {
   const statusData = useSelector((state) => state.data.statusData);
@@ -60,7 +60,11 @@ const DrawerModal = ({ contents }) => {
   useEffect(() => {
     const filterData = filterPosts(); // Call the filtering function when checked items change
     dispatch(setFilteredData(filterData));
+    if (checked.length === 0) {
+      dispatch(fetchPosts());
+    }
   }, [checked]);
+
   const listData = [
     {
       name: "สถานะ",
@@ -90,29 +94,45 @@ const DrawerModal = ({ contents }) => {
 
   const FilterScreen = (
     <Flex direction="column" align="start" style={{ backgroundColor: "white", flex: 1 }}>
-      <Flex
-        align="center"
-        style={{ padding: 19, backgroundColor: Colors.primary, width: "100%", gap: 5, paddingTop: getStatusBarHeight }}
+      <TouchableOpacity
+        style={{
+          padding: 19,
+          backgroundColor: Colors.primary,
+          width: "100%",
+          gap: 5,
+          paddingTop: getStatusBarHeight,
+        }}
+        activeOpacity={1}
+        onPress={() => {
+          setOpen(false)
+          setTimeout(() => {
+            setOpen(true)
+          }, 1);
+        }}
       >
-        <Text style={{ color: "white", fontSize: 20, fontWeight: 600 }}>การกรองข้อมูล</Text>
-        <Ionicons name="filter" size={24} color="white" />
-      </Flex>
+        <Flex align="center">
+          <Text style={{ color: "white", fontSize: 20, fontWeight: 600 }}>การกรองข้อมูล</Text>
+          <Ionicons name="filter" size={24} color="white" />
+        </Flex>
+      </TouchableOpacity>
       <FlatList
         data={refactoredListData}
         renderItem={({ item }) => renderFilterData({ item, openStatus, openHandler, onChange, checked })}
-        keyExtractor={(item) => item.index.toString()} // Use toString() to ensure key is a string
+        keyExtractor={(item) => item.index.toString()}
         style={{ width: "100%" }}
       />
     </Flex>
   );
 
+  const [open, setOpen] = useState(false);
+
   return (
     <Drawer
       position="left"
       sidebar={FilterScreen}
-      open={isDrawerOpen}
       drawerRef={(el) => (this.drawer = el)}
       drawerBackgroundColor="#ccc"
+      // open={false}
     >
       {contents}
     </Drawer>

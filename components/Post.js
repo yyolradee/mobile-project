@@ -1,22 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
 import { Flex, WingBlank } from "@ant-design/react-native";
-import {
-  Ionicons,
-  Entypo,
-  Feather,
-  FontAwesome,
-  AntDesign,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { Ionicons, Entypo, Feather, FontAwesome, AntDesign, MaterialIcons } from "@expo/vector-icons";
 import ManagePostModal from "./ManagePostModal";
 import CommentModal from "./CommentModal";
 import { actualDimensions } from "../constants/responsiveHeight";
@@ -39,11 +25,7 @@ const renderTrending = (trending) => {
   if (trending) {
     return (
       <Flex style={{ marginLeft: 12, gap: 3 }}>
-        <MaterialIcons
-          name="local-fire-department"
-          size={20}
-          color={Colors.pink}
-        />
+        <MaterialIcons name="local-fire-department" size={20} color={Colors.pink} />
         <Text style={{ color: Colors.pink }}>ยอดนิยม</Text>
       </Flex>
     );
@@ -104,9 +86,7 @@ const Post = (props) => {
       setScrollEnabled(true);
     }
 
-    const checkFollow = followData.findIndex(
-      (location) => location.location_id == postData.location.location_id
-    );
+    const checkFollow = followData.findIndex((location) => location.location_id == postData.location.location_id);
     setIsFollow(checkFollow == -1 ? false : true);
   });
 
@@ -151,10 +131,7 @@ const Post = (props) => {
                     }}
                   >
                     <Text
-                      style={
-                        data.location &&
-                        data.location.name.length > 30 && { maxWidth: "60%" }
-                      }
+                      style={data.location && data.location.name.length > 30 && { maxWidth: "60%" }}
                       numberOfLines={1}
                     >
                       {" "}
@@ -175,10 +152,7 @@ const Post = (props) => {
                         }}
                         onPress={async () => {
                           try {
-                            await deleteMember(
-                              data.location.location_id,
-                              userInfo.uid
-                            );
+                            await deleteMember(data.location.location_id, userInfo.uid);
                             dispatch(await fetchFollowLocations(userInfo.uid));
                             setIsFollow(false);
                           } catch (error) {
@@ -186,19 +160,14 @@ const Post = (props) => {
                           }
                         }}
                       >
-                        <Text style={{ color: Colors.primary, fontSize: 12 }}>
-                          ติดตามแล้ว
-                        </Text>
+                        <Text style={{ color: Colors.primary, fontSize: 12 }}>ติดตามแล้ว</Text>
                       </TouchableOpacity>
                     ) : (
                       <TouchableOpacity
                         style={styles.button}
                         onPress={async () => {
                           try {
-                            await addMember(
-                              data.location.location_id,
-                              userInfo.uid
-                            );
+                            await addMember(data.location.location_id, userInfo.uid);
                             dispatch(await fetchFollowLocations(userInfo.uid));
                             setIsFollow(false);
                           } catch (error) {
@@ -206,16 +175,12 @@ const Post = (props) => {
                           }
                         }}
                       >
-                        <Text style={{ color: "white", fontSize: 12 }}>
-                          ติดตาม
-                        </Text>
+                        <Text style={{ color: "white", fontSize: 12 }}>ติดตาม</Text>
                       </TouchableOpacity>
                     )}
                   </WingBlank>
                 </Flex>
-                <Text style={{ color: Colors.gray, fontSize: 12 }}>
-                  {timePassed}
-                </Text>
+                <Text style={{ color: Colors.gray, fontSize: 12 }}>{timePassed}</Text>
               </Flex>
             </WingBlank>
           </Flex>
@@ -238,16 +203,10 @@ const Post = (props) => {
         {/* Content */}
         <View style={{ marginTop: 10 }}>
           <Flex align="center">
-            <Text style={{ fontWeight: "bold", fontSize: 20, marginBottom: 5 }}>
-              {data.title}
-            </Text>
+            <Text style={{ fontWeight: "bold", fontSize: 20, marginBottom: 5 }}>{data.title}</Text>
             {renderTrending(trending)}
           </Flex>
-          <ReadMoreText
-            contents={data.description}
-            MAX_LINES={3}
-            style={{ marginTop: 5 }}
-          />
+          <ReadMoreText contents={data.description} MAX_LINES={3} style={{ marginTop: 5 }} />
           {/* <Text style={{marginTop: 5}} numberOfLines={5} flexWrap="wrap">{data.des}</Text> */}
         </View>
       </WingBlank>
@@ -257,11 +216,7 @@ const Post = (props) => {
           width: "100%",
           display: data.img_path ? "flex" : "none",
         }}
-        source={
-          data.img_path
-            ? { uri: data.img_path }
-            : require("../assets/no-image.png")
-        }
+        source={data.img_path ? { uri: data.img_path } : require("../assets/no-image.png")}
       ></Image>
 
       <Flex direction="row" justify="between" style={styles.sub_container2}>
@@ -270,13 +225,15 @@ const Post = (props) => {
           <Text>{data.vote}</Text>
           <Feather name="chevrons-down" size={24} color={Colors.gray} />
           <TouchableOpacity onPress={toggleCommentModal}>
-            <FontAwesome
-              name="commenting-o"
-              size={24}
-              color={Colors.gray}
-              style={{ marginLeft: 7, marginRight: 2, top: -1 }}
-            />
-            {/* <Text style={{color: Colors.gray}}>{comments.length} ความคิดเห็น</Text> */}
+            <Flex style={{ gap: 5 }}>
+              <FontAwesome
+                name="commenting-o"
+                size={24}
+                color={Colors.gray}
+                style={{ marginLeft: 7, marginRight: 2, top: -1 }}
+              />
+              <Text style={{ color: Colors.gray }}>{comments.length} ความคิดเห็น</Text>
+            </Flex>
           </TouchableOpacity>
         </Flex>
         <Flex style={{ gap: 5 }}>
