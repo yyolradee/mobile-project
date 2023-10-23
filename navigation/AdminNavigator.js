@@ -38,13 +38,14 @@ function TopTabNavigator() {
   return (
     <ManageProblemNavigator.Navigator
       screenOptions={{
-        tabBarIndicatorStyle: { backgroundColor: Colors.primary },
+        tabBarIndicatorStyle: { backgroundColor: "#fff", height: "100%", borderColor: Colors.primary, borderBottomWidth: 2 },
+        tabBarStyle: {backgroundColor: Colors.gray4}
       }}
     >
       <ManageProblemNavigator.Screen
         name="waiting"
         component={WaitingScreen}
-        options={{ tabBarLabel: "รอรับเรื่อง" }}
+        options={{ tabBarLabel: "รอรับเรื่อง"}}
       />
       <ManageProblemNavigator.Screen
         name="doing"
@@ -80,6 +81,7 @@ export default function AdminNavigator() {
         component={TopTabNavigator}
         options={{
           headerTitle: headerCustomTitle,
+          headerShadowVisible: false
         }}
       />
       <AdminStackNavigator.Screen
