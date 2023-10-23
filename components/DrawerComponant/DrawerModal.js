@@ -69,21 +69,20 @@ const DrawerModal = ({ contents }) => {
   }, [checked]);
 
   const defaultListData = [
-      {
-        name: "สถานะ",
-        contents: statusData,
-      },
-      {
-        name: "สถานที่",
-        contents: locationData.map((item) => item.name),
-      },
-      {
-        name: "หมวดหมู่",
-        contents: categoriesData.map((item) => item.name),
-      },
+    {
+      name: "สถานะ",
+      contents: statusData,
+    },
+    {
+      name: "สถานที่",
+      contents: locationData.map((item) => item.name),
+    },
+    {
+      name: "หมวดหมู่",
+      contents: categoriesData.map((item) => item.name),
+    },
   ];
-  const [listData, setListData] = useState(defaultListData);
-
+  const [listData, setListData] = useState([]);
 
   useEffect(() => {
     if (currentPageName === "Location") {
@@ -100,7 +99,7 @@ const DrawerModal = ({ contents }) => {
     } else {
       setListData(defaultListData);
     }
-  }, [currentPageName]);
+  }, [currentPageName, locationData, categoriesData]);
 
   const refactoredListData = listData.map((item, index) => ({
     index,
