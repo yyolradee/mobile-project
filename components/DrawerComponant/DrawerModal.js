@@ -7,6 +7,7 @@ import { Flex, Drawer } from "@ant-design/react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { setDrawer } from "../../store/actions/drawerAction";
 import { statusBarHeight } from "../../constants/responsiveHeight";
+import { setFilteredData } from "../../store/actions/dataAction";
 
 const DrawerModal = ({ contents }) => {
   const statusData = useSelector((state) => state.data.statusData);
@@ -14,6 +15,38 @@ const DrawerModal = ({ contents }) => {
   const categoriesData = useSelector((state) => state.data.categoriesData);
   const isDrawerOpen = useSelector((state) => state.drawer.drawerState);
   const getStatusBarHeight = statusBarHeight();
+  const postData = useSelector((state) => state.data.postDetailData);
+
+  const [checked, setChecked] = useState([]); // Initialize checked state
+
+  const onChange = (data) => {
+    if (checked.includes(data)) {
+      setChecked(checked.filter((item) => item !== data));
+    } else {
+      setChecked([...checked, data]);
+    }
+  };
+
+  const filterPosts = () => {
+    // Filter your post data based on the checked filters
+    return postData.filter((post) => {
+      // Filter by category
+      const postCategories = post.categories.map((category) => category.name);
+      const categoryMatch = checked.some((filter) => postCategories.includes(filter));
+
+      // Filter by status
+      const statusMatch = checked.includes(post.status);
+
+      // Filter by location
+      const locationMatch = checked.includes(post.location.name);
+
+      // Return true if any of the filters match
+      return categoryMatch || statusMatch || locationMatch;
+    });
+
+    // You can update your application state or perform other actions with the filtered data
+    // For now, we'll just console.log it
+  };
 
   // Filter Open Status
   const initialOpenStatus = [false, false, false];
@@ -24,6 +57,10 @@ const DrawerModal = ({ contents }) => {
     dispatch(setDrawer(this.drawer.drawerShown));
   });
 
+  useEffect(() => {
+    const filterData = filterPosts(); // Call the filtering function when checked items change
+    dispatch(setFilteredData(filterData));
+  }, [checked]);
   const listData = [
     {
       name: "สถานะ",
@@ -45,7 +82,7 @@ const DrawerModal = ({ contents }) => {
     ...item,
   }));
 
-  const filterHander = (index) => {
+  const openHandler = (index) => {
     const newOpenStatus = [...openStatus];
     newOpenStatus[index] = !newOpenStatus[index];
     setOpenStatus(newOpenStatus);
@@ -62,7 +99,7 @@ const DrawerModal = ({ contents }) => {
       </Flex>
       <FlatList
         data={refactoredListData}
-        renderItem={({ item }) => renderFilterData({ item, openStatus, filterHandler: filterHander })}
+        renderItem={({ item }) => renderFilterData({ item, openStatus, openHandler, onChange, checked })}
         keyExtractor={(item) => item.index.toString()} // Use toString() to ensure key is a string
         style={{ width: "100%" }}
       />

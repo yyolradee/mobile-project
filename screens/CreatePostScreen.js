@@ -81,13 +81,6 @@ const CreatePostScreen = ({ route }) => {
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
 
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (status !== "granted") {
-      console.error("Permission to access image gallery denied");
-      return false;
-    }
-
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,

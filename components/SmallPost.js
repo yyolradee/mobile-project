@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 const SmallPost = ({ DATA }) => {
   return (
     <View style={{ borderBottomWidth: 1, borderColor: Colors.gray2, paddingHorizontal: 10, paddingVertical: 15 }}>
-      <Flex>
+      <Flex align="start">
         <Flex direction="column" align="start" style={ DATA.img_path && { width: "70%", paddingRight: 10 }}>
           <Flex style={{ gap: 3 }}>
             <Ionicons name="location-sharp" size={20} color={Colors.primary} />
