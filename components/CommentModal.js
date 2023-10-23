@@ -42,9 +42,9 @@ const CommentModal = ({ isVisible, onClose, commentsData, postId }) => {
   const newComment = {
     contents: text,
     create_date: new Date(),
-    img_path: userInfo.photoURL,
-    name: userInfo.displayName,
-    role: userInfo.role,
+    img_path: userInfo ? userInfo.photoURL : null,
+    name: userInfo ? userInfo.displayName : "Name Not Found",
+    role: userInfo ? userInfo.role : "user",
   };
 
   useEffect(() => {
