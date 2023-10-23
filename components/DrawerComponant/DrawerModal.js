@@ -1,13 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { renderFilterData } from "./DrawerUtils";
 import React, { useEffect, useState } from "react";
-import { Text, FlatList, TouchableOpacity } from "react-native";
+import { Text, FlatList, TouchableOpacity, View } from "react-native";
 import Colors from "../../constants/Colors";
 import { Flex, Drawer } from "@ant-design/react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { setDrawer } from "../../store/actions/drawerAction";
 import { statusBarHeight } from "../../constants/responsiveHeight";
 import { fetchPosts, setFilteredData } from "../../store/actions/dataAction";
+import SideMenu from "react-native-side-menu-updated";
+import { getCurrentRouteName } from "../../constants/navigationService";
 
 const DrawerModal = ({ contents }) => {
   const statusData = useSelector((state) => state.data.statusData);
@@ -16,6 +18,7 @@ const DrawerModal = ({ contents }) => {
   const isDrawerOpen = useSelector((state) => state.drawer.drawerState);
   const getStatusBarHeight = statusBarHeight();
   const postData = useSelector((state) => state.data.postDetailData);
+  const currentPageName = getCurrentRouteName();
 
   const [checked, setChecked] = useState([]); // Initialize checked state
 
@@ -54,7 +57,7 @@ const DrawerModal = ({ contents }) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setDrawer(this.drawer.drawerShown));
+    dispatch(setDrawer(isDrawerOpen));
   });
 
   useEffect(() => {
@@ -65,20 +68,39 @@ const DrawerModal = ({ contents }) => {
     }
   }, [checked]);
 
-  const listData = [
-    {
-      name: "สถานะ",
-      contents: statusData,
-    },
-    {
-      name: "สถานที่",
-      contents: locationData.map((item) => item.name),
-    },
-    {
-      name: "หมวดหมู่",
-      contents: categoriesData.map((item) => item.name),
-    },
+  const defaultListData = [
+      {
+        name: "สถานะ",
+        contents: statusData,
+      },
+      {
+        name: "สถานที่",
+        contents: locationData.map((item) => item.name),
+      },
+      {
+        name: "หมวดหมู่",
+        contents: categoriesData.map((item) => item.name),
+      },
   ];
+  const [listData, setListData] = useState(defaultListData);
+
+
+  useEffect(() => {
+    if (currentPageName === "Location") {
+      setListData([
+        {
+          name: "สถานะ",
+          contents: statusData,
+        },
+        {
+          name: "หมวดหมู่",
+          contents: categoriesData.map((item) => item.name),
+        },
+      ]);
+    } else {
+      setListData(defaultListData);
+    }
+  }, [currentPageName]);
 
   const refactoredListData = listData.map((item, index) => ({
     index,
@@ -93,8 +115,14 @@ const DrawerModal = ({ contents }) => {
   };
 
   const FilterScreen = (
-    <Flex direction="column" align="start" style={{ backgroundColor: "white", flex: 1 }}>
-      <TouchableOpacity
+    <View
+      style={{
+        flex: 1,
+        borderWidth: 0.2,
+        borderColor: Colors.gray4,
+      }}
+    >
+      <View
         style={{
           padding: 19,
           backgroundColor: Colors.primary,
@@ -102,40 +130,32 @@ const DrawerModal = ({ contents }) => {
           gap: 5,
           paddingTop: getStatusBarHeight,
         }}
-        activeOpacity={1}
-        onPress={() => {
-          setOpen(false)
-          setTimeout(() => {
-            setOpen(true)
-          }, 1);
-        }}
       >
         <Flex align="center">
           <Text style={{ color: "white", fontSize: 20, fontWeight: 600 }}>การกรองข้อมูล</Text>
           <Ionicons name="filter" size={24} color="white" />
         </Flex>
-      </TouchableOpacity>
+      </View>
       <FlatList
         data={refactoredListData}
         renderItem={({ item }) => renderFilterData({ item, openStatus, openHandler, onChange, checked })}
         keyExtractor={(item) => item.index.toString()}
         style={{ width: "100%" }}
       />
-    </Flex>
+    </View>
   );
 
-  const [open, setOpen] = useState(false);
-
   return (
-    <Drawer
-      position="left"
-      sidebar={FilterScreen}
-      drawerRef={(el) => (this.drawer = el)}
-      drawerBackgroundColor="#ccc"
-      // open={false}
+    <SideMenu
+      menu={FilterScreen}
+      isOpen={isDrawerOpen}
+      onChange={() => {
+        dispatch(setDrawer(false));
+      }}
+      disableGestures={true}
     >
       {contents}
-    </Drawer>
+    </SideMenu>
   );
 };
 
