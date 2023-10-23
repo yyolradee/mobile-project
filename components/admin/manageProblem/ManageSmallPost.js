@@ -1,13 +1,18 @@
 import { Flex } from "@ant-design/react-native";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import Colors from "../../../constants/Colors";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { updateStatus } from "../../../data/posts/postsController";
+import { fetchPosts } from "../../../store/actions/dataAction";
 
 const ManageSmallPost = ({ DATA }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [statusColor, setStatusColor] = useState(Colors.success);
+
   useEffect(() => {
     if (DATA.status == "รอรับเรื่อง") {
       setStatusColor(Colors.warning);
@@ -15,6 +20,30 @@ const ManageSmallPost = ({ DATA }) => {
       setStatusColor(Colors.success);
     }
   });
+
+  const confirmChangeStatus = () => {
+    Alert.alert(
+      "คุณแน่ใจที่จะละทิ้งปัญหานี้หรือไม่",
+      "การเปลี่ยนแปลงนี้จะไม่สามารถกู้คืนได้ในภายหลัง",
+      [
+        {
+          text: "ยกเลิก",
+          onPress: () => {
+            console.log("Cancel Pressed");
+          },
+          style: "cancel",
+        },
+        {
+          text: "ยืนยัน",
+          onPress: async () => {
+            await updateStatus(DATA.post_id, "ไม่แก้ไข");
+            dispatch(fetchPosts());
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -88,7 +117,15 @@ const ManageSmallPost = ({ DATA }) => {
                   paddingHorizontal: 18,
                   marginRight: 10,
                 }}
-                onPress={() => {}}
+                onPress={async () => {
+                  await updateStatus(
+                    DATA.post_id,
+                    DATA.status == "รอรับเรื่อง"
+                      ? "กำลังดำเนินการ"
+                      : "แก้ไขเสร็จสิ้น"
+                  );
+                  dispatch(fetchPosts());
+                }}
               >
                 <Text style={{ color: "#fff" }}>
                   {DATA.status == "รอรับเรื่อง"
@@ -103,7 +140,9 @@ const ManageSmallPost = ({ DATA }) => {
                   paddingVertical: 3,
                   paddingHorizontal: 22,
                 }}
-                onPress={() => {}}
+                onPress={() => {
+                  confirmChangeStatus();
+                }}
               >
                 <Text style={{ color: "#fff" }}>
                   {DATA.status == "รอรับเรื่อง" ? "ไม่รับเรื่อง" : "ละทิ้ง"}
