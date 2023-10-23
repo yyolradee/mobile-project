@@ -116,3 +116,13 @@ export const fetchFollowLocations = (user_id) => {
     }
   };
 };
+
+
+export const SET_FILTERED_DATA = 'SET_FILTERED_DATA';
+
+export const setFilteredData = (item) => {
+  return {
+    type: SET_FILTERED_DATA,
+    payload: item,
+  };
+};

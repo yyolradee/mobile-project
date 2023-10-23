@@ -61,6 +61,7 @@ const HomeNavigator = () => {
         options={{
           headerTitle: "",
           headerTintColor: "#000",
+          headerBackTitleVisible: false,
           headerRight: ({ color, size, focused }) => {
             color = "black";
             size = 24;
@@ -84,7 +85,7 @@ const HomeNavigator = () => {
       <HomeStack.Screen
         name="inPost"
         component={PostScreen}
-        options={{ headerTitle: headerCustomTitle }}
+        options={{ headerTitle: headerCustomTitle, headerTintColor: "#000", headerBackTitleVisible: false }}
       />
     </HomeStack.Navigator>
   );

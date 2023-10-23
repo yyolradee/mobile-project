@@ -111,7 +111,11 @@ export default function FollowNavigator() {
           },
         }}
       />
-      <FollowStack.Screen name="inPost" component={PostScreen} options={{headerTitle: headerCustomTitle}}/>
+      <FollowStack.Screen
+        name="inPost"
+        component={PostScreen}
+        options={{ headerTintColor: "#000", headerBackTitleVisible: false, headerTitle: headerCustomTitle }}
+      />
     </FollowStack.Navigator>
   );
 }

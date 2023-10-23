@@ -9,19 +9,26 @@ import {
   FETCH_LOCATIONS_SUCCESS,
   FETCH_LOCATIONS_FAILURE,
   FETCH_FOLLOWLOCATIONS,
+  SET_FILTERED_DATA,
 } from "../actions/dataAction";
 
 const initialState = {
   categoriesData: [],
   locationData: [],
   postDetailData: [],
-  statusData: ["รอรับเรื่อง", "กำลังดำเนินการ", "แก้ไขเสร็จสิ้น"],
+  statusData: ["รอรับเรื่อง", "กำลังดำเนินการ", "แก้ไขเสร็จสิ้น", "ไม่แก้ไข"],
   filterData: [],
   followLocationsData: [],
 };
 
 const dataReducer = (state = initialState, action) => {
   switch (action.type) {
+    // Filtered Handler
+    case SET_FILTERED_DATA:
+      return {
+        ...state,
+        filterData: action.payload,
+      };
     // Categories Handler
     case FETCH_CATEGORIES_REQUEST:
       return state;
