@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleSearch } from "../store/actions/searchAction";
 import PostScreen from "../screens/PostScreen";
 import LocationScreen from "../screens/LocationScreen";
+import { setDrawer } from "../store/actions/drawerAction";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -35,7 +36,7 @@ const HomeNavigator = () => {
               <Flex align="center" style={{ gap: 16 }}>
                 <TouchableOpacity
                   onPress={() => {
-                    return this.drawer && this.drawer.openDrawer();
+                    dispatch(setDrawer(true))
                   }}
                 >
                   <Feather name="menu" size={size} color={color} />
@@ -72,7 +73,7 @@ const HomeNavigator = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    return this.drawer && this.drawer.openDrawer();
+                    dispatch(setDrawer(true))
                   }}
                 >
                   <Feather name="menu" size={size} color={color} />

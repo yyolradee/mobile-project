@@ -12,6 +12,7 @@ import DrawerModal from "../components/DrawerComponant/DrawerModal";
 import { fetchCategories, fetchFollowLocations, fetchPosts, fetctLocations } from "../store/actions/dataAction";
 import { getUserById } from "../data/users/usersController";
 import CreatePostNavigator from "./createPostStackNavigator";
+import { navigationRef } from '../constants/navigationService';
 
 const MainStackNavigator = createNativeStackNavigator();
 
@@ -61,7 +62,7 @@ export default function MainNavigator(props) {
     <Provider>
       <DrawerModal
         contents={
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
             <SearchModal />
             <MainStackNavigator.Navigator initialRouteName="App" screenOptions={{ headerShown: false }}>
               <MainStackNavigator.Screen name="App" component={BottomNavigator} />
