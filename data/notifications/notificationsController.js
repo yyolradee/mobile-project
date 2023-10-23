@@ -1,5 +1,4 @@
 import firebase from "../firebaseConfig";
-import { useSelector } from "react-redux";
 
 // ---------- Notifictaions --------------
 
@@ -42,8 +41,8 @@ export const getMyNotifications = async (userId, setState) => {
 /**
  * This function create new notification
  *
- * @param {Object} payload num1 - The first number to be added.
- * 
+ * @param {Object} payload Noti info to create
+ *
  * payload Spec
  * {
  *  post_id : post_id,
@@ -52,8 +51,8 @@ export const getMyNotifications = async (userId, setState) => {
  *  description: description
  * }
  */
-export const createNotification = (payload) => {
-  firebase
+export const createNotification = async (payload) => {
+  await firebase
     .firestore()
     .runTransaction(async (transaction) => {
       // check who is owner of this post
@@ -88,4 +87,53 @@ export const createNotification = (payload) => {
       console.log("Added new Notification");
     })
     .catch((error) => console.log(error));
+};
+
+export const trendingNotification = (post_id) => {
+  // เช็คว่าโพสต์นี้สถานที่คือที่ไหน
+  // เช็คว่ามีใครบ้างที่ติดตามสถานที่นี้
+  // สร้าง noti ใหม่ลง db
+  // เพิ่ม noti ใหม่ลง noti array ของ user แต่ละคน
+};
+
+// ไม่เวิร์คเพราะไรไม่รู้ ค่อยมาแก้พน.ขอนอนก่อน เจอกั๊นนนนน
+export const deleteNotification = async (notification_id) => {
+  try {
+    const db = firebase.firestore();
+    const notiRef = db.collection("Notifications").doc(notification_id);
+
+    // Array ของ User ที่ต้อง update notiArray
+    const userArray = [];
+    // เอา user แต่ละคนมาเช็คว่ามี noti อันนี้อยู่มั้ย
+    await db.collection("Users").get((docSnapshot) => {
+      docSnapshot.forEach(async (doc) => {
+        // check ว่ามี noti id นี้อยู่หรือไม่
+        const notiArray = doc.data().notifications;
+        const copyNotiArray = [];
+        notiArray.forEach((noti) => {
+          copyNotiArray.push(noti);
+        });
+        const exist = copyNotiArray.findIndex((noti) => {
+          noti.path == notiRef.path;
+        });
+        // ถ้ามี noti id นี้อยู่
+        if (exist !== -1) {
+          copyNotiArray.splice(exist, 1);
+          userArray.push({ user_id: doc.id, newNotiArray: copyNotiArray });
+        }
+      });
+    });
+
+    await db.runTransaction((transaction) => {
+      // delete Notification in Users
+      userArray.forEach((user) => {
+        const userRef = db.collection("Users").doc(user.user_id);
+        transaction.update(userRef, { notifications: user.newNotiArray });
+      });
+      // delete Notification
+      transaction.delete(notiRef);
+    });
+  } catch (error) {
+    throw error;
+  }
 };
