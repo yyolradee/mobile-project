@@ -193,7 +193,6 @@ export const addNewPost = async (itemData) => {
 export const updatePostWithId = async (postId, itemData) => {
   const db = firebase.firestore();
   const locationsRef = db.collection("Locations");
-  const usersRef = db.collection("Users");
 
   const categoryRef = itemData.categories_id.map((category_id) => {
     return db.doc(`Categories/${category_id}`);
@@ -203,7 +202,9 @@ export const updatePostWithId = async (postId, itemData) => {
 
   try {
     var downloadURL = null;
-    if (itemData.img_path) {
+
+    if (itemData.img_path && itemData.old_img_path !== itemData.img_path) {
+      // If there's a new image and it's different from the old one
       const localImagePath = itemData.img_path;
       const imageFileName = `${new Date().getTime()}_image.jpg`;
       const storageRef = ref(storage, `images/${imageFileName}`);
@@ -223,6 +224,9 @@ export const updatePostWithId = async (postId, itemData) => {
 
       console.log("Download URL:", downloadURL);
     }
+    else if (itemData.old_img_path) {
+      downloadURL = itemData.old_img_path;
+    }
 
     // Update the post in Firestore with the new image URL
     await db.collection("Posts").doc(postId).update({
@@ -241,6 +245,7 @@ export const updatePostWithId = async (postId, itemData) => {
     return false;
   }
 };
+
 
 export const getUserPosts = (userId, onDataReceived) => {
   const db = firebase.firestore();
