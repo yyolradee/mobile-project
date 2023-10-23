@@ -339,3 +339,15 @@ export const addComment = async (postId, comment, setComments) => {
     console.log(error);
   }
 };
+
+export const updateStatus = async (postId, status) => {
+  try {
+    const postRef = firebase.firestore().collection("Posts").doc(postId);
+    await postRef.update({
+      status: status
+    })
+    console.log("Status Updated");
+  } catch (error) {
+    console.error(error);
+  }
+}
