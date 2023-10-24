@@ -76,6 +76,7 @@ export const getAllPosts = async () => {
         let locationData = null;
         const ownerRef = doc.data().owner_id;
         let ownerData = null;
+        let totalVotes = 0;
 
         if (locationRef) {
           try {
@@ -105,6 +106,13 @@ export const getAllPosts = async () => {
           }
         }
 
+        if (post.votes) {
+          const upvotes = Object.values(post.votes || {}).filter((vote) => vote === 1).length;
+          const downvotes = Object.values(post.votes || {}).filter((vote) => vote === -1).length;
+          const totalVotesCount = upvotes - downvotes;
+          totalVotes = totalVotesCount;
+        }
+
         await Promise.all(
           categoriesRef.map(async (item) => {
             try {
@@ -127,6 +135,7 @@ export const getAllPosts = async () => {
           categories: categoriesList,
           location: locationData,
           owner: ownerData,
+          totalVotes: totalVotes,
         });
       })
     );
@@ -169,7 +178,7 @@ export const addNewPost = async (itemData) => {
       title: itemData.title,
       description: itemData.description,
       img_path: downloadURL, // Store the image URL
-      vote: 0,
+      votes: {},
       comments: [],
       create_date: new Date(),
       update_date: new Date(),
@@ -223,8 +232,7 @@ export const updatePostWithId = async (postId, itemData) => {
       downloadURL = await getDownloadURL(snapshot.ref);
 
       console.log("Download URL:", downloadURL);
-    }
-    else if (itemData.old_img_path) {
+    } else if (itemData.old_img_path) {
       downloadURL = itemData.old_img_path;
     }
 
@@ -246,24 +254,23 @@ export const updatePostWithId = async (postId, itemData) => {
   }
 };
 
+// export const getUserPosts = (userId, onDataReceived) => {
+//   const db = firebase.firestore();
+//   const postsRef = db.collection("Posts");
 
-export const getUserPosts = (userId, onDataReceived) => {
-  const db = firebase.firestore();
-  const postsRef = db.collection("Posts");
+//   // Set up a listener for real-time updates
+//   const query = postsRef.where("owner_id", "==", userId);
+//   const unsubscribe = query.onSnapshot((snapshot) => {
+//     const Posts = snapshot.docs.map((doc) => ({
+//       post_id: doc.id,
+//       ...doc.data(),
+//     }));
+//     onDataReceived(Posts);
+//   });
 
-  // Set up a listener for real-time updates
-  const query = postsRef.where("owner_id", "==", userId);
-  const unsubscribe = query.onSnapshot((snapshot) => {
-    const Posts = snapshot.docs.map((doc) => ({
-      post_id: doc.id,
-      ...doc.data(),
-    }));
-    onDataReceived(Posts);
-  });
-
-  // Return the unsubscribe function to clean up the listener
-  return unsubscribe;
-};
+//   // Return the unsubscribe function to clean up the listener
+//   return unsubscribe;
+// };
 
 export const deletePostById = async (postId) => {
   try {
@@ -349,10 +356,72 @@ export const updateStatus = async (postId, status) => {
   try {
     const postRef = firebase.firestore().collection("Posts").doc(postId);
     await postRef.update({
-      status: status
-    })
+      status: status,
+    });
     console.log("Status Updated");
   } catch (error) {
     console.error(error);
   }
-}
+};
+
+// Function to upvote a post
+export const upvotePost = async (postId, userId, setVotes, setUserVoteStatus) => {
+  const db = firebase.firestore();
+  const postRef = db.collection("Posts").doc(postId);
+
+  await db.runTransaction(async (transaction) => {
+    const postDoc = await transaction.get(postRef);
+    const votes = postDoc.data().votes || {};
+
+    if (votes[userId] === -1) {
+      // The user is changing their downvotes to an upvotes
+      delete votes[userId];
+    } else {
+      // The user is upvoting for the first time or changing their upvotes to no votes
+      votes[userId] = 1;
+    }
+
+    // Update the votes field
+    transaction.update(postRef, { votes });
+    if (votes) {
+      const upvotes = Object.values(votes || {}).filter((vote) => vote === 1).length;
+      const downvotes = Object.values(votes || {}).filter((vote) => vote === -1).length;
+      const totalVotesCount = upvotes - downvotes;
+      setVotes(totalVotesCount);
+      setUserVoteStatus(votes[userId] || 0)
+      return true;
+    }
+    return false
+  });
+};
+
+// Function to downvotes a post
+export const downvotePost = async (postId, userId, setVotes, setUserVoteStatus) => {
+  const db = firebase.firestore();
+  const postRef = db.collection("Posts").doc(postId);
+
+  await db.runTransaction(async (transaction) => {
+    const postDoc = await transaction.get(postRef);
+    const votes = postDoc.data().votes || {};
+
+    if (votes[userId] === 1) {
+      // The user is changing their upvotes to a downvotes
+      delete votes[userId];
+    } else {
+      // The user is downvoting for the first time or changing their downvotes to no votes
+      votes[userId] = -1;
+    }
+
+    // Update the votes field
+    transaction.update(postRef, { votes });
+    if (votes) {
+      const upvotes = Object.values(votes || {}).filter((vote) => vote === 1).length;
+      const downvotes = Object.values(votes || {}).filter((vote) => vote === -1).length;
+      const totalVotesCount = upvotes - downvotes;
+      setVotes(totalVotesCount);
+      setUserVoteStatus(votes[userId] || 0)
+      return true;
+    }
+    return false;
+  });
+};
