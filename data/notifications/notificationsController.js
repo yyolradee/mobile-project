@@ -89,50 +89,132 @@ export const createNotification = async (payload) => {
     .catch((error) => console.log(error));
 };
 
-export const trendingNotification = (post_id) => {
-  // เช็คว่าโพสต์นี้สถานที่คือที่ไหน
-  // เช็คว่ามีใครบ้างที่ติดตามสถานที่นี้
-  // สร้าง noti ใหม่ลง db
-  // เพิ่ม noti ใหม่ลง noti array ของ user แต่ละคน
+export const createTrendingNotification = async (post_id) => {
+  try {
+    const db = firebase.firestore();
+    await db.runTransaction(async (transaction) => {
+      // เช็คว่าโพสต์นี้สถานที่คือที่ไหน
+      const postRef = db.collection("Posts").doc(post_id);
+      const memberList = [];
+      let location_name;
+
+      await transaction.get(postRef).then(async (doc) => {
+        const locationRef = doc.data().location_id;
+        const locationSnapshot = await locationRef.get();
+        // เช็คว่ามีใครบ้างที่ติดตามสถานที่นี้
+        location_name = locationSnapshot.data().name;
+        console.log(location_name);
+        const members = locationSnapshot.data().members;
+        for (memberRef of members) {
+          usersSnapshot = await memberRef.get();
+          const oldNotiarray = usersSnapshot.data().notifications;
+          memberList.push({ ref: memberRef, noti: oldNotiarray });
+        }
+      });
+
+      // สร้าง noti ใหม่ลง db
+      const newNotiRef = db.collection("Notifications").doc();
+      await transaction.set(newNotiRef, {
+        post_id: postRef,
+        status: null,
+        type: "trending",
+        description: `กำลังเป็นที่สนใจใน ${location_name}`,
+        date_time: new Date()
+      });
+
+      // เพิ่ม noti ใหม่ลง noti array ของ user แต่ละคน
+      for (member of memberList) {
+        console.log("Updated", [...member.noti, newNotiRef]);
+        await transaction.update(member.ref, {
+          notifications: [...member.noti, newNotiRef],
+        });
+      }
+
+      console.log("Created New Trending Notification");
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // ไม่เวิร์คเพราะไรไม่รู้ ค่อยมาแก้พน.ขอนอนก่อน เจอกั๊นนนนน
+// export const deleteNotification = async (notification_id, transaction) => {
+//   try {
+//     const db = firebase.firestore();
+//     const notiRef = db.collection("Notifications").doc(notification_id);
+
+//     // Array ของ User ที่ต้อง update notiArray
+//     const userArray = [];
+//     // เอา user แต่ละคนมาเช็คว่ามี noti อันนี้อยู่มั้ย
+//     await db.collection("Users").get().then((docSnapshot) => {
+//       docSnapshot.forEach(async (doc) => {
+//         // check ว่ามี noti id นี้อยู่หรือไม่
+//         const notiArray = doc.data().notifications;
+//         const copyNotiArray = [];
+//         notiArray.forEach((noti) => {
+//           copyNotiArray.push(noti);
+//         });
+//         const exist = copyNotiArray.findIndex((noti) => {
+//           noti.path == notiRef.path;
+//         });
+//         // ถ้ามี noti id นี้อยู่
+//         if (exist !== -1) {
+//           copyNotiArray.splice(exist, 1);
+//           userArray.push({ user_id: doc.id, newNotiArray: copyNotiArray });
+//         }
+//       });
+//     });
+
+//     // await db.runTransaction((transaction) => {
+//     // delete Notification in Users
+//     userArray.forEach(async (user) => {
+//       const userRef = db.collection("Users").doc(user.user_id);
+//       await transaction.update(userRef, { notifications: user.newNotiArray });
+//     });
+//     // delete Notification
+//     await transaction.delete(notiRef);
+//     // });
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
 export const deleteNotification = async (notification_id) => {
   try {
     const db = firebase.firestore();
     const notiRef = db.collection("Notifications").doc(notification_id);
 
-    // Array ของ User ที่ต้อง update notiArray
+    // Array of Users that need to update notiArray
     const userArray = [];
-    // เอา user แต่ละคนมาเช็คว่ามี noti อันนี้อยู่มั้ย
-    await db.collection("Users").get((docSnapshot) => {
-      docSnapshot.forEach(async (doc) => {
-        // check ว่ามี noti id นี้อยู่หรือไม่
-        const notiArray = doc.data().notifications;
-        const copyNotiArray = [];
-        notiArray.forEach((noti) => {
-          copyNotiArray.push(noti);
-        });
-        const exist = copyNotiArray.findIndex((noti) => {
-          noti.path == notiRef.path;
-        });
-        // ถ้ามี noti id นี้อยู่
-        if (exist !== -1) {
-          copyNotiArray.splice(exist, 1);
-          userArray.push({ user_id: doc.id, newNotiArray: copyNotiArray });
-        }
-      });
+
+    // Get a list of all users
+    const usersSnapshot = await db.collection("Users").get();
+
+    usersSnapshot.forEach(async (doc) => {
+      // Check if the user has this notification
+      const notiArray = doc.data().notifications;
+      const copyNotiArray = [...notiArray];
+      const existIndex = copyNotiArray.findIndex(
+        (noti) => noti.path === notiRef.path
+      );
+
+      // If the notification exists in the user's notiArray
+      if (existIndex !== -1) {
+        copyNotiArray.splice(existIndex, 1);
+        userArray.push({ user_id: doc.id, newNotiArray: copyNotiArray });
+      }
     });
 
-    await db.runTransaction((transaction) => {
-      // delete Notification in Users
-      userArray.forEach((user) => {
+    // Use a transaction to update user notifications and delete the notification
+    await Promise.all(
+      userArray.map(async (user) => {
         const userRef = db.collection("Users").doc(user.user_id);
-        transaction.update(userRef, { notifications: user.newNotiArray });
-      });
-      // delete Notification
-      transaction.delete(notiRef);
-    });
+        await transaction.update(userRef, { notifications: user.newNotiArray });
+      })
+    );
+
+    // Delete the notification
+    transaction.delete(notiRef);
   } catch (error) {
     throw error;
   }
