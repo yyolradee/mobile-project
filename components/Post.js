@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { addMember, deleteMember } from "../data/locations/locationsController";
 import { fetchFollowLocations } from "../store/actions/dataAction";
+import { downvotePost, getTotalVotesCount, getUserVotestatus, upvotePost } from "../data/posts/postsController";
 
 // Render Category
 const renderItem = ({ item }) => (
@@ -53,24 +54,34 @@ const Post = (props) => {
   const [isEditable, setIsEditable] = useState(false);
   const userInfo = useSelector((state) => state.user.userInfo);
   const followData = useSelector((state) => state.data.followLocationsData);
+  const [votes, setVotes] = useState(0);
+  const [userVoteStatus, setUserVoteStatus] = useState(0);
+  const [commentsLength, setCommentsLength] = useState(0);
+
   // Set When Open this page
   useEffect(() => {
-    setData(postData);
-    setComments(postData.comments);
-    setTimePassed(moment(postData.create_date.toDate()).fromNow());
-    setTrending(postData.is_trending);
+    setVotes(postData.totalVotes);
+    const getVotes = postData.votes || {};
+    const getTempUserVotestatus = getVotes[userInfo.uid] || 0;
+    setUserVoteStatus(getTempUserVotestatus);
+  }, [userInfo.uid, postData]);
 
+  useEffect(() => {
+    setData(postData);
+    setTrending(postData.is_trending);
+    setTimePassed(moment(postData.create_date.toDate()).fromNow());
+    setComments(postData.comments);
+    setCommentsLength(postData.comments.length)
     if (postData.owner.owner_id === userInfo.uid) {
       setIsEditable(true);
     } else {
       setIsEditable(false);
     }
-
-    if (data.status == "กำลังดำเนินการ") {
+    if (data.status === "กำลังดำเนินการ") {
       setStatusColor(Colors.success);
-    } else if (data.status == "รอรับเรื่อง") {
+    } else if (data.status === "รอรับเรื่อง") {
       setStatusColor(Colors.warning);
-    } else if (data.status == "แก้ไขเสร็จสิ้น") {
+    } else if (data.status === "แก้ไขเสร็จสิ้น") {
       setStatusColor(Colors.gray2);
     } else {
       setStatusColor("red");
@@ -100,6 +111,17 @@ const Post = (props) => {
     setIsCommentModalVisible(!isCommentModalVisible);
   };
 
+  const handleUpvote = async (postId, userId) => {
+    await upvotePost(postId, userId, setVotes, setUserVoteStatus);
+    // await getUserVotestatus(postId, userId, setUserVoteStatus);
+  };
+
+  // Example of handling a downvote click
+  const handleDownvote = async (postId, userId) => {
+    await downvotePost(postId, userId, setVotes, setUserVoteStatus);
+    // await getUserVotestatus(postId, userId, setUserVoteStatus);
+  };
+
   return (
     <View style={styles.container}>
       <CommentModal
@@ -107,6 +129,7 @@ const Post = (props) => {
         onClose={toggleCommentModal}
         commentsData={comments}
         postId={postData.post_id}
+        setCommentsLength={setCommentsLength}
       ></CommentModal>
       <ManagePostModal
         isVisible={isPostModalVisible}
@@ -221,9 +244,21 @@ const Post = (props) => {
 
       <Flex direction="row" justify="between" style={styles.sub_container2}>
         <Flex style={{ gap: 5 }}>
-          <Feather name="chevrons-up" size={24} color={Colors.gray} />
-          <Text>{data.vote}</Text>
-          <Feather name="chevrons-down" size={24} color={Colors.gray} />
+          <TouchableOpacity
+            onPress={() => {
+              handleUpvote(data.post_id, userInfo.uid);
+            }}
+          >
+            <Feather name="chevrons-up" size={24} color={userVoteStatus === 1 ? Colors.primary : Colors.gray} />
+          </TouchableOpacity>
+          <Text>{votes}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              handleDownvote(data.post_id, userInfo.uid);
+            }}
+          >
+            <Feather name="chevrons-down" size={24} color={userVoteStatus === -1 ? Colors.primary : Colors.gray} />
+          </TouchableOpacity>
           <TouchableOpacity onPress={toggleCommentModal}>
             <Flex style={{ gap: 5 }}>
               <FontAwesome
@@ -232,7 +267,7 @@ const Post = (props) => {
                 color={Colors.gray}
                 style={{ marginLeft: 7, marginRight: 2, top: -1 }}
               />
-              <Text style={{ color: Colors.gray }}>{comments.length} ความคิดเห็น</Text>
+              <Text style={{ color: Colors.gray }}>{commentsLength} ความคิดเห็น</Text>
             </Flex>
           </TouchableOpacity>
         </Flex>
