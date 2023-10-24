@@ -17,6 +17,7 @@ import {
 } from "../store/actions/dataAction";
 import { getUserById } from "../data/users/usersController";
 import CreatePostNavigator from "./createPostStackNavigator";
+import { navigationRef } from '../constants/navigationService';
 import { signOut } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth } from "../data/firebaseConfig";
@@ -68,7 +69,7 @@ export default function MainNavigator(props) {
     <Provider>
       <DrawerModal
         contents={
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
             <SearchModal />
             <MainStackNavigator.Navigator
               initialRouteName="App"

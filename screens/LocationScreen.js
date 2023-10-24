@@ -1,20 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from "react-native";
 import Post from "../components/Post";
 import Colors from "../constants/Colors";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import {
-  addMember,
-  deleteMember,
-  getLocationById,
-} from "../data/locations/locationsController";
+import { addMember, deleteMember, getLocationById } from "../data/locations/locationsController";
 import { LoadingScreen } from "./LoadingScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFollowLocations } from "../store/actions/dataAction";
@@ -32,18 +21,15 @@ const LocationScreen = () => {
   const followData = useSelector((state) => state.data.followLocationsData);
   const [postData, setPostData] = useState(null);
   const [isFollow, setIsFollow] = useState(false);
+  const filterData = useSelector((state) => state.data.filterData);
 
   const fetchData = async () => {
     try {
       const location = await getLocationById(location_id);
       setLocationData(location);
-      const filterPost = postArray.filter(
-        (post) => post.location.name == location.name
-      );
+      const filterPost = postArray.filter((post) => post.location.name == location.name);
       setPostData(filterPost);
-      const checkFollow = followData.findIndex(
-        (location) => location.location_id == location_id
-      );
+      const checkFollow = followData.findIndex((location) => location.location_id == location_id);
       setIsFollow(checkFollow == -1 ? false : true);
     } catch (error) {
       console.error(error);
@@ -54,6 +40,18 @@ const LocationScreen = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (locationData) {
+      if (filterData.length > 0) {
+        const filterPost = filterData.filter((post) => post.location.name == locationData.name);
+        setPostData(filterPost);
+      } else {
+        const filterPost = postArray.filter((post) => post.location.name == locationData.name);
+        setPostData(filterPost);
+      }
+    }
+  }, [filterData]);
 
   if (locationData === null) {
     // You can display a loading indicator here until locationData is available.
@@ -78,16 +76,10 @@ const LocationScreen = () => {
               backgroundColor: Colors.gray2,
               borderRadius: 25,
             }}
-            source={
-              locationData.img_path
-                ? { uri: locationData.img_path }
-                : require("../assets/no-image.png")
-            }
+            source={locationData.img_path ? { uri: locationData.img_path } : require("../assets/no-image.png")}
           />
           <View style={{ marginLeft: 10, marginRight: 20, width: "55%" }}>
-            <Text style={{ fontSize: 17, fontWeight: "600" }}>
-              {locationData.name}
-            </Text>
+            <Text style={{ fontSize: 17, fontWeight: "600" }}>{locationData.name}</Text>
             <Text style={{ color: Colors.gray2, fontSize: 13, marginTop: 5 }}>
               {locationData.members.length} สมาชิก
             </Text>
@@ -113,9 +105,7 @@ const LocationScreen = () => {
                 }
               }}
             >
-              <Text style={{ color: Colors.primary, fontSize: 12 }}>
-                ติดตามแล้ว
-              </Text>
+              <Text style={{ color: Colors.primary, fontSize: 12 }}>ติดตามแล้ว</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -140,9 +130,7 @@ const LocationScreen = () => {
             </TouchableOpacity>
           )}
         </View>
-        <Text style={{ marginTop: 10, color: Colors.gray }}>
-          {locationData.description}
-        </Text>
+        <Text style={{ marginTop: 10, color: Colors.gray }}>{locationData.description}</Text>
       </View>
       <FlatList
         data={postData}

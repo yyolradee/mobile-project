@@ -12,6 +12,7 @@ import { Flex } from "@ant-design/react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSearch } from "../store/actions/searchAction";
 import PostScreen from "../screens/PostScreen";
+import { setDrawer } from "../store/actions/drawerAction";
 
 const FollowStack = createNativeStackNavigator();
 
@@ -46,7 +47,7 @@ export default function FollowNavigator() {
               <Flex align="center" style={{ gap: 16 }}>
                 <TouchableOpacity
                   onPress={() => {
-                    return this.drawer && this.drawer.openDrawer();
+                    dispatch(setDrawer(true))
                   }}
                 >
                   <Feather name="menu" size={size} color={color} />
@@ -101,7 +102,7 @@ export default function FollowNavigator() {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    return this.drawer && this.drawer.openDrawer();
+                    dispatch(setDrawer(true))
                   }}
                 >
                   <Feather name="menu" size={size} color={color} />
@@ -111,7 +112,11 @@ export default function FollowNavigator() {
           },
         }}
       />
-      <FollowStack.Screen name="inPost" component={PostScreen} options={{headerTitle: headerCustomTitle}}/>
+      <FollowStack.Screen
+        name="inPost"
+        component={PostScreen}
+        options={{ headerTintColor: "#000", headerBackTitleVisible: false, headerTitle: headerCustomTitle }}
+      />
     </FollowStack.Navigator>
   );
 }
