@@ -297,8 +297,8 @@ export const deletePostById = async (postId) => {
       await db.runTransaction(async (transaction) => {
         // Delete Notifications associated with the post
         await notiPostsQuery.forEach(async (doc) => {
-          transaction.delete(doc.ref);
-          // await deleteNotification(doc.id, transaction)
+          deleteNotification(doc.id)
+          await transaction.delete(doc.ref);
           console.log("delete noti");
         });
 
