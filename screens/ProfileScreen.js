@@ -11,24 +11,26 @@ const ProfileScreen = ({ route }) => {
   const userInfo = useSelector((state) => state.user.userInfo);
   const isAdmin = userInfo.role == "admin" ? true : false;
   const postDATA = useSelector((state) => state.data.postDetailData);
-  const filtersPostData = postDATA.filter((post) => post.owner.owner_id === userInfo.uid);
-  const [ownerPostData, setOwnerPostData] = useState(filtersPostData);
+  const [filtersPostData, setFiltersPostData] = useState([]);
   const [tempFaculty, setTempFaculty] = useState(null);
-  const facultyText = !faculty ? tempFaculty ? tempFaculty : "กรุณาเลือกคณะ" : faculty ? faculty : "กรุณาเลือกคณะ"
+  const facultyText = !faculty ? (tempFaculty ? tempFaculty : "กรุณาเลือกคณะ") : faculty ? faculty : "กรุณาเลือกคณะ";
 
   const { faculty } = route.params ? route.params : {};
-  // useSelector((state) => {
-  //   console.log(JSON.stringify(state.user.userInfo, null, 2));
-  // });
 
   useEffect(() => {
     if (faculty) {
-      setTempFaculty(faculty)
-    }
-    else {
-      setTempFaculty(userInfo.faculty)
+      setTempFaculty(faculty);
+    } else {
+      setTempFaculty(userInfo.faculty);
     }
   }, [faculty]);
+
+  useEffect(() => {
+    if (postDATA) {
+      setFiltersPostData(postDATA.filter((post) => post.owner.owner_id === userInfo.uid));
+    }
+    return;
+  }, [postDATA]);
 
   return (
     <View style={styles.container}>
@@ -82,11 +84,14 @@ const ProfileScreen = ({ route }) => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <FontAwesome5 name="map-marker-alt" size={15} color={Colors.gray} />
           <Text style={{ fontSize: 15, marginLeft: 5 }}>คณะ</Text>
-          <Text style={[{ fontSize: 15 }, facultyText == "กรุณาเลือกคณะ" ? {color: Colors.warning} : {}]}> {facultyText}</Text>
+          <Text style={[{ fontSize: 15 }, facultyText == "กรุณาเลือกคณะ" ? { color: Colors.warning } : {}]}>
+            {" "}
+            {facultyText}
+          </Text>
         </View>
       </View>
       <FlatList
-        data={ownerPostData}
+        data={filtersPostData}
         renderItem={({ item }) => <Post postData={item} />}
         keyExtractor={(item) => item.post_id}
         showsVerticalScrollIndicator={false}

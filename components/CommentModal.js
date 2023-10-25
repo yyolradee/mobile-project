@@ -18,6 +18,7 @@ import Colors from "../constants/Colors";
 import moment from "moment";
 import { addComment } from "../data/posts/postsController";
 import { useSelector } from "react-redux";
+import { ScrollView } from "react-native-gesture-handler";
 
 const CommentModal = ({ isVisible, onClose, commentsData, postId, setCommentsLength }) => {
   const [text, setText] = useState("");
@@ -172,7 +173,12 @@ const CommentModal = ({ isVisible, onClose, commentsData, postId, setCommentsLen
         <View style={[styles.container, { height: responsiveHeight() }]}>
           <Text style={styles.header}>ความคิดเห็น</Text>
           <View style={styles.line} />
-          <FlatList style={{ marginHorizontal: 10 }} data={commentsItem} renderItem={renderComment} />
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            style={{ marginHorizontal: 10, paddingTop: 15 }}
+            data={commentsItem}
+            renderItem={renderComment}
+          />
         </View>
       );
     } else {
@@ -181,17 +187,12 @@ const CommentModal = ({ isVisible, onClose, commentsData, postId, setCommentsLen
         <View style={[styles.container, { height: responsiveHeight() }]}>
           <Text style={styles.header}>ความคิดเห็น</Text>
           <View style={styles.line} />
-          <FlatList
-            data={[1]}
-            renderItem={() => {
-              return (
-                <Flex direction="column" justify="center" align="center" style={{ marginTop: noCommentMargin }}>
+          <ScrollView>
+          <Flex direction="column" justify="center" align="center" style={{ marginTop: noCommentMargin }}>
                   <Text style={{ fontSize: 20 }}>โพสต์นี้ยังไม่มีความคิดเห็น...</Text>
                   <Text style={{ color: Colors.gray2 }}>เพิ่มความคิดเห็นเลย</Text>
                 </Flex>
-              );
-            }}
-          />
+          </ScrollView>
         </View>
       );
     }
@@ -202,7 +203,7 @@ const CommentModal = ({ isVisible, onClose, commentsData, postId, setCommentsLen
       <View style={styles.subContainer}>{renderContent()}</View>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "position" : null} style={{ flex: 1 }}>
         <Animated.View
-          style={{ display: "flex", justifyContent: "center", flexDirection: "column", transform: [{ translateY }] }}
+          style={{ display: "flex", justifyContent: "center", flexDirection: "column", transform: [{ translateY }]}}
         >
           <TextInput
             style={styles.textInput}
@@ -224,10 +225,10 @@ const CommentModal = ({ isVisible, onClose, commentsData, postId, setCommentsLen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 15,
+    // gap: 15,
     backgroundColor: "white",
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingTop: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
@@ -239,6 +240,7 @@ const styles = StyleSheet.create({
   header: {
     textAlign: "center",
     fontSize: 16,
+    paddingBottom: 15
   },
 
   line: {
