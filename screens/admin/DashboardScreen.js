@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
-import { FlatList, StyleSheet, View, Button, Text, Image, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import { statusBarHeight } from "../../constants/responsiveHeight";
@@ -16,22 +16,45 @@ import {
   Feather,
 } from "@expo/vector-icons";
 import PieChart from "react-native-pie-chart";
+import { getMatchingDocumentCount } from "../../data/admin/AdminController";
 
 const DashboardScreen = () => {
   const navigation = useNavigation();
   const localStatusBarHeight = statusBarHeight();
   const userInfo = useSelector((state) => state.user.userInfo);
   const userName = userInfo ? userInfo.displayName.split(" ") : ["", ""];
-  const widthAndHeight = 250;
-  const series = [123, 321, 123, 789, 537];
-  const sliceColor = ["#fbd203", "#ffb300", "#ff9100", "#ff6c00", "#ff3c00"];
+  const [matchingCounts, setMatchingCounts] = useState([0, 0, 0, 0]);
+  const sliceColor = [Colors.warning, Colors.success, Colors.gray2, "red"];
+  const [arrCount, setArrCount] = useState(0);
+
+  function sumArray(arr) {
+    let sum = 0;
+    for (const number of arr) {
+      sum += number;
+    }
+    return sum;
+  }
+
+  const fetchCount = async () => {
+    const values = ["รอรับเรื่อง", "กำลังดำเนินการ", "แก้ไขเสร็จสิ้น"];
+    await getMatchingDocumentCount(values, setMatchingCounts);
+  };
+
+  useEffect(() => {
+    fetchCount();
+  }, []);
+
+  useEffect(() => {
+    setArrCount(sumArray(matchingCounts));
+  }, [matchingCounts]);
+
   return (
     <View style={[styles.container, { paddingTop: localStatusBarHeight }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Flex justify="between">
           <Flex direction="column" align="starts" style={{ gap: 5 }}>
             <Text style={{ fontSize: 16, color: Colors.gray2 }}>ยินดีต้อนรับ</Text>
-            <Flex wrap="wrap" style={{width: 260}}>
+            <Flex wrap="wrap" style={{ width: 260 }}>
               <Text style={{ fontSize: 24, fontWeight: 600 }}>{userName[0]}</Text>
               <Text> </Text>
               <Text style={{ fontSize: 24, fontWeight: 600 }}>{userName[1]}</Text>
@@ -98,14 +121,18 @@ const DashboardScreen = () => {
               <Text>ยังไม่แก้ไข</Text>
               <Flex align="center" style={{ gap: 5 }}>
                 <AntDesign name="warning" size={20} color={Colors.warning} />
-                <Text style={{ color: Colors.warning, fontWeight: "bold", fontSize: 16 }}>560 ปัญหา</Text>
+                <Text style={{ color: Colors.warning, fontWeight: "bold", fontSize: 16 }}>
+                  {matchingCounts[0]} ปัญหา
+                </Text>
               </Flex>
             </View>
             <View style={styles.problemBox}>
               <Text>กำลังดำเนินการ</Text>
               <Flex align="center" style={{ gap: 5 }}>
                 <Ionicons name="flash-outline" size={20} color={Colors.success} />
-                <Text style={{ color: Colors.success, fontWeight: "bold", fontSize: 16 }}>560 ปัญหา</Text>
+                <Text style={{ color: Colors.success, fontWeight: "bold", fontSize: 16 }}>
+                  {matchingCounts[1]} ปัญหา
+                </Text>
               </Flex>
             </View>
           </Flex>
@@ -114,14 +141,14 @@ const DashboardScreen = () => {
               <Text>แก้ไขแล้ว</Text>
               <Flex align="center" style={{ gap: 5 }}>
                 <Octicons name="verified" size={20} color={Colors.gray2} />
-                <Text style={{ color: Colors.gray2, fontWeight: "bold", fontSize: 16 }}>560 ปัญหา</Text>
+                <Text style={{ color: Colors.gray2, fontWeight: "bold", fontSize: 16 }}>{matchingCounts[2]} ปัญหา</Text>
               </Flex>
             </View>
             <View style={styles.problemBox}>
               <Text>ถูกรายงาน</Text>
               <Flex align="center" style={{ gap: 5 }}>
                 <Feather name="info" size={20} color="red" />
-                <Text style={{ color: "red", fontWeight: "bold", fontSize: 16 }}>100 ปัญหา</Text>
+                <Text style={{ color: "red", fontWeight: "bold", fontSize: 16 }}>{matchingCounts[3]} ปัญหา</Text>
               </Flex>
             </View>
           </Flex>
@@ -131,14 +158,34 @@ const DashboardScreen = () => {
           <Text style={{ color: Colors.gray2 }}>จำนวนปัญหาในแต่ละหมวดหมู่</Text>
           <Text style={{ fontSize: 18, fontWeight: "bold" }}>สถิตจำนวนปัญหาแยกตามหมวดหมู่</Text>
           <Flex direction="column" style={{ marginVertical: 26 }}>
-            <PieChart
-              widthAndHeight={widthAndHeight}
-              series={series}
-              sliceColor={sliceColor}
-              coverRadius={0.45}
-              coverFill={"#FFF"}
-            />
+            {arrCount > 0 ? (
+              <PieChart widthAndHeight={250} series={matchingCounts} sliceColor={sliceColor} coverRadius={0.45} />
+            ) : (
+              <View>
+                <Text style={{ fontSize: 18, color: Colors.gray2 }}>ยังไม่มีข้อมูลในตอนนี้...</Text>
+              </View>
+            )}
           </Flex>
+          {arrCount > 0 && (
+            <View style={{ display: "flex", gap: 5 }}>
+              <Flex align="center" style={{ gap: 5 }}>
+                <View style={[styles.circle, { backgroundColor: Colors.warning }]} />
+                <Text>ยังไม่แก้ไข</Text>
+              </Flex>
+              <Flex align="center" style={{ gap: 5 }}>
+                <View style={[styles.circle, { backgroundColor: Colors.success }]} />
+                <Text>กำลังดำเนินการ</Text>
+              </Flex>
+              <Flex align="center" style={{ gap: 5 }}>
+                <View style={[styles.circle, { backgroundColor: Colors.gray2 }]} />
+                <Text>แก้ไขแล้ว</Text>
+              </Flex>
+              <Flex align="center" style={{ gap: 5 }}>
+                <View style={[styles.circle, { backgroundColor: "red" }]} />
+                <Text>ถูกรายงาน</Text>
+              </Flex>
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -212,6 +259,12 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: Colors.gray4,
     width: "100%",
+  },
+  circle: {
+    width: 14,
+    height: 14,
+    borderRadius: 50,
+    top: 2,
   },
 });
 
