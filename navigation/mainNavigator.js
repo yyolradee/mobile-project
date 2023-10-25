@@ -9,10 +9,18 @@ import { Provider } from "@ant-design/react-native";
 import { useDispatch, useSelector } from "react-redux";
 import SearchModal from "../components/SearchModal";
 import DrawerModal from "../components/DrawerComponant/DrawerModal";
-import { fetchCategories, fetchFollowLocations, fetchPosts, fetctLocations } from "../store/actions/dataAction";
+import {
+  fetchCategories,
+  fetchFollowLocations,
+  fetchPosts,
+  fetctLocations,
+} from "../store/actions/dataAction";
 import { getUserById } from "../data/users/usersController";
 import CreatePostNavigator from "./createPostStackNavigator";
 import { navigationRef } from '../constants/navigationService';
+import { signOut } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { auth } from "../data/firebaseConfig";
 
 const MainStackNavigator = createNativeStackNavigator();
 
@@ -57,15 +65,20 @@ export default function MainNavigator(props) {
     />
   );
 
-
   return (
     <Provider>
       <DrawerModal
         contents={
           <NavigationContainer ref={navigationRef}>
             <SearchModal />
-            <MainStackNavigator.Navigator initialRouteName="App" screenOptions={{ headerShown: false }}>
-              <MainStackNavigator.Screen name="App" component={BottomNavigator} />
+            <MainStackNavigator.Navigator
+              initialRouteName="App"
+              screenOptions={{ headerShown: false }}
+            >
+              <MainStackNavigator.Screen
+                name="App"
+                component={BottomNavigator}
+              />
               {renderCreatePost}
             </MainStackNavigator.Navigator>
           </NavigationContainer>
