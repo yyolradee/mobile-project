@@ -383,15 +383,19 @@ export const upvotePost = async (postId, userId, setVotes, setUserVoteStatus) =>
 
     // Update the votes field
     transaction.update(postRef, { votes });
-    if (votes) {
-      const upvotes = Object.values(votes || {}).filter((vote) => vote === 1).length;
-      const downvotes = Object.values(votes || {}).filter((vote) => vote === -1).length;
-      const totalVotesCount = upvotes - downvotes;
-      setVotes(totalVotesCount);
-      setUserVoteStatus(votes[userId] || 0)
-      return true;
+    const upvotes = Object.values(votes || {}).filter((vote) => vote === 1).length;
+    const downvotes = Object.values(votes || {}).filter((vote) => vote === -1).length;
+    const totalVotesCount = upvotes - downvotes;
+    setVotes(totalVotesCount);
+    setUserVoteStatus(votes[userId] || 0);
+
+    const checkTrending = postDoc.data().is_trending || false;
+    if (totalVotesCount === 100 && !checkTrending) {
+      console.log("This post is now trending.");
+      transaction.update(postRef, { is_trending: true });
     }
-    return false
+
+    return 0;
   });
 };
 
@@ -419,9 +423,9 @@ export const downvotePost = async (postId, userId, setVotes, setUserVoteStatus) 
       const downvotes = Object.values(votes || {}).filter((vote) => vote === -1).length;
       const totalVotesCount = upvotes - downvotes;
       setVotes(totalVotesCount);
-      setUserVoteStatus(votes[userId] || 0)
-      return true;
+      setUserVoteStatus(votes[userId] || 0);
+      return totalVotesCount;
     }
-    return false;
+    return 0;
   });
 };
