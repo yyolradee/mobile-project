@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from "react-native";
 import Post from "../components/Post";
 import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { LoadingScreen } from "./LoadingScreen";
 import { getFollowLocations } from "../data/locations/locationsController";
+import SortHeader from "../components/SortHeader";
 
 const postItem = ({ item }) => <Post postData={item} />;
 
@@ -32,17 +26,9 @@ const PlaceBadgeItem = (props) => {
           height: 50,
           borderRadius: 30,
         }}
-        source={
-          item.img_path
-            ? { uri: item.img_path }
-            : require("../assets/no-image.png")
-        }
+        source={item.img_path ? { uri: item.img_path } : require("../assets/no-image.png")}
       />
-      <Text
-        style={{ fontSize: 13, marginHorizontal: 5 }}
-        numberOfLines={1}
-        flexWrap="wrap"
-      >
+      <Text style={{ fontSize: 13, marginHorizontal: 5 }} numberOfLines={1} flexWrap="wrap">
         {item.name}
       </Text>
     </TouchableOpacity>
@@ -51,6 +37,7 @@ const PlaceBadgeItem = (props) => {
 
 const FollowScreen = () => {
   const navigation = useNavigation();
+  const [selectedSort, setSelectedSort] = useState("all");
   const followLocationsData = useSelector((state) => {
     return state.data.followLocationsData;
   });
@@ -68,6 +55,22 @@ const FollowScreen = () => {
     navigation.navigate("Location", { location_id: item });
   };
 
+  const handleSortChange = (value) => {
+    setSelectedSort(value); // Update the selectedSort state when a button is pressed
+  };
+
+  // Sorting logic based on selectedSort value
+  const sortedData = [...postDATA].sort((a, b) => {
+    if (selectedSort === "popular") {
+      // Sort by popularity logic
+      return b.is_trending - a.is_trending;
+    } else if (selectedSort === "latest") {
+      // Sort by latest logic (you need to have a timestamp property in your data)
+      return b.create_date - a.create_date;
+    }
+    return 0; // Default sorting (no change)
+  });
+
   useEffect(() => {
     if (followLocationsData !== null) {
       setLoading(true);
@@ -80,49 +83,53 @@ const FollowScreen = () => {
     return <LoadingScreen />;
   }
 
-  return (
-    <View style={{...styles.container, justifyContent: followLocationsData.length == 0? "center": "flex-start"}}>
-      {followLocationsData.length == 0 ? (
-        <Text style={{ fontSize: 18, color: Colors.gray, alignSelf: "center" }}>
-          คุณยังไม่ติดตามสถานที่ใดๆ
-        </Text>
-      ) : (
-        <View style={styles.container}>
-          <View
+  const headerList = () => {
+    return (
+      <View style={{backgroundColor: "white"}}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <FlatList
+            horizontal
+            data={followLocationsData}
+            renderItem={({ item }) => <PlaceBadgeItem item={item} onPressHandler={locationInfoHandler} />}
+            keyExtractor={(item) => item.location_id}
+            showsHorizontalScrollIndicator={false}
+            style={{ padding: 10 }}
+          />
+          <TouchableOpacity
             style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
+              padding: 10,
+              backgroundColor: "#fff",
+              paddingHorizontal: 20,
+            }}
+            onPress={() => {
+              navigation.navigate("FollowingAll");
             }}
           >
-            <FlatList
-              horizontal
-              data={followLocationsData}
-              renderItem={({ item }) => (
-                <PlaceBadgeItem
-                  item={item}
-                  onPressHandler={locationInfoHandler}
-                />
-              )}
-              keyExtractor={(item) => item.location_id}
-              showsHorizontalScrollIndicator={false}
-              style={{ padding: 10 }}
-            />
-            <TouchableOpacity
-              style={{
-                padding: 10,
-                backgroundColor: "#fff",
-                paddingHorizontal: 20,
-              }}
-              onPress={() => {
-                navigation.navigate("FollowingAll");
-              }}
-            >
-              <Text style={{ color: Colors.primary }}>ทั้งหมด</Text>
-            </TouchableOpacity>
-          </View>
+            <Text style={{ color: Colors.primary }}>ทั้งหมด</Text>
+          </TouchableOpacity>
+        </View>
+        <SortHeader selectedSort={selectedSort} onSortChange={handleSortChange} />
+      </View>
+    )
+  };
+
+  return (
+    <View style={{ ...styles.container, justifyContent: followLocationsData.length == 0 ? "center" : "flex-start" }}>
+      {followLocationsData.length == 0 ? (
+        <Text style={{ fontSize: 18, color: Colors.gray, alignSelf: "center" }}>คุณยังไม่ติดตามสถานที่ใดๆ</Text>
+      ) : (
+        <View style={styles.container}>
           <FlatList
-            data={postDATA}
+            ListHeaderComponent={headerList}
+            stickyHeaderIndices={[0]}
+            stickyHeaderHiddenOnScroll={true}
+            data={sortedData}
             renderItem={postItem}
             keyExtractor={(item) => item.post_id}
             showsVerticalScrollIndicator={false}
