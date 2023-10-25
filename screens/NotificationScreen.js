@@ -66,9 +66,9 @@ const NotificationScreen = () => {
           status: "กำลังดำเนินการ",
         })
       }} /> */}
-      <Button title="sendTrendingNoti" onPress={() => {
+      {/* <Button title="sendTrendingNoti" onPress={() => {
         createTrendingNotification("X25i4vjcbXUvdKM0AxMr")
-      }} />
+      }} /> */}
     </View>
   );
 };
