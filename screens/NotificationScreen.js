@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Button } from "react-native";
 import NotificationBox from "../components/NotificationBox";
 
-import { createNotification, getMyNotifications } from "../data/notifications/notificationsController";
+import { createNotification, createTrendingNotification, getMyNotifications } from "../data/notifications/notificationsController";
 import { useSelector } from "react-redux";
 import Colors from "../constants/Colors";
 import { LoadingScreen } from "./LoadingScreen";
@@ -66,6 +66,9 @@ const NotificationScreen = () => {
           status: "กำลังดำเนินการ",
         })
       }} /> */}
+      <Button title="sendTrendingNoti" onPress={() => {
+        createTrendingNotification("X25i4vjcbXUvdKM0AxMr")
+      }} />
     </View>
   );
 };
