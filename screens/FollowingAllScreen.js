@@ -35,7 +35,7 @@ const FollowingAllScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           flexDirection: "row",
           alignItems: "center",
@@ -48,8 +48,9 @@ const FollowingAllScreen = () => {
       >
         <Text style={{ marginRight: 5 }}>{sort}</Text>
         <Entypo name="chevron-down" size={18} color="black" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <FlatList
+        style={{paddingTop: 10}}
         data={followLocationsData}
         renderItem={({ item }) => <FacultyBox item={item}/>}
         keyExtractor={(item) => item.location_id}

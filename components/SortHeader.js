@@ -46,7 +46,7 @@ export const SortHeader = ({ selectedSort, onSortChange }) => {
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 14,
-    paddingHorizontal: 20,
+    paddingHorizontal: 14,
     backgroundColor: "white",
     borderColor: Colors.gray2,
     borderBottomWidth: 1,
@@ -66,11 +66,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 15,
     color: Colors.gray2,
   },
   buttonTextSelected: {
-    fontSize: 16,
+    fontSize: 15,
     color: 'white',
   },
 });

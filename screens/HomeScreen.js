@@ -9,7 +9,7 @@ import SortHeader from "../components/SortHeader";
 const renderItem = ({ item }) => <Post postData={item} />;
 
 const HomeScreen = () => {
-  const [selectedSort, setSelectedSort] = useState('all'); // Initialize the selectedSort state
+  const [selectedSort, setSelectedSort] = useState("all"); // Initialize the selectedSort state
 
   const DATA = useSelector((state) => {
     const filterData = state.data.filterData;
@@ -22,10 +22,10 @@ const HomeScreen = () => {
 
   // Sorting logic based on selectedSort value
   const sortedData = [...DATA].sort((a, b) => {
-    if (selectedSort === 'popular') {
+    if (selectedSort === "popular") {
       // Sort by popularity logic
       return b.is_trending - a.is_trending;
-    } else if (selectedSort === 'latest') {
+    } else if (selectedSort === "latest") {
       // Sort by latest logic (you need to have a timestamp property in your data)
       return b.create_date - a.create_date;
     }
@@ -34,8 +34,10 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <SortHeader selectedSort={selectedSort} onSortChange={handleSortChange} />
       <FlatList
+        ListHeaderComponent={() => <SortHeader selectedSort={selectedSort} onSortChange={handleSortChange} />}
+        stickyHeaderIndices={[0]}
+        stickyHeaderHiddenOnScroll={true}
         data={sortedData}
         renderItem={renderItem}
         keyExtractor={(item) => item.post_id}

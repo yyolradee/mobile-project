@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { addMember, deleteMember } from "../data/locations/locationsController";
 import { fetchFollowLocations } from "../store/actions/dataAction";
-import { downvotePost, getTotalVotesCount, getUserVotestatus, upvotePost } from "../data/posts/postsController";
+import { downvotePost, upvotePost } from "../data/posts/postsController";
 
 // Render Category
 const renderItem = ({ item }) => (
@@ -65,13 +65,13 @@ const Post = (props) => {
     const getVotes = postData.votes || {};
     const getTempUserVotestatus = getVotes[userInfo.uid] || 0;
     setUserVoteStatus(getTempUserVotestatus);
+    setCommentsLength(postData.comments.length)
   }, [userInfo.uid, postData]);
 
   useEffect(() => {
     setData(postData);
-    setTimePassed(moment(postData.create_date.toDate()).fromNow());
     setComments(postData.comments);
-    setCommentsLength(postData.comments.length)
+    setTimePassed(moment(postData.create_date.toDate()).fromNow());
     if (postData.owner.owner_id === userInfo.uid) {
       setIsEditable(true);
     } else {
