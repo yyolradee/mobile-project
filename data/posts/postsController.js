@@ -3,6 +3,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import {
   createNotification,
   deleteNotification,
+  createTrendingNotification,
 } from "../notifications/notificationsController";
 
 // ---------- Posts ---------------
@@ -111,12 +112,8 @@ export const getAllPosts = async () => {
         }
 
         if (post.votes) {
-          const upvotes = Object.values(post.votes || {}).filter(
-            (vote) => vote === 1
-          ).length;
-          const downvotes = Object.values(post.votes || {}).filter(
-            (vote) => vote === -1
-          ).length;
+          const upvotes = Object.values(post.votes || {}).filter((vote) => vote === 1).length;
+          const downvotes = Object.values(post.votes || {}).filter((vote) => vote === -1).length;
           const totalVotesCount = upvotes - downvotes;
           totalVotes = totalVotesCount;
         }
@@ -300,9 +297,9 @@ export const deletePostById = async (postId) => {
       await db.runTransaction(async (transaction) => {
         // Delete Notifications associated with the post
         await notiPostsQuery.forEach(async (doc) => {
-          deleteNotification(doc.id)
-          await transaction.delete(doc.ref);
-          console.log("Delete notification id : ", doc.id);
+          transaction.delete(doc.ref);
+          // await deleteNotification(doc.id, transaction)
+          console.log("delete noti");
         });
 
         // Delete ReportedPosts associated with the post
@@ -369,11 +366,11 @@ export const updateStatus = async (postId, status) => {
     });
     let des;
     if (status == "กำลังดำเนินการ") {
-      des = "กำลังดำเนินการแก้ไข";;
+      des = "กำลังดำเนินการแก้ไข";
     } else if (status == "แก้ไขเสร็จสิ้น") {
-      des = "ได้ทำการแก้ไขเสร็จสิ้นแล้ว ";;
+      des = "ได้ทำการแก้ไขเสร็จสิ้นแล้ว ";
     } else if (status == "ไม่แก้ไข") {
-      des = "ถูกปฏิเสธการแก้ไข";;
+      des = "ถูกปฏิเสธการแก้ไข";
     }
     await createNotification({
       post_id: postId,
@@ -388,12 +385,7 @@ export const updateStatus = async (postId, status) => {
 };
 
 // Function to upvote a post
-export const upvotePost = async (
-  postId,
-  userId,
-  setVotes,
-  setUserVoteStatus
-) => {
+export const upvotePost = async (postId, userId, setVotes, setUserVoteStatus, setTrending) => {
   const db = firebase.firestore();
   const postRef = db.collection("Posts").doc(postId);
 
@@ -411,29 +403,26 @@ export const upvotePost = async (
 
     // Update the votes field
     transaction.update(postRef, { votes });
-    if (votes) {
-      const upvotes = Object.values(votes || {}).filter(
-        (vote) => vote === 1
-      ).length;
-      const downvotes = Object.values(votes || {}).filter(
-        (vote) => vote === -1
-      ).length;
-      const totalVotesCount = upvotes - downvotes;
-      setVotes(totalVotesCount);
-      setUserVoteStatus(votes[userId] || 0);
-      return true;
+    const upvotes = Object.values(votes || {}).filter((vote) => vote === 1).length;
+    const downvotes = Object.values(votes || {}).filter((vote) => vote === -1).length;
+    const totalVotesCount = upvotes - downvotes;
+    setVotes(totalVotesCount);
+    setUserVoteStatus(votes[userId] || 0);
+
+    const checkTrending = postDoc.data().is_trending || false;
+    if (totalVotesCount === 100 && !checkTrending) {
+      console.log("This post is now trending.");
+      transaction.update(postRef, { is_trending: true });
+      setTrending(true);
+      await createTrendingNotification(postId);
     }
-    return false;
+
+    return 0;
   });
 };
 
 // Function to downvotes a post
-export const downvotePost = async (
-  postId,
-  userId,
-  setVotes,
-  setUserVoteStatus
-) => {
+export const downvotePost = async (postId, userId, setVotes, setUserVoteStatus) => {
   const db = firebase.firestore();
   const postRef = db.collection("Posts").doc(postId);
 
@@ -451,18 +440,12 @@ export const downvotePost = async (
 
     // Update the votes field
     transaction.update(postRef, { votes });
-    if (votes) {
-      const upvotes = Object.values(votes || {}).filter(
-        (vote) => vote === 1
-      ).length;
-      const downvotes = Object.values(votes || {}).filter(
-        (vote) => vote === -1
-      ).length;
-      const totalVotesCount = upvotes - downvotes;
-      setVotes(totalVotesCount);
-      setUserVoteStatus(votes[userId] || 0);
-      return true;
-    }
-    return false;
+    const upvotes = Object.values(votes || {}).filter((vote) => vote === 1).length;
+    const downvotes = Object.values(votes || {}).filter((vote) => vote === -1).length;
+    const totalVotesCount = upvotes - downvotes;
+    setVotes(totalVotesCount);
+    setUserVoteStatus(votes[userId] || 0);
+
+    return 0;
   });
 };
