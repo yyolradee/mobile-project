@@ -1,10 +1,5 @@
 import firebase, { storage } from "../firebaseConfig";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import {
   createNotification,
   deleteNotification,
@@ -59,12 +54,7 @@ export const getPostsById = async (postId, setState) => {
               })
             );
 
-            setState({
-              ...db,
-              post_id: postId,
-              location: locationData,
-              categories: categoriesList,
-            });
+            setState({ ...db, post_id: postId, location: locationData, categories: categoriesList });
           } else {
             console.error("Document does not exist");
             setState(null);
@@ -78,10 +68,7 @@ export const getPostsById = async (postId, setState) => {
 
 export const getAllPosts = async () => {
   try {
-    const documentSnapshot = await firebase
-      .firestore()
-      .collection("Posts")
-      .get();
+    const documentSnapshot = await firebase.firestore().collection("Posts").get();
     const data = [];
 
     await Promise.all(
@@ -185,9 +172,7 @@ export const addNewPost = async (itemData) => {
       const localImagePath = itemData.img_path;
       const imageFileName = `${new Date().getTime()}_image.jpg`;
       const storageRef = ref(storage, `images/${imageFileName}`);
-      const mediaBlob = await fetch(localImagePath).then((response) =>
-        response.blob()
-      );
+      const mediaBlob = await fetch(localImagePath).then((response) => response.blob());
       // // Upload the Blob to Firebase Storage
       const snapshot = await uploadBytes(storageRef, mediaBlob);
       // // Get the download URL
@@ -240,9 +225,7 @@ export const updatePostWithId = async (postId, itemData) => {
       const localImagePath = itemData.img_path;
       const imageFileName = `${new Date().getTime()}_image.jpg`;
       const storageRef = ref(storage, `images/${imageFileName}`);
-      const mediaBlob = await fetch(localImagePath).then((response) =>
-        response.blob()
-      );
+      const mediaBlob = await fetch(localImagePath).then((response) => response.blob());
 
       // Check if there's an old image associated with the post
       if (itemData.old_img_path) {
@@ -301,13 +284,9 @@ export const deletePostById = async (postId) => {
   try {
     const db = firebase.firestore();
     const postsRef = db.collection("Posts").doc(postId);
-    const notiPostsRef = db
-      .collection("Notifications")
-      .where("post_id", "==", postsRef);
+    const notiPostsRef = db.collection("Notifications").where("post_id", "==", postsRef);
     const notiPostsQuery = await notiPostsRef.get();
-    const reportedPostsRef = db
-      .collection("ReportedPosts")
-      .where("post_id", "==", postsRef);
+    const reportedPostsRef = db.collection("ReportedPosts").where("post_id", "==", postsRef);
     const reportedPostsQuery = await reportedPostsRef.get();
     const postDoc = await postsRef.get();
 
@@ -390,11 +369,11 @@ export const updateStatus = async (postId, status) => {
     });
     let des;
     if (status == "กำลังดำเนินการ") {
-      des = "กำลังดำเนินการแก้ไข";
+      des = "กำลังดำเนินการแก้ไข";;
     } else if (status == "แก้ไขเสร็จสิ้น") {
-      des = "ได้ทำการแก้ไขเสร็จสิ้นแล้ว ";
+      des = "ได้ทำการแก้ไขเสร็จสิ้นแล้ว ";;
     } else if (status == "ไม่แก้ไข") {
-      des = "ถูกปฏิเสธการแก้ไข";
+      des = "ถูกปฏิเสธการแก้ไข";;
     }
     await createNotification({
       post_id: postId,
