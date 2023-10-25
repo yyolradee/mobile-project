@@ -119,7 +119,7 @@ export const createTrendingNotification = async (post_id) => {
         status: null,
         type: "trending",
         description: `กำลังเป็นที่สนใจใน ${location_name}`,
-        date_time: new Date()
+        date_time: new Date(),
       });
 
       // เพิ่ม noti ใหม่ลง noti array ของ user แต่ละคน
@@ -137,84 +137,41 @@ export const createTrendingNotification = async (post_id) => {
   }
 };
 
-// ไม่เวิร์คเพราะไรไม่รู้ ค่อยมาแก้พน.ขอนอนก่อน เจอกั๊นนนนน
-// export const deleteNotification = async (notification_id, transaction) => {
-//   try {
-//     const db = firebase.firestore();
-//     const notiRef = db.collection("Notifications").doc(notification_id);
-
-//     // Array ของ User ที่ต้อง update notiArray
-//     const userArray = [];
-//     // เอา user แต่ละคนมาเช็คว่ามี noti อันนี้อยู่มั้ย
-//     await db.collection("Users").get().then((docSnapshot) => {
-//       docSnapshot.forEach(async (doc) => {
-//         // check ว่ามี noti id นี้อยู่หรือไม่
-//         const notiArray = doc.data().notifications;
-//         const copyNotiArray = [];
-//         notiArray.forEach((noti) => {
-//           copyNotiArray.push(noti);
-//         });
-//         const exist = copyNotiArray.findIndex((noti) => {
-//           noti.path == notiRef.path;
-//         });
-//         // ถ้ามี noti id นี้อยู่
-//         if (exist !== -1) {
-//           copyNotiArray.splice(exist, 1);
-//           userArray.push({ user_id: doc.id, newNotiArray: copyNotiArray });
-//         }
-//       });
-//     });
-
-//     // await db.runTransaction((transaction) => {
-//     // delete Notification in Users
-//     userArray.forEach(async (user) => {
-//       const userRef = db.collection("Users").doc(user.user_id);
-//       await transaction.update(userRef, { notifications: user.newNotiArray });
-//     });
-//     // delete Notification
-//     await transaction.delete(notiRef);
-//     // });
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-
 export const deleteNotification = async (notification_id) => {
   try {
     const db = firebase.firestore();
     const notiRef = db.collection("Notifications").doc(notification_id);
-
     // Array of Users that need to update notiArray
     const userArray = [];
 
     // Get a list of all users
-    const usersSnapshot = await db.collection("Users").get();
-
-    usersSnapshot.forEach(async (doc) => {
-      // Check if the user has this notification
-      const notiArray = doc.data().notifications;
-      const copyNotiArray = [...notiArray];
-      const existIndex = copyNotiArray.findIndex(
-        (noti) => noti.path === notiRef.path
-      );
-
-      // If the notification exists in the user's notiArray
-      if (existIndex !== -1) {
-        copyNotiArray.splice(existIndex, 1);
-        userArray.push({ user_id: doc.id, newNotiArray: copyNotiArray });
-      }
+    const usersRef = db.collection("Users");
+    await usersRef.get().then((docSnapshot) => {
+      docSnapshot.forEach(async (doc) => {
+        const notiArray = doc.data().notifications;
+        const existIndex = notiArray.findIndex(
+          (noti) => noti.path === notiRef.path
+        );
+        console.log("Index ===> " + existIndex)
+        // If the notification exists in the user's notiArray
+        if (existIndex !== -1) {
+          userArray.push({ user_id: doc.id, notiArray: notiArray, index: existIndex });
+        }
+      });
     });
+    console.log(userArray);
 
-    // Use a transaction to update user notifications and delete the notification
-    await Promise.all(
-      userArray.map(async (user) => {
-        const userRef = db.collection("Users").doc(user.user_id);
-        await transaction.update(userRef, { notifications: user.newNotiArray });
-      })
-    );
+    for (user of userArray) {
+      const userRef = await db.collection("Users").doc(user.user_id);
+      const notiArray = [...user.notiArray];
+      notiArray.splice(user.index, 1)
+      await userRef.update({ notifications: notiArray });
+      console.log("Updated Users")
+    }
 
     // Delete the notification
-    transaction.delete(notiRef);
+    console.log("deleted Noti in User");
+    // await
   } catch (error) {
     throw error;
   }
