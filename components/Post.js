@@ -60,6 +60,7 @@ const Post = (props) => {
 
   // Set When Open this page
   useEffect(() => {
+    setTrending(postData.is_trending);
     setVotes(postData.totalVotes);
     const getVotes = postData.votes || {};
     const getTempUserVotestatus = getVotes[userInfo.uid] || 0;
@@ -68,7 +69,6 @@ const Post = (props) => {
 
   useEffect(() => {
     setData(postData);
-    setTrending(postData.is_trending);
     setTimePassed(moment(postData.create_date.toDate()).fromNow());
     setComments(postData.comments);
     setCommentsLength(postData.comments.length)
@@ -112,7 +112,7 @@ const Post = (props) => {
   };
 
   const handleUpvote = async (postId, userId) => {
-    await upvotePost(postId, userId, setVotes, setUserVoteStatus);
+    await upvotePost(postId, userId, setVotes, setUserVoteStatus, setTrending);
     // await getUserVotestatus(postId, userId, setUserVoteStatus);
   };
 
