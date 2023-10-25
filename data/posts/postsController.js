@@ -350,7 +350,7 @@ export const addComment = async (postId, comment, setComments) => {
       const updatedComments = updatedPost.comments || [];
 
       // You can update your UI with the new comments array
-      console.log("Added comments success");
+      // console.log("Added comments success");
       setComments(updatedComments);
     });
   } catch (error) {
