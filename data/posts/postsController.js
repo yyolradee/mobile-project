@@ -410,7 +410,7 @@ export const upvotePost = async (postId, userId, setVotes, setUserVoteStatus, se
     setUserVoteStatus(votes[userId] || 0);
 
     const checkTrending = postDoc.data().is_trending || false;
-    if (totalVotesCount === 100 && !checkTrending) {
+    if (totalVotesCount === 2 && !checkTrending) {
       console.log("This post is now trending.");
       transaction.update(postRef, { is_trending: true });
       setTrending(true);

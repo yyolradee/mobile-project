@@ -84,7 +84,7 @@ const SearchModal = () => {
     </Text>
   );
 
-  const locationInfoHandler = (item) => {
+  const locationInfoHandler = () => {
     navigation.navigate("Location", { location_id: item });
     toggleSearchModal();
   };
@@ -179,7 +179,12 @@ const SearchModal = () => {
             <FlatList
               data={searchData}
               ListHeaderComponent={renderAmount}
-              renderItem={({ item }) => <FacultyBox item={item} onPressHandler={locationInfoHandler} />}
+              renderItem={({ item }) => <FacultyBox item={item} onPressHandler={() => {
+                navigation.navigate("Location", {
+                  location_id: item.location_id,
+                });
+                toggleSearchModal();
+              }} isFollow={false} />}
               keyExtractor={(item) => item.location_id}
               showsVerticalScrollIndicator={false}
             />
