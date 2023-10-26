@@ -17,7 +17,9 @@ const FollowingAllScreen = () => {
   const navigation = useNavigation();
   const [sort, setSort] = useState("เรียงจากตัวอักษร");
   const [show, setShow] = useState(false);
-  const followLocationsData = useSelector((state) => state.data.followLocationsData);
+  const followLocationsData = useSelector(
+    (state) => state.data.followLocationsData
+  );
 
   followLocationsData.sort((item1, item2) =>
     item1.name > item2.name ? 1 : item1.name < item2.name ? -1 : 0
@@ -29,7 +31,7 @@ const FollowingAllScreen = () => {
         item1.name > item2.name ? 1 : item1.name < item2.name ? -1 : 0
       );
     } else {
-      console.log("เวลาเหลือค่อยทำนะ")
+      console.log("เวลาเหลือค่อยทำนะ");
     }
   }, [sort]);
 
@@ -50,9 +52,19 @@ const FollowingAllScreen = () => {
         <Entypo name="chevron-down" size={18} color="black" />
       </TouchableOpacity> */}
       <FlatList
-        style={{paddingTop: 10}}
+        style={{ paddingTop: 10 }}
         data={followLocationsData}
-        renderItem={({ item }) => <FacultyBox item={item}/>}
+        renderItem={({ item }) => (
+          <FacultyBox
+            item={item}
+            onPressHandler={() => {
+              navigation.navigate("Location", {
+                location_id: item.location_id,
+              });
+            }}
+            isFollow={true}
+          />
+        )}
         keyExtractor={(item) => item.location_id}
         showsVerticalScrollIndicator={false}
       />

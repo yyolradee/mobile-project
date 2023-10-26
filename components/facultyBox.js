@@ -7,7 +7,7 @@ import { fetchFollowLocations } from "../store/actions/dataAction";
 
 const facultyBox = (props) => {
   const item = props.item;
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
   return (
@@ -22,9 +22,12 @@ const facultyBox = (props) => {
     >
       <TouchableOpacity
         style={{ flexDirection: "row", alignItems: "center", width: "75%" }}
-        onPress={() => {
-          navigation.navigate("Location", { location_id: item.location_id });
-        }}
+        onPress={
+          props.onPressHandler
+          //   () => {
+          //   navigation.navigate("Location", { location_id: item.location_id });
+          // }
+        }
       >
         <Image
           style={{
@@ -54,6 +57,7 @@ const facultyBox = (props) => {
           borderRadius: 20,
           paddingVertical: 4,
           paddingHorizontal: 10,
+          display: props.isFollow ? "flex": "none"
         }}
         onPress={async () => {
           try {
