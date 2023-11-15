@@ -1,34 +1,28 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import Colors from "../constants/Colors";
+import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 
 const LoginScreen = (props) => {
-  const {promptAsync} = props
+  const { promptAsync } = props;
   return (
     <View style={styles.container}>
       <View style={styles.container}>
-        <Text style={{ color: "#fff", fontSize: 60, fontWeight: "bold", marginBottom: -10 }}>
-          KMITL
-        </Text>
-        <Text style={{ fontSize: 40, fontWeight: "bold"}}>Trouble</Text>
-        <Text style={{ color: "#fff", marginTop: 10 }}>
-          แจ้งปัญหาที่คุณประสบในพื้นที่
-        </Text>
-        <Text style={{ color: "#fff" }}>
-          สถาบันพระจอมเกล้าเจ้าคุณทหารลาดกระบังได้ที่นี่
-        </Text>
+        <Text style={{ color: "#fff", fontSize: 60, fontWeight: "bold", marginBottom: -10 }}>KMITL</Text>
+        <Text style={{ fontSize: 40, fontWeight: "bold" }}>Trouble</Text>
+        <Text style={{ color: "#fff", marginTop: 10 }}>แจ้งปัญหาที่คุณประสบในพื้นที่</Text>
+        <Text style={{ color: "#fff" }}>สถาบันพระจอมเกล้าเจ้าคุณทหารลาดกระบังได้ที่นี่</Text>
       </View>
       <View style={styles.activeArea}>
         <Text style={{ fontSize: 20 }}>ยืนยันตัวตนด้วยบริการของ Google</Text>
-        <Text style={{ color: Colors.gray2, marginVertical: 9 }}>
-          โดยใช้ email account ของสถาบัน
-        </Text>
-        <Button
-          title="LOGIN"
-          onPress={() => {
-            promptAsync()
-          }}
-        ></Button>
+        <Text style={{ color: Colors.gray2, marginVertical: 9 }}>โดยใช้ email account ของสถาบัน</Text>
+        <View style={{marginTop: 20}}>
+          <GoogleSigninButton
+            size={GoogleSigninButton}
+            color={GoogleSigninButton.Color.Dark}
+            onPress={() => promptAsync()}
+          />
+        </View>
       </View>
     </View>
   );
